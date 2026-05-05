@@ -1,0 +1,29 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🔥 ESSENCIAL PRA FULLSCREEN */
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* melhora renderização */
+body {
+  background-color: #faf9f9;
+  color: #1a1c1c;
+  font-family: 'Be Vietnam Pro', sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* links */
+a {
+  text-decoration: none;
+  color: inherit;
+}

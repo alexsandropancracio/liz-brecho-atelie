@@ -1,0 +1,520 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500&family=Noto+Serif:ital,wght@0,300;0,400;0,500;1,400&display=swap');
+
+:root {
+  --color-bg: #f7f6f3;
+  --color-text-primary: #111111;
+  --color-text-secondary: #767676;
+  --color-text-tertiary: #a0a0a0;
+  --color-border: #e2e1dd;
+  --color-placeholder: #eae9e4;
+  --color-placeholder-dark: #e0dfda;
+  
+  --font-heading: 'Noto Serif', serif;
+  --font-body: 'Be Vietnam Pro', sans-serif;
+  
+  --spacing-sm: 1rem;
+  --spacing-md: 2.5rem;
+  --spacing-lg: 5rem;
+  --spacing-xl: 8rem;
+}
+
+/* --- Base --- */
+.brecho {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  margin: 0;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* --- Hero Section --- */
+.brecho-hero {
+  min-height: 90vh;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.brecho-back {
+  position: absolute;
+  top: 96px;
+  right: 80px;
+  left: auto;
+
+  z-index: 9999;
+
+  padding: 0;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+
+  background: transparent;
+  border: none;
+  color: rgba(17, 17, 17, 0.68);
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+
+  cursor: pointer;
+
+  transition: color 0.35s ease, transform 0.35s ease;
+}
+
+.brecho-back::after {
+  content: "";
+  width: 48px;
+  height: 1px;
+  display: block;
+
+  background: currentColor;
+  opacity: 0.65;
+
+  transition: width 0.35s ease, opacity 0.35s ease;
+}
+
+/* movimento de voltar */
+.brecho-back:hover {
+  color: #111;
+  transform: translateX(-5px);
+}
+
+.brecho-back:hover::after {
+  width: 64px;
+  opacity: 1;
+}
+
+.brecho-back:focus-visible {
+  outline: 1px solid #111;
+  outline-offset: 6px;
+}
+
+.brecho-hero__content {
+  max-width: 46.5vw;
+  margin: auto 0;
+  z-index: 2;
+}
+
+.brecho-hero__eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+}
+
+.brecho-hero__title {
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+}
+
+.brecho-hero__title span {
+  display: block;
+}
+
+.brecho-hero__description {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  max-width: 500px;
+  margin: 0 auto var(--spacing-lg); /* centraliza o bloco */
+  font-weight: 300;
+}
+
+.brecho-hero__meta {
+  display: flex;
+  gap: 2rem;
+
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--spacing-sm);
+
+  max-width: 300px;
+
+  margin: 0 auto; /* centraliza igual o description */
+}
+
+.brecho-hero__visual {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  transform: translateY(-50%);
+  width: 40vw;
+  height: 60vh;
+  background-color: var(--color-placeholder);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.brecho-hero__visual span {
+  font-family: var(--font-heading);
+  font-size: 15vw;
+  color: var(--color-bg); /* Subtle blend */
+  opacity: 0.5;
+}
+
+/* --- Curadoria Section --- */
+.brecho-curadoria {
+  padding: var(--spacing-xl) var(--spacing-md);
+  background-color: #f2f1ec; /* Slightly darker than bg for subtle contrast */
+}
+
+.curadoria-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.curadoria-image__placeholder {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background-color: var(--color-placeholder-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.placeholder-text {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-tertiary);
+}
+
+.curadoria-text-block {
+  max-width: 500px;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+  letter-spacing: -0.01em;
+}
+
+.large-text {
+  font-size: 1.5rem;
+  font-family: var(--font-heading);
+  font-style: italic;
+  margin-bottom: var(--spacing-md);
+}
+
+.curadoria-text-block p {
+  color: var(--color-text-secondary);
+  font-weight: 300;
+  margin-bottom: var(--spacing-md);
+}
+
+.text-divider {
+  width: 40px;
+  height: 1px;
+  background-color: var(--color-border);
+  margin: var(--spacing-md) 0;
+}
+
+.small-text {
+  font-size: 0.85rem;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* --- Collection Section --- */
+.brecho-collection {
+  padding: var(--spacing-xl) 0 var(--spacing-xl) var(--spacing-md);
+}
+
+.collection-header {
+  padding-right: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.collection-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--spacing-sm);
+}
+
+.collection-count {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.collection-filters {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  font-size: 0.9rem;
+  color: var(--color-text-tertiary);
+  padding-bottom: 0.25rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+  color: var(--color-text-primary);
+}
+
+.filter-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-text-primary);
+}
+
+/* --- Highlight Groups --- */
+.collection-highlight-group {
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.collection-highlight-group:first-of-type {
+  margin-top: 0;
+}
+
+.collection-highlight-group__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.collection-highlight-group__header span {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-primary);
+}
+
+.collection-highlight-group__header small {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+}
+
+/* --- Highlight Scroll --- */
+.collection-highlight-scroll {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-right: var(--spacing-md);
+  padding-bottom: var(--spacing-md);
+  scrollbar-width: none;
+  cursor: pointer;
+  user-select: none;
+  scroll-behavior: smooth;
+}
+
+.collection-highlight-scroll.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.collection-highlight-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* --- Collection Item --- */
+.collection-item {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition:
+    transform 0.4s ease,
+    opacity 0.4s ease;
+}
+
+.collection-item:hover {
+  transform: translateY(-6px);
+}
+
+.collection-item__image-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background-color: var(--color-placeholder);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.collection-item__overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(247, 246, 243, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.collection-item__overlay span {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--color-text-primary);
+}
+
+.collection-item:hover .collection-item__overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.item-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.item-name {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.item-description {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-weight: 300;
+}
+
+/* --- Manifesto Section --- */
+.brecho-manifesto {
+  padding: var(--spacing-xl) var(--spacing-md);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+.manifesto-content {
+  text-align: center;
+  max-width: 800px;
+}
+
+.manifesto-content p {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.2;
+  color: rgb(221, 221, 221);
+  margin: 0;
+}
+
+.manifesto-author {
+  display: block;
+  margin-top: var(--spacing-md);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-tertiary);
+}
+
+/* --- Outro Section --- */
+.brecho-outro {
+  padding: var(--spacing-xl) var(--spacing-md) calc(var(--spacing-xl) * 1.5);
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.brecho-outro-content {
+  text-align: center;
+  max-width: 600px;
+}
+
+.brecho-outro-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-sm);
+}
+
+.brecho-outro-content p {
+  color: var(--color-text-secondary);
+  font-weight: 300;
+  margin-bottom: var(--spacing-lg);
+}
+
+.brecho-outro-cta {
+  background-color: var(--color-text-primary);
+  color: var(--color-bg);
+  padding: 1rem 2.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 2px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.brecho-outro-cta:hover {
+  background-color: #333;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 900px) {
+  .curadoria-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .brecho-hero__visual {
+    display: none; /* Hide visual block on smaller screens to keep it clean */
+  }
+  
+  .brecho-hero__content {
+    margin-top: auto;
+  }
+  
+  .collection-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
