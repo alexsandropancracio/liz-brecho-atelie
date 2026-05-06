@@ -513,9 +513,11 @@ if (manifestoSection && manifestoLines.length > 0) {
 
 export function animatePortalTransition() {
   const section = document.querySelector(".portal-transition");
+  const sticky = document.querySelector(".portal-transition__sticky");
   const circle = document.querySelector(".portal-transition__circle");
+  const content = document.querySelector(".portal-transition__content");
 
-  if (!section || !circle) {
+  if (!section || !sticky || !circle || !content) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
     return;
   }
@@ -524,51 +526,110 @@ export function animatePortalTransition() {
   previousTrigger?.kill();
 
   const ctx = gsap.context(() => {
-    gsap.set(circle, {
-      attr: {
-        r: 0,
-      },
+    const mm = gsap.matchMedia();
+
+    function resetInitialState() {
+      gsap.set(circle, {
+        attr: {
+          r: 0,
+        },
+      });
+
+      gsap.set(content, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
+      });
+    }
+
+    function createPortalTimeline({
+      end,
+      finalRadius,
+      shouldPin,
+    }: {
+      end: string;
+      finalRadius: number;
+      shouldPin: boolean;
+    }) {
+      resetInitialState();
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "portal-circle-sticky",
+          trigger: section,
+          start: "top top",
+          end,
+          scrub: true,
+          markers: false,
+          invalidateOnRefresh: true,
+
+          pin: shouldPin ? sticky : false,
+          pinSpacing: false,
+          anticipatePin: shouldPin ? 1 : 0,
+        },
+      });
+
+      tl.to(circle, {
+        attr: {
+          r: 3,
+        },
+        duration: 0.12,
+        ease: "none",
+      });
+
+      tl.to(circle, {
+        attr: {
+          r: 18,
+        },
+        duration: 0.25,
+        ease: "none",
+      });
+
+      tl.to(
+        content,
+        {
+          autoAlpha: 0,
+          scale: 0.1,
+          filter: "blur(10px)",
+          duration: 0.4,
+          ease: "none",
+        },
+        0.01
+      );
+
+      tl.to(circle, {
+        attr: {
+          r: finalRadius,
+        },
+        duration: 0.63,
+        ease: "none",
+      });
+    }
+
+    mm.add("(min-width: 769px)", () => {
+      createPortalTimeline({
+        end: "center 80%",
+        finalRadius: 150,
+        shouldPin: false,
+      });
     });
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        id: "portal-circle-sticky",
-        trigger: section,
-        start: "top top",
+    mm.add("(max-width: 768px)", () => {
+      createPortalTimeline({
         end: "bottom bottom",
-        scrub: true,
-        markers: false,
-        invalidateOnRefresh: true,
-      },
-    });
-
-    tl.to(circle, {
-      attr: {
-        r: 3,
-      },
-      duration: 0.12,
-      ease: "none",
-    });
-
-    tl.to(circle, {
-      attr: {
-        r: 18,
-      },
-      duration: 0.25,
-      ease: "none",
-    });
-
-    tl.to(circle, {
-      attr: {
-        r: 150,
-      },
-      duration: 0.63,
-      ease: "none",
+        finalRadius: 260,
+        shouldPin: true,
+      });
     });
 
     requestAnimationFrame(() => {
       ScrollTrigger.refresh();
     });
+
+    return () => {
+      mm.revert();
+    };
   }, section);
 
   return () => ctx.revert();

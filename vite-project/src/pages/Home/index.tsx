@@ -275,17 +275,12 @@ useEffect(() => {
 </svg>
 
     <div className="portal-transition__content">
-      <h2>Vestir é atravessar uma escolha.</h2>
+      <h2>Vestir é atravessar o tempo...</h2>
     </div>
   </div>
 </section>
 
-<section className="next-section">
-  <div className="next-section__content">
-    <p></p>
-    <h2>A próxima seção continua no escuro.</h2>
-  </div>
-</section>
+
     </main>
   );
 }
