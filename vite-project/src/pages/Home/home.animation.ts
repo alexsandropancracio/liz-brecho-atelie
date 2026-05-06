@@ -4,6 +4,10 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+ScrollTrigger.config({
+  ignoreMobileResize: true,
+});
+
 gsap.registerPlugin(CustomEase);
 
 type AnimateHomeHeroOptions = {
@@ -512,10 +516,21 @@ if (manifestoSection && manifestoLines.length > 0) {
 }
 
 export function animatePortalTransition() {
-  const section = document.querySelector(".portal-transition") as HTMLElement | null;
-  const sticky = document.querySelector(".portal-transition__sticky") as HTMLElement | null;
-  const circle = document.querySelector(".portal-transition__circle") as SVGCircleElement | null;
-  const content = document.querySelector(".portal-transition__content") as HTMLElement | null;
+  const section = document.querySelector(
+    ".portal-transition"
+  ) as HTMLElement | null;
+
+  const sticky = document.querySelector(
+    ".portal-transition__sticky"
+  ) as HTMLElement | null;
+
+  const circle = document.querySelector(
+    ".portal-transition__circle"
+  ) as SVGCircleElement | null;
+
+  const content = document.querySelector(
+    ".portal-transition__content"
+  ) as HTMLElement | null;
 
   if (!section || !sticky || !circle || !content) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
@@ -549,9 +564,14 @@ export function animatePortalTransition() {
 
       gsap.set(sticky, {
         y: 0,
+        clearProps: "transform",
       });
     }
 
+    /*
+      DESKTOP
+      Mantém o comportamento original.
+    */
     mm.add("(min-width: 769px)", () => {
       resetPortalState();
 
@@ -603,41 +623,39 @@ export function animatePortalTransition() {
         ease: "none",
       });
 
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
       return () => {
         tl.scrollTrigger?.kill(true);
         tl.kill();
       };
     });
 
+    /*
+      MOBILE
+      Simula a viewport parada movendo a camada visual junto com o scroll.
+      Esse foi o caminho que funcionou no seu projeto.
+    */
 mm.add("(max-width: 768px)", () => {
   resetPortalState();
 
-  const mobileEnd = () => `+=${window.innerHeight * 1.4}`;
+  const mobileEnd = () => {
+    const scrollDistance = section.offsetHeight - window.innerHeight;
+    return `+=${scrollDistance}`;
+  };
 
   const setStickyY = gsap.quickSetter(sticky, "y", "px");
 
-  let targetY = 0;
-  let currentY = 0;
+ const updateStickyPosition = (self: ScrollTrigger) => {
+  const distance = self.scroll() - self.start;
+  const maxDistance = self.end - self.start;
 
-  const smoothFollow = () => {
-    currentY += (targetY - currentY) * 0.18;
+  const rawY = gsap.utils.clamp(0, maxDistance, distance);
+  const y = Math.round(rawY);
 
-    /*
-      Arredondar em 0.5px costuma ficar mais suave que arredondar inteiro.
-      Inteiro pode dar pequenos "saltos".
-    */
-    const roundedY = Math.round(currentY * 2) / 2;
-
-    setStickyY(roundedY);
-  };
-
-  gsap.ticker.add(smoothFollow);
-
-  const updateStickyPosition = (self: ScrollTrigger) => {
-    const distance = self.scroll() - self.start;
-    const maxDistance = self.end - self.start;
-
-    targetY = gsap.utils.clamp(0, maxDistance, distance);
+  setStickyY(y);
   };
 
   const tl = gsap.timeline({
@@ -646,69 +664,64 @@ mm.add("(max-width: 768px)", () => {
       trigger: section,
       start: "top top",
       end: mobileEnd,
-
-      /*
-        Suaviza o vínculo da timeline com o scroll.
-      */
-      scrub: 0.35,
-
+      scrub: true,
       markers: false,
       invalidateOnRefresh: true,
       anticipatePin: 1,
 
       onUpdate: updateStickyPosition,
+      onRefresh: updateStickyPosition,
 
       onLeaveBack: () => {
-        targetY = 0;
-        currentY = 0;
         setStickyY(0);
       },
-
-      onRefresh: updateStickyPosition,
     },
   });
 
-  tl.to(circle, {
-    attr: {
-      r: 6,
+  /*
+    Agora o círculo cresce de forma contínua durante a timeline inteira.
+    Ele não vai mais "parar no meio".
+  */
+  tl.to(
+    circle,
+    {
+      attr: {
+        r: 140,
+      },
+      duration: 1,
+      ease: "none",
     },
-    duration: 0.12,
-    ease: "none",
-  });
+    0
+  );
 
-  tl.to(circle, {
-    attr: {
-      r: 24,
-    },
-    duration: 0.22,
-    ease: "none",
-  });
-
+  /*
+    Agora o título começa a animar logo quando o círculo começa a crescer.
+    Se quiser começar instantaneamente, use 0.
+    Se quiser um pequeno respiro, use 0.04 ou 0.06.
+  */
   tl.to(
     content,
     {
       autoAlpha: 0,
       scale: 0.72,
       filter: "blur(8px)",
-      duration: 0.32,
+      duration: 0.38,
       ease: "none",
     },
-    0.32
+    0.04
   );
 
-  tl.to(circle, {
-    attr: {
-      r: 105,
-    },
-    duration: 0.66,
-    ease: "none",
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+  });
+
+  document.fonts?.ready.then(() => {
+    ScrollTrigger.refresh();
   });
 
   return () => {
-    gsap.ticker.remove(smoothFollow);
-
-    targetY = 0;
-    currentY = 0;
     setStickyY(0);
 
     tl.scrollTrigger?.kill(true);
@@ -716,14 +729,12 @@ mm.add("(max-width: 768px)", () => {
   };
 });
 
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-    });
-
     return () => {
       mm.revert();
     };
   }, section);
 
-  return () => ctx.revert();
+  return () => {
+    ctx.revert();
+  };
 }
