@@ -513,10 +513,11 @@ if (manifestoSection && manifestoLines.length > 0) {
 
 export function animatePortalTransition() {
   const section = document.querySelector(".portal-transition") as HTMLElement | null;
+  const sticky = document.querySelector(".portal-transition__sticky") as HTMLElement | null;
   const circle = document.querySelector(".portal-transition__circle") as SVGCircleElement | null;
   const content = document.querySelector(".portal-transition__content") as HTMLElement | null;
 
-  if (!section || !circle || !content) {
+  if (!section || !sticky || !circle || !content) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
     return;
   }
@@ -524,7 +525,7 @@ export function animatePortalTransition() {
   const previousTrigger = ScrollTrigger.getById("portal-circle-sticky");
   previousTrigger?.kill(true);
 
-  gsap.killTweensOf([circle, content]);
+  gsap.killTweensOf([circle, content, sticky]);
 
   const ctx = gsap.context(() => {
     const mm = gsap.matchMedia();
@@ -545,10 +546,19 @@ export function animatePortalTransition() {
         scale: 1,
         filter: "blur(0px)",
       });
+
+      gsap.set(sticky, {
+        y: 0,
+      });
     }
 
     mm.add("(min-width: 769px)", () => {
       resetPortalState();
+
+      const moveStickyY = gsap.quickTo(sticky, "y", {
+        duration: 0.18,
+        ease: "power3.out",
+      });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -604,63 +614,112 @@ export function animatePortalTransition() {
       };
     });
 
-    mm.add("(max-width: 768px)", () => {
-      resetPortalState();
+mm.add("(max-width: 768px)", () => {
+  resetPortalState();
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          id: "portal-circle-sticky",
-          trigger: section,
-          start: "top top",
-          end: () => `+=${window.innerHeight * 2.4}`,
-          scrub: true,
-          markers: false,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-        },
-      });
+  const mobileEnd = () => `+=${window.innerHeight * 1.4}`;
 
-      tl.to(circle, {
-        attr: {
-          r: 6,
-        },
-        duration: 0.12,
-        ease: "none",
-      });
+  const setStickyY = gsap.quickSetter(sticky, "y", "px");
 
-      tl.to(circle, {
-        attr: {
-          r: 24,
-        },
-        duration: 0.22,
-        ease: "none",
-      });
+  let targetY = 0;
+  let currentY = 0;
 
-      tl.to(
-        content,
-        {
-          autoAlpha: 0,
-          scale: 0.72,
-          filter: "blur(8px)",
-          duration: 0.32,
-          ease: "none",
-        },
-        0.32
-      );
+  const smoothFollow = () => {
+    currentY += (targetY - currentY) * 0.18;
 
-      tl.to(circle, {
-        attr: {
-          r: 90,
-        },
-        duration: 0.66,
-        ease: "none",
-      });
+    /*
+      Arredondar em 0.5px costuma ficar mais suave que arredondar inteiro.
+      Inteiro pode dar pequenos "saltos".
+    */
+    const roundedY = Math.round(currentY * 2) / 2;
 
-      return () => {
-        tl.scrollTrigger?.kill(true);
-        tl.kill();
-      };
-    });
+    setStickyY(roundedY);
+  };
+
+  gsap.ticker.add(smoothFollow);
+
+  const updateStickyPosition = (self: ScrollTrigger) => {
+    const distance = self.scroll() - self.start;
+    const maxDistance = self.end - self.start;
+
+    targetY = gsap.utils.clamp(0, maxDistance, distance);
+  };
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      id: "portal-circle-sticky",
+      trigger: section,
+      start: "top top",
+      end: mobileEnd,
+
+      /*
+        Suaviza o vínculo da timeline com o scroll.
+      */
+      scrub: 0.35,
+
+      markers: false,
+      invalidateOnRefresh: true,
+      anticipatePin: 1,
+
+      onUpdate: updateStickyPosition,
+
+      onLeaveBack: () => {
+        targetY = 0;
+        currentY = 0;
+        setStickyY(0);
+      },
+
+      onRefresh: updateStickyPosition,
+    },
+  });
+
+  tl.to(circle, {
+    attr: {
+      r: 6,
+    },
+    duration: 0.12,
+    ease: "none",
+  });
+
+  tl.to(circle, {
+    attr: {
+      r: 24,
+    },
+    duration: 0.22,
+    ease: "none",
+  });
+
+  tl.to(
+    content,
+    {
+      autoAlpha: 0,
+      scale: 0.72,
+      filter: "blur(8px)",
+      duration: 0.32,
+      ease: "none",
+    },
+    0.32
+  );
+
+  tl.to(circle, {
+    attr: {
+      r: 105,
+    },
+    duration: 0.66,
+    ease: "none",
+  });
+
+  return () => {
+    gsap.ticker.remove(smoothFollow);
+
+    targetY = 0;
+    currentY = 0;
+    setStickyY(0);
+
+    tl.scrollTrigger?.kill(true);
+    tl.kill();
+  };
+});
 
     requestAnimationFrame(() => {
       ScrollTrigger.refresh();
