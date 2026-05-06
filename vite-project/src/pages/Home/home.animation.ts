@@ -532,7 +532,11 @@ export function animatePortalTransition() {
     ".portal-transition__content"
   ) as HTMLElement | null;
 
-  if (!section || !sticky || !circle || !content) {
+  const title = document.querySelector(
+  ".portal-transition__content h2"
+  ) as HTMLElement | null;
+
+  if (!section || !sticky || !circle || !content || !title) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
     return;
   }
@@ -545,29 +549,35 @@ export function animatePortalTransition() {
   const ctx = gsap.context(() => {
     const mm = gsap.matchMedia();
 
-    function resetPortalState() {
-      gsap.set(circle, {
-        attr: {
-          cx: 50,
-          cy: 50,
-          r: 0,
-        },
-        fill: "#050505",
-      });
+  function resetPortalState() {
+    gsap.set(circle, {
+      attr: {
+        cx: 50,
+        cy: 50,
+        r: 0,
+      },
+      fill: "#050505",
+    });
 
-      gsap.set(content, {
-        autoAlpha: 1,
-        y: 0,
-        scale: 1,
-        filter: "blur(0px)",
-      });
+    gsap.set(content, {
+      autoAlpha: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+    });
 
-      gsap.set(sticky, {
-        y: 0,
-        clearProps: "transform",
-      });
-    }
+    gsap.set(title, {
+      autoAlpha: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+    });
 
+    gsap.set(sticky, {
+      y: 0,
+      clearProps: "transform",
+    });
+  }
     /*
       DESKTOP
       Mantém o comportamento original.
@@ -693,6 +703,19 @@ mm.add("(max-width: 768px)", () => {
     },
     0
   );
+
+  tl.to(
+  title,
+  {
+    autoAlpha: 0,
+    scale: 0.10,
+    y: -24,
+    filter: "blur(10px)",
+    duration: 0.5,
+    ease: "none",
+  },
+  0
+);
 
   /*
     Agora o título começa a animar logo quando o círculo começa a crescer.
