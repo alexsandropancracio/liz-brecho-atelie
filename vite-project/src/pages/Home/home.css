@@ -1350,6 +1350,7 @@
   .home-services__title {
     font-size: clamp(2.6rem, 12vw, 4.2rem);
     line-height: 0.95;
+    color: #050505;
   }
 
   .home-services__grid {
@@ -1669,6 +1670,7 @@
 
   .home-services__header {
     margin-bottom: 34px;
+    color: #050505;
   }
 
   .service-card {
