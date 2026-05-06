@@ -798,6 +798,7 @@
 
   .hero__title {
     font-size: clamp(42px, 14vw, 72px);
+    color:#050505;
   }
 
   .hero__description {
@@ -1296,6 +1297,7 @@
     font-size: clamp(3rem, 16vw, 5rem);
     line-height: 0.92;
     letter-spacing: -0.055em;
+    color: #050505;
   }
 
   .hero__description {
@@ -1552,57 +1554,54 @@
     width: clamp(430px, 132vw, 700px);
   }
 
-   .portal-transition {
+.portal-transition {
     position: relative;
     z-index: 20;
 
-    height: 320vh;
-    min-height: 320vh;
+    height: 260svh;
+    min-height: 260svh;
 
     background: #f7f6f3;
+    color: #111;
+
     overflow: visible;
     isolation: isolate;
   }
 
   .portal-transition__sticky {
-    position: sticky;
-    top: 0;
+    position: relative !important;
+    top: auto !important;
 
     width: 100%;
     height: 100svh;
     min-height: 100svh;
 
+    overflow: hidden;
+
     display: flex;
     align-items: center;
     justify-content: center;
 
-    overflow: hidden;
-
     background: #f7f6f3;
+    color: #111;
   }
 
   .portal-transition__circle-svg {
     position: absolute;
-
-    /*
-      Em vez de usar inset: 0, a gente centraliza o SVG
-      e deixa ele maior que a tela.
-    */
-    left: 50%;
-    top: 50%;
-
-    width: 180vmax;
-    height: 180vmax;
-
-    transform: translate(-50%, -50%);
-
+    inset: 0;
     z-index: 1;
-    pointer-events: none;
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
     overflow: visible;
+    pointer-events: none;
   }
 
   .portal-transition__circle {
-    transform-origin: center center;
+    fill: #050505;
   }
 
   .portal-transition__content {
@@ -1613,13 +1612,25 @@
     padding: 0 24px;
 
     text-align: center;
+
+    color: #111;
+    opacity: 1;
+    visibility: visible;
+
+    will-change: transform, opacity, filter;
+  }
+
+  .portal-transition__content p {
+    color: #777;
   }
 
   .portal-transition__content h2 {
+    color: #111;
+
     font-size: clamp(3rem, 16vw, 6rem);
     line-height: 0.9;
+    letter-spacing: -0.07em;
   }
-
 }
 
 @media (max-width: 480px) {
@@ -1629,6 +1640,7 @@
 
   .hero__title {
     font-size: clamp(2.75rem, 16vw, 4.4rem);
+    color: #050505;
   }
 
   .hero__visual {
@@ -1712,29 +1724,19 @@
     width: 520px;
   }
 
-  .portal-transition {
-    height: 340svh;
-    min-height: 340svh;
+.portal-transition {
+    height: 280svh;
+    min-height: 280svh;
   }
 
-
-  .portal-transition__sticky {
-    height: 100svh;
-    min-height: 100svh;
-  }
-
-  .portal-transition__circle-svg {
-    width: 100vw;
-    height: 100svh;
-  }
-
-  .portal-transition__content,
-  .next-section__content {
-    padding: 18px;
+  .portal-transition__content {
+    width: 100%;
+    padding: 0 18px;
   }
 
   .portal-transition__content h2 {
-    font-size: clamp(2.75rem, 17vw, 5rem);
+    font-size: clamp(2.7rem, 18vw, 5rem);
+    color: #050505;
   }
 }
 
@@ -1751,6 +1753,7 @@
 
   .hero__title {
     font-size: 2.65rem;
+    color: #050505;
   }
 
   .home-services__title {

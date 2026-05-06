@@ -512,27 +512,31 @@ if (manifestoSection && manifestoLines.length > 0) {
 }
 
 export function animatePortalTransition() {
-  const section = document.querySelector(".portal-transition");
-  const sticky = document.querySelector(".portal-transition__sticky");
-  const circle = document.querySelector(".portal-transition__circle");
-  const content = document.querySelector(".portal-transition__content");
+  const section = document.querySelector(".portal-transition") as HTMLElement | null;
+  const circle = document.querySelector(".portal-transition__circle") as SVGCircleElement | null;
+  const content = document.querySelector(".portal-transition__content") as HTMLElement | null;
 
-  if (!section || !sticky || !circle || !content) {
+  if (!section || !circle || !content) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
     return;
   }
 
   const previousTrigger = ScrollTrigger.getById("portal-circle-sticky");
-  previousTrigger?.kill();
+  previousTrigger?.kill(true);
+
+  gsap.killTweensOf([circle, content]);
 
   const ctx = gsap.context(() => {
     const mm = gsap.matchMedia();
 
-    function resetInitialState() {
+    function resetPortalState() {
       gsap.set(circle, {
         attr: {
+          cx: 50,
+          cy: 50,
           r: 0,
         },
+        fill: "#050505",
       });
 
       gsap.set(content, {
@@ -543,30 +547,18 @@ export function animatePortalTransition() {
       });
     }
 
-    function createPortalTimeline({
-      end,
-      finalRadius,
-      shouldPin,
-    }: {
-      end: string;
-      finalRadius: number;
-      shouldPin: boolean;
-    }) {
-      resetInitialState();
+    mm.add("(min-width: 769px)", () => {
+      resetPortalState();
 
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "portal-circle-sticky",
           trigger: section,
           start: "top top",
-          end,
+          end: "center 80%",
           scrub: true,
           markers: false,
           invalidateOnRefresh: true,
-
-          pin: shouldPin ? sticky : false,
-          pinSpacing: false,
-          anticipatePin: shouldPin ? 1 : 0,
         },
       });
 
@@ -595,32 +587,79 @@ export function animatePortalTransition() {
           duration: 0.4,
           ease: "none",
         },
-        0.01
+        0.08
       );
 
       tl.to(circle, {
         attr: {
-          r: finalRadius,
+          r: 80,
         },
         duration: 0.63,
         ease: "none",
       });
-    }
 
-    mm.add("(min-width: 769px)", () => {
-      createPortalTimeline({
-        end: "center 80%",
-        finalRadius: 150,
-        shouldPin: false,
-      });
+      return () => {
+        tl.scrollTrigger?.kill(true);
+        tl.kill();
+      };
     });
 
     mm.add("(max-width: 768px)", () => {
-      createPortalTimeline({
-        end: "bottom bottom",
-        finalRadius: 260,
-        shouldPin: true,
+      resetPortalState();
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "portal-circle-sticky",
+          trigger: section,
+          start: "top top",
+          end: () => `+=${window.innerHeight * 2.4}`,
+          scrub: true,
+          markers: false,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+        },
       });
+
+      tl.to(circle, {
+        attr: {
+          r: 6,
+        },
+        duration: 0.12,
+        ease: "none",
+      });
+
+      tl.to(circle, {
+        attr: {
+          r: 24,
+        },
+        duration: 0.22,
+        ease: "none",
+      });
+
+      tl.to(
+        content,
+        {
+          autoAlpha: 0,
+          scale: 0.72,
+          filter: "blur(8px)",
+          duration: 0.32,
+          ease: "none",
+        },
+        0.32
+      );
+
+      tl.to(circle, {
+        attr: {
+          r: 90,
+        },
+        duration: 0.66,
+        ease: "none",
+      });
+
+      return () => {
+        tl.scrollTrigger?.kill(true);
+        tl.kill();
+      };
     });
 
     requestAnimationFrame(() => {

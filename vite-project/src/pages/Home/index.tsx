@@ -259,20 +259,20 @@ useEffect(() => {
       </section>
 
 <section className="portal-transition">
-  <div className="portal-transition__sticky">
+    <div className="portal-transition__sticky">
     <svg
-  className="portal-transition__circle-svg"
-  viewBox="0 0 100 100"
-  preserveAspectRatio="xMidYMid slice"
-  aria-hidden="true"
->
-  <circle
-    className="portal-transition__circle"
-    cx="50"
-    cy="50"
-    r="0"
-  />
-</svg>
+      className="portal-transition__circle-svg"
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid slice"
+      aria-hidden="true"
+    >
+      <circle
+        className="portal-transition__circle"
+        cx="50"
+        cy="50"
+        r="0"
+      />
+    </svg>
 
     <div className="portal-transition__content">
       <h2>Vestir é atravessar o tempo...</h2>
