@@ -555,11 +555,6 @@ export function animatePortalTransition() {
     mm.add("(min-width: 769px)", () => {
       resetPortalState();
 
-      const moveStickyY = gsap.quickTo(sticky, "y", {
-        duration: 0.18,
-        ease: "power3.out",
-      });
-
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "portal-circle-sticky",
