@@ -1559,12 +1559,13 @@
     position: relative;
     z-index: 20;
 
-    min-height: 100svh;
+    height: 190svh;
+    min-height: 190svh;
 
     background: #f7f6f3;
     color: #111;
 
-    overflow: visible;
+    overflow: hidden;
     isolation: isolate;
   }
 
@@ -1572,10 +1573,10 @@
     position: relative;
 
     width: 100%;
-    height: 100svh;
-    min-height: 100svh;
+    height: 102svh;
+    min-height: 102svh;
 
-    overflow: hidden;
+    overflow: visible;
 
     display: flex;
     align-items: center;
@@ -1591,16 +1592,20 @@
 
   .portal-transition__circle-svg {
     position: absolute;
-    inset: 0;
+    left: 50%;
+    top: 50%;
     z-index: 1;
 
     display: block;
 
-    width: 100%;
-    height: 100%;
+    width: 160vmax;
+    height: 160vmax;
+
+    transform: translate(-50%, -50%);
 
     overflow: visible;
     pointer-events: none;
+    backface-visibility: hidden;
   }
 
   .portal-transition__circle {
@@ -1734,9 +1739,19 @@
     width: 520px;
   }
 
-.portal-transition {
-    height: 190svh;
-    min-height: 190svh;
+ .portal-transition {
+    height: 195svh;
+    min-height: 195svh;
+  }
+
+  .portal-transition__sticky {
+    height: 103svh;
+    min-height: 103svh;
+  }
+
+  .portal-transition__circle-svg {
+    width: 180vmax;
+    height: 180vmax;
   }
 
   .portal-transition__content {
@@ -1746,7 +1761,8 @@
 
   .portal-transition__content h2 {
     font-size: clamp(2.7rem, 18vw, 5rem);
-    color: #050505;
+    line-height: 0.9;
+    letter-spacing: -0.065em;
   }
 }
 

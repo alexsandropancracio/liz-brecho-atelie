@@ -686,7 +686,7 @@ mm.add("(max-width: 768px)", () => {
     circle,
     {
       attr: {
-        r: 140,
+        r: 190,
       },
       duration: 1,
       ease: "none",
