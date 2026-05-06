@@ -703,12 +703,12 @@ mm.add("(max-width: 768px)", () => {
     content,
     {
       autoAlpha: 0,
-      scale: 0.72,
+      scale: 0.20,
       filter: "blur(8px)",
       duration: 0.38,
       ease: "none",
     },
-    0.04
+    0.00
   );
 
   requestAnimationFrame(() => {
