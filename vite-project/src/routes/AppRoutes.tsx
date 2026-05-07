@@ -23,7 +23,7 @@ export function AppRoutes() {
         />
 
         <Route
-          path="/brecho"
+          path="/"
           element={
             <PageRouteWrapper>
               <Brecho />
@@ -32,7 +32,7 @@ export function AppRoutes() {
         />
 
         <Route
-          path="/atelie"
+          path="/"
           element={
             <PageRouteWrapper>
               <Atelie />

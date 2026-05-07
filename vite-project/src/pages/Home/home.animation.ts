@@ -536,33 +536,7 @@ export function animatePortalTransition() {
     ".portal-transition__content h2"
   ) as HTMLElement | null;
 
-  const cta = document.querySelector(
-    ".portal-transition__cta"
-  ) as HTMLElement | null;
-
-  const ctaTitle = document.querySelector(
-    ".portal-transition__cta h2"
-  ) as HTMLElement | null;
-
-  const ctaText = document.querySelector(
-    ".portal-transition__cta p"
-  ) as HTMLElement | null;
-
-  const ctaButton = document.querySelector(
-    ".portal-transition__button"
-  ) as HTMLElement | null;
-
-  if (
-    !section ||
-    !sticky ||
-    !circle ||
-    !content ||
-    !title ||
-    !cta ||
-    !ctaTitle ||
-    !ctaText ||
-    !ctaButton
-  ) {
+  if (!section || !sticky || !circle || !content || !title) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
     return;
   }
@@ -570,16 +544,7 @@ export function animatePortalTransition() {
   const previousTrigger = ScrollTrigger.getById("portal-circle-sticky");
   previousTrigger?.kill(true);
 
-  gsap.killTweensOf([
-    circle,
-    content,
-    sticky,
-    title,
-    cta,
-    ctaTitle,
-    ctaText,
-    ctaButton,
-  ]);
+  gsap.killTweensOf([circle, content, sticky, title]);
 
   const ctx = gsap.context(() => {
     const mm = gsap.matchMedia();
@@ -587,11 +552,6 @@ export function animatePortalTransition() {
     const portalEase = CustomEase.create(
       "lizPortalEase",
       "M0,0 C0.16,0.01 0.23,1 1,1"
-    );
-
-    const ctaEase = CustomEase.create(
-      "lizCtaReveal",
-      "M0,0 C0.19,1 0.22,1 1,1"
     );
 
     function resetPortalState() {
@@ -626,69 +586,22 @@ export function animatePortalTransition() {
         y: 0,
         clearProps: "transform",
       });
-
-      gsap.set(cta, {
-        autoAlpha: 0,
-        y: 38,
-        z: -120,
-        scale: 0.96,
-        rotateX: 8,
-        filter: "blur(16px)",
-        pointerEvents: "none",
-        transformPerspective: 1200,
-        transformOrigin: "center center",
-      });
-
-      gsap.set([ctaTitle, ctaText, ctaButton], {
-        autoAlpha: 0,
-        y: 34,
-        z: -80,
-        rotateX: 10,
-        filter: "blur(14px)",
-        transformPerspective: 1200,
-        transformOrigin: "center center",
-      });
     }
 
     /*
       DESKTOP
-      Mantém o comportamento original, mas adiciona uma segunda cena
-      para a CTA aparecer depois que o círculo domina a tela.
+      Mantém o comportamento cinematográfico do círculo.
+      A CTA não fica mais aqui.
     */
     mm.add("(min-width: 769px)", () => {
       resetPortalState();
-
-      gsap.set([ctaTitle, ctaText, ctaButton], {
-  y: 0,
-  z: 0,
-  rotateX: 0,
-  scale: 1,
-});
-
-gsap.set(ctaTitle, {
-  autoAlpha: 0,
-  scale: 0.985,
-  filter: "blur(14px)",
-});
-
-gsap.set(ctaText, {
-  autoAlpha: 0,
-  scale: 0.99,
-  filter: "blur(10px)",
-});
-
-gsap.set(ctaButton, {
-  autoAlpha: 0,
-  scale: 0.96,
-  filter: "blur(8px)",
-});
 
       const tl = gsap.timeline({
         scrollTrigger: {
           id: "portal-circle-sticky",
           trigger: section,
           start: "top top",
-          end: "center 80%",
+          end: () => `+=${window.innerHeight * 0.75}`,
           scrub: true,
           markers: false,
           invalidateOnRefresh: true,
@@ -699,26 +612,14 @@ gsap.set(ctaButton, {
         circle,
         {
           attr: {
-            r: 3,
+            r: 100,
           },
-          duration: 0.1,
+          duration: 1,
           ease: "none",
         },
         0
       );
-
-      tl.to(
-        circle,
-        {
-          attr: {
-            r: 18,
-          },
-          duration: 0.22,
-          ease: "none",
-        },
-        0.1
-      );
-
+      
       tl.to(
         content,
         {
@@ -747,88 +648,6 @@ gsap.set(ctaButton, {
         0.08
       );
 
-      tl.to(
-        circle,
-        {
-          attr: {
-            r: 82,
-          },
-          duration: 0.58,
-          ease: portalEase,
-        },
-        0.28
-      );
-
-      tl.to(
-        cta,
-        {
-          autoAlpha: 1,
-          y: 0,
-          z: 0,
-          scale: 1,
-          rotateX: 0,
-          filter: "blur(0px)",
-          duration: 0.36,
-          ease: ctaEase,
-        },
-        0.68
-      );
-
-      tl.to(
-  cta,
-  {
-    autoAlpha: 1,
-    pointerEvents: "auto",
-    duration: 0.08,
-    ease: "none",
-  },
-  0.38
-);
-
-tl.fromTo(
-  ctaTitle,
-  {
-    autoAlpha: 0,
-    filter: "blur(14px)",
-  },
-  {
-    autoAlpha: 1,
-    filter: "blur(0px)",
-    duration: 0.18,
-    ease: "none",
-  },
-  0.44
-);
-
-tl.fromTo(
-  ctaText,
-  {
-    autoAlpha: 0,
-    filter: "blur(10px)",
-  },
-  {
-    autoAlpha: 1,
-    filter: "blur(0px)",
-    duration: 0.18,
-    ease: "none",
-  },
-  0.62
-);
-
-tl.fromTo(
-  ctaButton,
-  {
-    autoAlpha: 0,
-    filter: "blur(8px)",
-  },
-  {
-    autoAlpha: 1,
-    filter: "blur(0px)",
-    duration: 0.18,
-    ease: "none",
-  },
-  0.78  
-);
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -842,205 +661,360 @@ tl.fromTo(
 
     /*
       MOBILE
-      Continua sem pin, sem fixed e sem sticky real.
-      A camada visual ainda é movida com quickSetter.
+      Continua com a abordagem que funcionou:
+      sem pin, sem sticky real, sem fixed.
+      A section agora cuida só do círculo e do texto inicial.
     */
-mm.add("(max-width: 768px)", () => {
-  resetPortalState();
+    mm.add("(max-width: 768px)", () => {
+      resetPortalState();
 
-  gsap.set(cta, {
-  autoAlpha: 0,
-  y: 0,
-  z: 0,
-  rotateX: 0,
-  scale: 1,
-  filter: "blur(0px)",
-  pointerEvents: "none",
-});
+      const mobileEnd = () => {
+        const scrollDistance = section.offsetHeight - window.innerHeight;
+        return `+=${scrollDistance}`;
+      };
 
-gsap.set(ctaTitle, {
-  autoAlpha: 0,
-  y: 0,
-  z: 0,
-  rotateX: 0,
-  scale: 1,
-  filter: "blur(14px)",
-});
+      const setStickyY = gsap.quickSetter(sticky, "y", "px");
 
-gsap.set(ctaText, {
-  autoAlpha: 0,
-  y: 0,
-  z: 0,
-  rotateX: 0,
-  scale: 1,
-  filter: "blur(10px)",
-});
+      const updateStickyPosition = (self: ScrollTrigger) => {
+        const distance = self.scroll() - self.start;
+        const maxDistance = self.end - self.start;
 
-gsap.set(ctaButton, {
-  autoAlpha: 0,
-  y: 0,
-  z: 0,
-  rotateX: 0,
-  scale: 1,
-  filter: "blur(8px)",
-});
+        const rawY = gsap.utils.clamp(0, maxDistance, distance);
+        const y = Math.round(rawY);
 
-  const mobileEnd = () => {
-    const scrollDistance = section.offsetHeight - window.innerHeight;
-    return `+=${scrollDistance}`;
-  };
+        setStickyY(y);
+      };
 
-  const setStickyY = gsap.quickSetter(sticky, "y", "px");
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "portal-circle-sticky",
+          trigger: section,
+          start: "top top",
+          end: mobileEnd,
+          scrub: true,
+          markers: false,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
 
-  const updateStickyPosition = (self: ScrollTrigger) => {
-    const distance = self.scroll() - self.start;
-    const maxDistance = self.end - self.start;
+          onUpdate: updateStickyPosition,
+          onRefresh: updateStickyPosition,
 
-    const rawY = gsap.utils.clamp(0, maxDistance, distance);
-    const y = Math.round(rawY);
+          onLeaveBack: () => {
+            setStickyY(0);
+          },
+        },
+      });
 
-    setStickyY(y);
-  };
+      tl.to(
+        circle,
+        {
+          attr: {
+            r: 190,
+          },
+          duration: 1,
+          ease: "none",
+        },
+        0
+      );
 
-  const tl = gsap.timeline({
-    scrollTrigger: {
-      id: "portal-circle-sticky",
-      trigger: section,
-      start: "top top",
-      end: mobileEnd,
-      scrub: true,
-      markers: false,
-      invalidateOnRefresh: true,
-      anticipatePin: 1,
+      tl.to(
+        title,
+        {
+          autoAlpha: 0,
+          scale: 0.12,
+          y: -18,
+          filter: "blur(10px)",
+          duration: 0.46,
+          ease: "none",
+        },
+        0
+      );
 
-      onUpdate: updateStickyPosition,
-      onRefresh: updateStickyPosition,
+      tl.to(
+        content,
+        {
+          autoAlpha: 0,
+          scale: 0.22,
+          y: -12,
+          filter: "blur(10px)",
+          duration: 0.42,
+          ease: "none",
+        },
+        0
+      );
 
-      onLeaveBack: () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+        });
+      });
+
+      document.fonts?.ready.then(() => {
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
         setStickyY(0);
-      },
-    },
-  });
 
-  /*
-    MOBILE REFINADO:
-    O círculo preenche a tela mais cedo.
-    Depois ele continua crescendo levemente para garantir que não apareça sobra branca.
-  */
-  tl.to(
-  circle,
-  {
-    attr: {
-      r: 190,
-    },
-    duration: 1,
-    ease: "none",
-  },
-  0
-);
-
-tl.to(
-  title,
-  {
-    autoAlpha: 0,
-    scale: 0.12,
-    filter: "blur(10px)",
-    duration: 0.38,
-    ease: "none",
-  },
-  0
-);
-
-tl.to(
-  content,
-  {
-    autoAlpha: 0,
-    scale: 0.22,
-    filter: "blur(10px)",
-    duration: 0.36,
-    ease: "none",
-  },
-  0
-);
-
-tl.to(
-  cta,
-  {
-    autoAlpha: 1,
-    pointerEvents: "auto",
-    duration: 0.08,
-    ease: "none",
-  },
-  0.38
-);
-
-tl.fromTo(
-  ctaTitle,
-  {
-    autoAlpha: 0,
-    filter: "blur(14px)",
-  },
-  {
-    autoAlpha: 1,
-    filter: "blur(0px)",
-    duration: 0.18,
-    ease: "none",
-  },
-  0.44
-);
-
-tl.fromTo(
-  ctaText,
-  {
-    autoAlpha: 0,
-    filter: "blur(10px)",
-  },
-  {
-    autoAlpha: 1,
-    filter: "blur(0px)",
-    duration: 0.18,
-    ease: "none",
-  },
-  0.62
-);
-
-tl.fromTo(
-  ctaButton,
-  {
-    autoAlpha: 0,
-    filter: "blur(8px)",
-  },
-  {
-    autoAlpha: 1,
-    filter: "blur(0px)",
-    duration: 0.18,
-    ease: "none",
-  },
-  0.78
-);
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
+        tl.scrollTrigger?.kill(true);
+        tl.kill();
+      };
     });
-  });
-
-  document.fonts?.ready.then(() => {
-    ScrollTrigger.refresh();
-  });
-
-  return () => {
-    setStickyY(0);
-
-    tl.scrollTrigger?.kill(true);
-    tl.kill();
-  };
-});
 
     return () => {
       mm.revert();
     };
   }, section);
+
+  return () => {
+    ctx.revert();
+  };
+}
+
+export function animatePortalCta() {
+  const cta = document.querySelector(
+    ".portal-transition__cta"
+  ) as HTMLElement | null;
+
+  const ctaTitle = document.querySelector(
+    ".portal-transition__cta-title"
+  ) as HTMLElement | null;
+
+  const ctaText = document.querySelector(
+    ".portal-transition__cta p"
+  ) as HTMLElement | null;
+
+  const ctaButton = document.querySelector(
+    ".portal-transition__button"
+  ) as HTMLElement | null;
+
+  const ctaTitleLines = gsap.utils.toArray<HTMLElement>(
+    ".portal-transition__cta-line > span"
+  );
+
+  if (!cta || !ctaTitle || !ctaText || !ctaButton) {
+    console.warn("Portal CTA: elementos não encontrados.");
+    return;
+  }
+
+  const previousTrigger = ScrollTrigger.getById("portal-cta-reveal");
+  previousTrigger?.kill(true);
+
+  gsap.killTweensOf([cta, ctaTitle, ctaTitleLines, ctaText, ctaButton]);
+
+  const ctx = gsap.context(() => {
+    const mm = gsap.matchMedia();
+
+    const ctaEase = CustomEase.create(
+      "lizCtaReveal",
+      "M0,0 C0.19,1 0.22,1 1,1"
+    );
+
+    /*
+      DESKTOP
+      A CTA entra com movimento mais cinematográfico.
+    */
+    mm.add("(min-width: 769px)", () => {
+      gsap.set(cta, {
+        autoAlpha: 1,
+        pointerEvents: "auto",
+      });
+
+      gsap.set(ctaTitle, {
+        autoAlpha: 1,
+      });
+
+      gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+        autoAlpha: 0,
+        y: 38,
+        z: -80,
+        rotateX: 8,
+        scale: 0.96,
+        filter: "blur(16px)",
+        transformPerspective: 1200,
+        transformOrigin: "center center",
+      });
+
+      gsap.set(ctaText, {
+        autoAlpha: 0,
+        y: 28,
+        z: -60,
+        rotateX: 6,
+        filter: "blur(12px)",
+        transformPerspective: 1200,
+        transformOrigin: "center center",
+      });
+
+      gsap.set(ctaButton, {
+        autoAlpha: 0,
+        y: 22,
+        z: -40,
+        scale: 0.92,
+        filter: "blur(10px)",
+        transformPerspective: 1200,
+        transformOrigin: "center center",
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "portal-cta-reveal",
+          trigger: cta,
+          start: "top 72%",
+          toggleActions: "play none none reverse",
+          invalidateOnRefresh: true,
+        },
+      });
+
+      tl.to(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+        autoAlpha: 1,
+        y: 0,
+        z: 0,
+        rotateX: 0,
+        scale: 1,
+        filter: "blur(0px)",
+        duration: 0.72,
+        stagger: ctaTitleLines.length ? 0.08 : 0,
+        ease: ctaEase,
+      });
+
+      tl.to(
+        ctaText,
+        {
+          autoAlpha: 1,
+          y: 0,
+          z: 0,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 0.58,
+          ease: ctaEase,
+        },
+        0.2
+      );
+
+      tl.to(
+        ctaButton,
+        {
+          autoAlpha: 1,
+          y: 0,
+          z: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.5,
+          ease: "back.out(1.08)",
+        },
+        0.38
+      );
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        tl.scrollTrigger?.kill(true);
+        tl.kill();
+      };
+    });
+
+    /*
+      MOBILE
+      A CTA fica mais estável:
+      sem 3D pesado, sem scrub, sem sensação de acompanhar o scroll.
+    */
+    mm.add("(max-width: 768px)", () => {
+      gsap.set(cta, {
+        autoAlpha: 1,
+        pointerEvents: "auto",
+      });
+
+      gsap.set(ctaTitle, {
+        autoAlpha: 1,
+      });
+
+      gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+        autoAlpha: 0,
+        y: 18,
+        scale: 0.985,
+        filter: "blur(12px)",
+      });
+
+      gsap.set(ctaText, {
+        autoAlpha: 0,
+        y: 14,
+        scale: 0.99,
+        filter: "blur(10px)",
+      });
+
+      gsap.set(ctaButton, {
+        autoAlpha: 0,
+        y: 12,
+        scale: 0.96,
+        filter: "blur(8px)",
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          id: "portal-cta-reveal",
+          trigger: cta,
+          start: "top 78%",
+          toggleActions: "play none none reverse",
+          invalidateOnRefresh: true,
+        },
+      });
+
+      tl.to(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
+        duration: 0.62,
+        stagger: ctaTitleLines.length ? 0.07 : 0,
+        ease: ctaEase,
+      });
+
+      tl.to(
+        ctaText,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.5,
+          ease: ctaEase,
+        },
+        0.18
+      );
+
+      tl.to(
+        ctaButton,
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          filter: "blur(0px)",
+          duration: 0.42,
+          ease: "back.out(1.05)",
+        },
+        0.34
+      );
+
+      requestAnimationFrame(() => {
+        ScrollTrigger.refresh();
+      });
+
+      document.fonts?.ready.then(() => {
+        ScrollTrigger.refresh();
+      });
+
+      return () => {
+        tl.scrollTrigger?.kill(true);
+        tl.kill();
+      };
+    });
+
+    return () => {
+      mm.revert();
+    };
+  }, cta);
 
   return () => {
     ctx.revert();

@@ -1038,7 +1038,7 @@
     Essa altura controla o "tempo" da animação.
     Quanto maior, mais suave/lenta fica.
   */
-  height: 260vh;
+  height: 170vh;
 
   background: #f7f6f3;
   color: #111111;
@@ -1057,6 +1057,8 @@
   transform-style: preserve-3d;
   backface-visibility: hidden;
 }
+
+
 
 .portal-transition__sticky {
   position: sticky;
@@ -1124,31 +1126,31 @@
   letter-spacing: -0.07em;
 }
 
+
+
 .portal-transition__cta {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
+  position: relative;
+  z-index: 21;
+
+  min-height: 100svh;
+  width: 100%;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  width: min(100%, 980px);
-  margin: 0 auto;
-  padding: clamp(5rem, 5vw, 5rem);
+  padding: clamp(5rem, 8vw, 8rem) clamp(1.5rem, 5vw, 5rem);
 
   text-align: center;
   color: #f7f6f3;
+  background: #050505;
 
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  will-change: transform, opacity, filter;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.portal-transition__cta h2 {
+.portal-transition__cta-title {
   max-width: 880px;
   margin: 0;
 
@@ -1159,6 +1161,18 @@
   letter-spacing: -0.075em;
 
   color: #f7f6f3;
+}
+
+.portal-transition__cta-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+.portal-transition__cta-line > span {
+  display: block;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
 }
 
 .portal-transition__cta p {
@@ -1771,8 +1785,10 @@
     position: relative;
     z-index: 20;
 
-    height: 190svh;
-    min-height: 190svh;
+    height: 125svh;
+    min-height: 125svh;
+    margin: 0;
+    padding: 0;
 
     background: #f7f6f3;
     color: #111;
@@ -1858,18 +1874,33 @@
   }
 
   .portal-transition__cta {
-  width: 100%;
-  padding: 0 24px;
+    position: relative;
+    z-index: 21;
 
-  transform: translate3d(0, 22px, 0) scale(0.98);
-}
+    width: 100vw;
+    max-width: 100vw;
+    min-height: 100svh;
 
-.portal-transition__eyebrow {
-  margin-bottom: 1rem;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    margin-top: -50px;
 
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-}
+    padding: 5rem 24px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    color: #f7f6f3;
+    background: #050505;
+
+    overflow: hidden;
+    isolation: isolate;
+  }
+
 
 .portal-transition__cta h2 {
   font-size: clamp(3rem, 15vw, 5.8rem);
@@ -1988,8 +2019,8 @@
   }
 
  .portal-transition {
-    height: 195svh;
-    min-height: 195svh;
+    height: 128svh;
+    min-height: 128svh;
   }
 
   .portal-transition__sticky {

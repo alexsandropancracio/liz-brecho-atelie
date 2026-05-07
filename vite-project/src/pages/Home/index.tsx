@@ -2,7 +2,7 @@ import "./home.css";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { animateHomeHero, animatePortalTransition } from "./home.animation";
+import { animateHomeHero, animatePortalTransition, animatePortalCta } from "./home.animation";
 import { ScrollTrigger } from "../../animations/gsap";
 import { useRouteTransition } from "../../routes/RouteTransitionContext";
 
@@ -74,6 +74,7 @@ useEffect(() => {
   });
 
   const cleanupPortalTransition = animatePortalTransition();
+  const cleanupPortalCta = animatePortalCta();
 
   window.requestAnimationFrame(() => {
     ScrollTrigger.refresh();
@@ -82,6 +83,7 @@ useEffect(() => {
   return () => {
     cleanupHomeHero?.();
     cleanupPortalTransition?.();
+    cleanupPortalCta?.();
   };
 }, []);
 
@@ -259,7 +261,7 @@ useEffect(() => {
       </section>
 
 <section className="portal-transition">
-    <div className="portal-transition__sticky">
+  <div className="portal-transition__sticky">
     <svg
       className="portal-transition__circle-svg"
       viewBox="0 0 100 100"
@@ -277,34 +279,34 @@ useEffect(() => {
     <div className="portal-transition__content">
       <h2>Vestir é atravessar o tempo...</h2>
     </div>
-
-    <div className="portal-transition__cta">
-      <h2 className="portal-transition__cta-title">
-        <span className="portal-transition__cta-line">
-          <span>Então, não perca tempo.</span>
-        </span>
-
-        <span className="portal-transition__cta-line">
-          <span>Oportunidades não esperam.</span>
-        </span>
-      </h2>
-
-      <p>
-        Consulte o catálogo, veja a disponibilidade ou fale conosco para
-        encomendas e visitas à loja.
-      </p>
-
-<a
-  className="portal-transition__button"
-  href="https://wa.me/5500000000000"
-  target="_blank"
-  rel="noreferrer"
-  aria-label="Falar com a LIZ pelo WhatsApp"
->
-  <span>Fale Conosco</span>
-</a>
-    </div>
   </div>
+</section>
+
+<section className="portal-transition__cta">
+  <h2 className="portal-transition__cta-title">
+    <span className="portal-transition__cta-line">
+      <span>Então, não perca tempo.</span>
+    </span>
+
+    <span className="portal-transition__cta-line">
+      <span>Oportunidades não esperam.</span>
+    </span>
+  </h2>
+
+  <p>
+    Consulte o catálogo, veja a disponibilidade ou fale conosco para encomendas
+    e visitas à loja.
+  </p>
+
+  <a
+    className="portal-transition__button"
+    href="https://wa.me/5500000000000"
+    target="_blank"
+    rel="noreferrer"
+    aria-label="Falar com a LIZ pelo WhatsApp"
+  >
+    <span>Fale Conosco</span>
+  </a>
 </section>
 
 
