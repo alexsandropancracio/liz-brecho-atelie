@@ -1047,6 +1047,17 @@
   isolation: isolate;
 }
 
+.portal-transition__content,
+.portal-transition__content h2,
+.portal-transition__cta,
+.portal-transition__eyebrow,
+.portal-transition__cta h2,
+.portal-transition__cta p,
+.portal-transition__button {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
 .portal-transition__sticky {
   position: sticky;
   top: 0;
@@ -1060,6 +1071,8 @@
 
   background: #f7f6f3;
   color: #111111;
+  perspective: 1200px;
+  transform-style: preserve-3d;
 }
 
 .portal-transition__circle-svg {
@@ -1109,6 +1122,205 @@
   font-weight: 400;
   line-height: 0.9;
   letter-spacing: -0.07em;
+}
+
+.portal-transition__cta {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding: clamp(5rem, 5vw, 5rem);
+
+  text-align: center;
+  color: #f7f6f3;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  will-change: transform, opacity, filter;
+}
+
+.portal-transition__cta h2 {
+  max-width: 880px;
+  margin: 0;
+
+  font-family: "Noto Serif", serif;
+  font-size: clamp(4rem, 4vw, 5rem);
+  font-weight: 400;
+  line-height: 0.88;
+  letter-spacing: -0.075em;
+
+  color: #f7f6f3;
+}
+
+.portal-transition__cta p {
+  max-width: 560px;
+  margin: clamp(1.4rem, 3vw, 2.2rem) auto 0;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+  font-weight: 300;
+  line-height: 1.8;
+
+  color: rgba(247, 246, 243, 0.72);
+}
+
+@property --liz-border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.portal-transition__button {
+  --liz-border-angle: 0deg;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: clamp(1.8rem, 3vw, 2.6rem);
+  padding: 1rem 1.7rem;
+
+  border: 1px solid transparent;
+  border-radius: 0;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  color: #f7f6f3;
+
+  background:
+    linear-gradient(rgba(5, 5, 5, 0.96), rgba(5, 5, 5, 0.96)) padding-box,
+    conic-gradient(
+      from var(--liz-border-angle),
+      rgba(247, 246, 243, 0.14),
+      rgba(247, 246, 243, 0.18),
+      rgba(247, 246, 243, 0.8),
+      rgba(247, 246, 243, 0.18),
+      rgba(247, 246, 243, 0.14)
+    ) border-box;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(247, 246, 243, 0.06),
+    0 0 0 rgba(247, 246, 243, 0);
+
+  will-change: transform, opacity, filter;
+
+  animation: lizButtonBorderRotate 4.8s linear infinite;
+
+  transition:
+    transform 0.45s cubic-bezier(0.19, 1, 0.22, 1),
+    color 0.45s cubic-bezier(0.19, 1, 0.22, 1),
+    box-shadow 0.45s cubic-bezier(0.19, 1, 0.22, 1),
+    background 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.portal-transition__button span {
+  position: relative;
+  z-index: 3;
+}
+
+/* Fundo claro que sobe no hover */
+.portal-transition__button::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 1;
+
+  height: 0%;
+
+  background: #f7f6f3;
+
+  transition: height 0.48s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Brilho diagonal no hover */
+.portal-transition__button::after {
+  content: "";
+  position: absolute;
+  top: -80%;
+  left: -60%;
+  z-index: 2;
+
+  width: 42%;
+  height: 260%;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.46),
+    transparent
+  );
+
+  transform: rotate(18deg) translateX(-140%);
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.portal-transition__button:hover {
+  transform: translateY(-4px);
+  color: #050505;
+
+  background:
+    linear-gradient(rgba(5, 5, 5, 0.96), rgba(5, 5, 5, 0.96)) padding-box,
+    conic-gradient(
+      from var(--liz-border-angle),
+      rgba(247, 246, 243, 0.28),
+      rgba(247, 246, 243, 0.42),
+      rgba(247, 246, 243, 1),
+      rgba(247, 246, 243, 0.42),
+      rgba(247, 246, 243, 0.28)
+    ) border-box;
+
+  box-shadow:
+    inset 0 0 0 1px rgba(247, 246, 243, 0.92),
+    0 22px 70px rgba(247, 246, 243, 0.16);
+}
+
+.portal-transition__button:hover::before {
+  height: 100%;
+}
+
+.portal-transition__button:hover::after {
+  opacity: 1;
+  animation: lizButtonShine 0.85s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+@keyframes lizButtonBorderRotate {
+  from {
+    --liz-border-angle: 0deg;
+  }
+
+  to {
+    --liz-border-angle: 360deg;
+  }
+}
+
+@keyframes lizButtonShine {
+  from {
+    transform: rotate(18deg) translateX(-140%);
+  }
+
+  to {
+    transform: rotate(18deg) translateX(420%);
+  }
 }
 
 
@@ -1645,6 +1857,42 @@
     transform: translateZ(0);
   }
 
+  .portal-transition__cta {
+  width: 100%;
+  padding: 0 24px;
+
+  transform: translate3d(0, 22px, 0) scale(0.98);
+}
+
+.portal-transition__eyebrow {
+  margin-bottom: 1rem;
+
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+}
+
+.portal-transition__cta h2 {
+  font-size: clamp(3rem, 15vw, 5.8rem);
+  line-height: 0.9;
+  letter-spacing: -0.065em;
+}
+
+.portal-transition__cta p {
+  max-width: 34rem;
+  margin-top: 1.35rem;
+
+  font-size: 0.92rem;
+  line-height: 1.75;
+}
+
+.portal-transition__button {
+  margin-top: 1.8rem;
+  padding: 0.9rem 1.25rem;
+
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+}
+
 }
 
 @media (max-width: 480px) {
@@ -1763,6 +2011,25 @@
     font-size: clamp(2.7rem, 18vw, 5rem);
     line-height: 0.9;
     letter-spacing: -0.065em;
+  }
+
+  .portal-transition__cta {
+    padding: 0 18px;
+  }
+
+  .portal-transition__cta h2 {
+    font-size: clamp(1rem, 10vw, 4.7rem);
+    line-height: 0.92;
+  }
+
+  .portal-transition__cta p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .portal-transition__button {
+    width: 100%;
+    max-width: 280px;
   }
 }
 

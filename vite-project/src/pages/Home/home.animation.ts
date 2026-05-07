@@ -533,10 +533,36 @@ export function animatePortalTransition() {
   ) as HTMLElement | null;
 
   const title = document.querySelector(
-  ".portal-transition__content h2"
+    ".portal-transition__content h2"
   ) as HTMLElement | null;
 
-  if (!section || !sticky || !circle || !content || !title) {
+  const cta = document.querySelector(
+    ".portal-transition__cta"
+  ) as HTMLElement | null;
+
+  const ctaTitle = document.querySelector(
+    ".portal-transition__cta h2"
+  ) as HTMLElement | null;
+
+  const ctaText = document.querySelector(
+    ".portal-transition__cta p"
+  ) as HTMLElement | null;
+
+  const ctaButton = document.querySelector(
+    ".portal-transition__button"
+  ) as HTMLElement | null;
+
+  if (
+    !section ||
+    !sticky ||
+    !circle ||
+    !content ||
+    !title ||
+    !cta ||
+    !ctaTitle ||
+    !ctaText ||
+    !ctaButton
+  ) {
     console.warn("Portal SVG circle transition: elementos não encontrados.");
     return;
   }
@@ -544,46 +570,118 @@ export function animatePortalTransition() {
   const previousTrigger = ScrollTrigger.getById("portal-circle-sticky");
   previousTrigger?.kill(true);
 
-  gsap.killTweensOf([circle, content, sticky]);
+  gsap.killTweensOf([
+    circle,
+    content,
+    sticky,
+    title,
+    cta,
+    ctaTitle,
+    ctaText,
+    ctaButton,
+  ]);
 
   const ctx = gsap.context(() => {
     const mm = gsap.matchMedia();
 
-  function resetPortalState() {
-    gsap.set(circle, {
-      attr: {
-        cx: 50,
-        cy: 50,
-        r: 0,
-      },
-      fill: "#050505",
-    });
+    const portalEase = CustomEase.create(
+      "lizPortalEase",
+      "M0,0 C0.16,0.01 0.23,1 1,1"
+    );
 
-    gsap.set(content, {
-      autoAlpha: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-    });
+    const ctaEase = CustomEase.create(
+      "lizCtaReveal",
+      "M0,0 C0.19,1 0.22,1 1,1"
+    );
 
-    gsap.set(title, {
-      autoAlpha: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-    });
+    function resetPortalState() {
+      gsap.set(circle, {
+        attr: {
+          cx: 50,
+          cy: 50,
+          r: 0,
+        },
+        fill: "#050505",
+      });
 
-    gsap.set(sticky, {
-      y: 0,
-      clearProps: "transform",
-    });
-  }
+      gsap.set(content, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        filter: "blur(0px)",
+      });
+
+      gsap.set(title, {
+        autoAlpha: 1,
+        y: 0,
+        scale: 1,
+        rotateX: 0,
+        z: 0,
+        filter: "blur(0px)",
+        transformPerspective: 1000,
+        transformOrigin: "center center",
+      });
+
+      gsap.set(sticky, {
+        y: 0,
+        clearProps: "transform",
+      });
+
+      gsap.set(cta, {
+        autoAlpha: 0,
+        y: 38,
+        z: -120,
+        scale: 0.96,
+        rotateX: 8,
+        filter: "blur(16px)",
+        pointerEvents: "none",
+        transformPerspective: 1200,
+        transformOrigin: "center center",
+      });
+
+      gsap.set([ctaTitle, ctaText, ctaButton], {
+        autoAlpha: 0,
+        y: 34,
+        z: -80,
+        rotateX: 10,
+        filter: "blur(14px)",
+        transformPerspective: 1200,
+        transformOrigin: "center center",
+      });
+    }
+
     /*
       DESKTOP
-      Mantém o comportamento original.
+      Mantém o comportamento original, mas adiciona uma segunda cena
+      para a CTA aparecer depois que o círculo domina a tela.
     */
     mm.add("(min-width: 769px)", () => {
       resetPortalState();
+
+      gsap.set([ctaTitle, ctaText, ctaButton], {
+  y: 0,
+  z: 0,
+  rotateX: 0,
+  scale: 1,
+});
+
+gsap.set(ctaTitle, {
+  autoAlpha: 0,
+  scale: 0.985,
+  filter: "blur(14px)",
+});
+
+gsap.set(ctaText, {
+  autoAlpha: 0,
+  scale: 0.99,
+  filter: "blur(10px)",
+});
+
+gsap.set(ctaButton, {
+  autoAlpha: 0,
+  scale: 0.96,
+  filter: "blur(8px)",
+});
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -597,41 +695,140 @@ export function animatePortalTransition() {
         },
       });
 
-      tl.to(circle, {
-        attr: {
-          r: 3,
+      tl.to(
+        circle,
+        {
+          attr: {
+            r: 3,
+          },
+          duration: 0.1,
+          ease: "none",
         },
-        duration: 0.12,
-        ease: "none",
-      });
+        0
+      );
 
-      tl.to(circle, {
-        attr: {
-          r: 18,
+      tl.to(
+        circle,
+        {
+          attr: {
+            r: 18,
+          },
+          duration: 0.22,
+          ease: "none",
         },
-        duration: 0.25,
-        ease: "none",
-      });
+        0.1
+      );
 
       tl.to(
         content,
         {
           autoAlpha: 0,
-          scale: 0.1,
-          filter: "blur(10px)",
+          scale: 0.12,
+          y: -24,
+          filter: "blur(12px)",
           duration: 0.4,
           ease: "none",
         },
         0.08
       );
 
-      tl.to(circle, {
-        attr: {
-          r: 80,
+      tl.to(
+        title,
+        {
+          autoAlpha: 0,
+          scale: 0.12,
+          y: -34,
+          z: -120,
+          rotateX: -10,
+          filter: "blur(14px)",
+          duration: 0.42,
+          ease: "none",
         },
-        duration: 0.63,
-        ease: "none",
-      });
+        0.08
+      );
+
+      tl.to(
+        circle,
+        {
+          attr: {
+            r: 82,
+          },
+          duration: 0.58,
+          ease: portalEase,
+        },
+        0.28
+      );
+
+      tl.to(
+        cta,
+        {
+          autoAlpha: 1,
+          y: 0,
+          z: 0,
+          scale: 1,
+          rotateX: 0,
+          filter: "blur(0px)",
+          duration: 0.36,
+          ease: ctaEase,
+        },
+        0.68
+      );
+
+      tl.to(
+  cta,
+  {
+    autoAlpha: 1,
+    pointerEvents: "auto",
+    duration: 0.08,
+    ease: "none",
+  },
+  0.38
+);
+
+tl.fromTo(
+  ctaTitle,
+  {
+    autoAlpha: 0,
+    filter: "blur(14px)",
+  },
+  {
+    autoAlpha: 1,
+    filter: "blur(0px)",
+    duration: 0.18,
+    ease: "none",
+  },
+  0.44
+);
+
+tl.fromTo(
+  ctaText,
+  {
+    autoAlpha: 0,
+    filter: "blur(10px)",
+  },
+  {
+    autoAlpha: 1,
+    filter: "blur(0px)",
+    duration: 0.18,
+    ease: "none",
+  },
+  0.62
+);
+
+tl.fromTo(
+  ctaButton,
+  {
+    autoAlpha: 0,
+    filter: "blur(8px)",
+  },
+  {
+    autoAlpha: 1,
+    filter: "blur(0px)",
+    duration: 0.18,
+    ease: "none",
+  },
+  0.78  
+);
 
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
@@ -645,11 +842,48 @@ export function animatePortalTransition() {
 
     /*
       MOBILE
-      Simula a viewport parada movendo a camada visual junto com o scroll.
-      Esse foi o caminho que funcionou no seu projeto.
+      Continua sem pin, sem fixed e sem sticky real.
+      A camada visual ainda é movida com quickSetter.
     */
 mm.add("(max-width: 768px)", () => {
   resetPortalState();
+
+  gsap.set(cta, {
+  autoAlpha: 0,
+  y: 0,
+  z: 0,
+  rotateX: 0,
+  scale: 1,
+  filter: "blur(0px)",
+  pointerEvents: "none",
+});
+
+gsap.set(ctaTitle, {
+  autoAlpha: 0,
+  y: 0,
+  z: 0,
+  rotateX: 0,
+  scale: 1,
+  filter: "blur(14px)",
+});
+
+gsap.set(ctaText, {
+  autoAlpha: 0,
+  y: 0,
+  z: 0,
+  rotateX: 0,
+  scale: 1,
+  filter: "blur(10px)",
+});
+
+gsap.set(ctaButton, {
+  autoAlpha: 0,
+  y: 0,
+  z: 0,
+  rotateX: 0,
+  scale: 1,
+  filter: "blur(8px)",
+});
 
   const mobileEnd = () => {
     const scrollDistance = section.offsetHeight - window.innerHeight;
@@ -658,14 +892,14 @@ mm.add("(max-width: 768px)", () => {
 
   const setStickyY = gsap.quickSetter(sticky, "y", "px");
 
- const updateStickyPosition = (self: ScrollTrigger) => {
-  const distance = self.scroll() - self.start;
-  const maxDistance = self.end - self.start;
+  const updateStickyPosition = (self: ScrollTrigger) => {
+    const distance = self.scroll() - self.start;
+    const maxDistance = self.end - self.start;
 
-  const rawY = gsap.utils.clamp(0, maxDistance, distance);
-  const y = Math.round(rawY);
+    const rawY = gsap.utils.clamp(0, maxDistance, distance);
+    const y = Math.round(rawY);
 
-  setStickyY(y);
+    setStickyY(y);
   };
 
   const tl = gsap.timeline({
@@ -689,50 +923,101 @@ mm.add("(max-width: 768px)", () => {
   });
 
   /*
-    Agora o círculo cresce de forma contínua durante a timeline inteira.
-    Ele não vai mais "parar no meio".
+    MOBILE REFINADO:
+    O círculo preenche a tela mais cedo.
+    Depois ele continua crescendo levemente para garantir que não apareça sobra branca.
   */
   tl.to(
-    circle,
-    {
-      attr: {
-        r: 190,
-      },
-      duration: 1,
-      ease: "none",
-    },
-    0
-  );
-
-  tl.to(
-  title,
+  circle,
   {
-    autoAlpha: 0,
-    scale: 0.10,
-    y: -24,
-    filter: "blur(10px)",
-    duration: 0.5,
+    attr: {
+      r: 190,
+    },
+    duration: 1,
     ease: "none",
   },
   0
 );
 
-  /*
-    Agora o título começa a animar logo quando o círculo começa a crescer.
-    Se quiser começar instantaneamente, use 0.
-    Se quiser um pequeno respiro, use 0.04 ou 0.06.
-  */
-  tl.to(
-    content,
-    {
-      autoAlpha: 0,
-      scale: 0.20,
-      filter: "blur(8px)",
-      duration: 0.38,
-      ease: "none",
-    },
-    0.00
-  );
+tl.to(
+  title,
+  {
+    autoAlpha: 0,
+    scale: 0.12,
+    filter: "blur(10px)",
+    duration: 0.38,
+    ease: "none",
+  },
+  0
+);
+
+tl.to(
+  content,
+  {
+    autoAlpha: 0,
+    scale: 0.22,
+    filter: "blur(10px)",
+    duration: 0.36,
+    ease: "none",
+  },
+  0
+);
+
+tl.to(
+  cta,
+  {
+    autoAlpha: 1,
+    pointerEvents: "auto",
+    duration: 0.08,
+    ease: "none",
+  },
+  0.38
+);
+
+tl.fromTo(
+  ctaTitle,
+  {
+    autoAlpha: 0,
+    filter: "blur(14px)",
+  },
+  {
+    autoAlpha: 1,
+    filter: "blur(0px)",
+    duration: 0.18,
+    ease: "none",
+  },
+  0.44
+);
+
+tl.fromTo(
+  ctaText,
+  {
+    autoAlpha: 0,
+    filter: "blur(10px)",
+  },
+  {
+    autoAlpha: 1,
+    filter: "blur(0px)",
+    duration: 0.18,
+    ease: "none",
+  },
+  0.62
+);
+
+tl.fromTo(
+  ctaButton,
+  {
+    autoAlpha: 0,
+    filter: "blur(8px)",
+  },
+  {
+    autoAlpha: 1,
+    filter: "blur(0px)",
+    duration: 0.18,
+    ease: "none",
+  },
+  0.78
+);
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {

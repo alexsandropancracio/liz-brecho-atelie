@@ -277,6 +277,33 @@ useEffect(() => {
     <div className="portal-transition__content">
       <h2>Vestir é atravessar o tempo...</h2>
     </div>
+
+    <div className="portal-transition__cta">
+      <h2 className="portal-transition__cta-title">
+        <span className="portal-transition__cta-line">
+          <span>Então, não perca tempo.</span>
+        </span>
+
+        <span className="portal-transition__cta-line">
+          <span>Oportunidades não esperam.</span>
+        </span>
+      </h2>
+
+      <p>
+        Consulte o catálogo, veja a disponibilidade ou fale conosco para
+        encomendas e visitas à loja.
+      </p>
+
+<a
+  className="portal-transition__button"
+  href="https://wa.me/5500000000000"
+  target="_blank"
+  rel="noreferrer"
+  aria-label="Falar com a LIZ pelo WhatsApp"
+>
+  <span>Fale Conosco</span>
+</a>
+    </div>
   </div>
 </section>
 
