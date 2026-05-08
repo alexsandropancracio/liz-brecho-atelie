@@ -401,7 +401,7 @@
 
 .home-about__eyebrow {
   display: inline-flex;
-  align-items: center;
+  align-items: left;
   gap: 16px;
 
   margin-bottom: 28px;
@@ -453,7 +453,8 @@
 
 /* TEXTOS */
 .home-about__text {
-  grid-column: 1 / 13;
+  grid-column: 2 / 12;
+  
 
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -587,7 +588,7 @@
 }
 
 .home-about__decor--line {
-  width: 34vw;
+  width: 14vw;
   height: 1px;
 
   left: 0;
@@ -1337,6 +1338,148 @@
   }
 }
 
+/* ================================
+   LIZ FOOTER — EDITORIAL / MINIMAL
+================================ */
+
+.liz-footer {
+  position: relative;
+  z-index: 22;
+
+  width: 100%;
+  padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 5vw, 5rem);
+  margin-top: 50px;
+
+  background: #050505;
+  color: #f7f6f3;
+
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.liz-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: clamp(1.5rem, 5vw, 5rem);
+  right: clamp(1.5rem, 5vw, 5rem);
+
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(247, 246, 243, 0.22),
+    transparent
+  );
+}
+
+.liz-footer__inner {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) 1.1fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.liz-footer__brand {
+  max-width: 420px;
+}
+
+.liz-footer__brand p {
+  margin: 0;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: clamp(0.76rem, 0.85vw, 0.86rem);
+  font-weight: 300;
+  line-height: 1.9;
+
+  color: rgba(247, 246, 243, 0.5);
+}
+
+.liz-footer__nav {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  justify-items: end;
+  gap: clamp(1rem, 2vw, 1.8rem);
+
+  width: 100%;
+}
+
+.liz-footer__nav a {
+  position: relative;
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  color: rgba(247, 246, 243, 0.48);
+
+  transition:
+    color 0.35s ease,
+    transform 0.35s ease;
+}
+
+.liz-footer__nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.45rem;
+
+  width: 100%;
+  height: 1px;
+
+  background: rgba(247, 246, 243, 0.72);
+
+  transform: scaleX(0);
+  transform-origin: right;
+
+  transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.liz-footer__nav a:hover {
+  color: #f7f6f3;
+  transform: translateY(-2px);
+}
+
+.liz-footer__nav a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.liz-footer__bottom {
+  grid-column: 1 / -1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  padding-top: clamp(2rem, 4vw, 3rem);
+
+  font-family: "Be Vietnam Pro", sans-serif;
+  font-size: 0.64rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  text-align: center;
+
+  color: rgba(247, 246, 243, 0.32);
+}
+
+.liz-footer__bottom span {
+  display: block;
+  max-width: 100%;
+
+  text-align: center;
+}
 
 /* =========================================================
    RESPONSIVE PATCH — TABLET / MOBILE
@@ -1924,6 +2067,33 @@
   letter-spacing: 0.14em;
 }
 
+  .liz-footer {
+    padding: 3rem 24px;
+  }
+
+  .liz-footer__inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .liz-footer__brand {
+    max-width: 100%;
+  }
+
+  .liz-footer__nav {
+    justify-content: flex-start;
+    gap: 1rem 1.4rem;
+  }
+
+  .liz-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+
+    padding-top: 2rem;
+
+    line-height: 1.7;
+  }
+
 }
 
 @media (max-width: 480px) {
@@ -2061,6 +2231,23 @@
   .portal-transition__button {
     width: 100%;
     max-width: 280px;
+  }
+
+  .liz-footer {
+    padding: 2.8rem 18px;
+  }
+
+  .liz-footer__nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .liz-footer__nav a {
+    font-size: 0.68rem;
+  }
+
+  .liz-footer__bottom {
+    font-size: 0.62rem;
   }
 }
 
