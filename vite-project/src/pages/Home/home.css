@@ -2234,6 +2234,8 @@
 
   .portal-transition__button::before {
     z-index: 2;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   
   .portal-transition__button span {
