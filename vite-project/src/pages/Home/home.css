@@ -2232,11 +2232,9 @@
     z-index: 1;
   }
 
-  .portal-transition__button::before {
-    z-index: 2;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-  }
+ .portal-transition__button::before {
+  background: black !important;
+}
   
   .portal-transition__button span {
     z-index: 3;
