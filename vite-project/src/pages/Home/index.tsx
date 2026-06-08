@@ -303,15 +303,19 @@ useEffect(() => {
       para encomendas e visitas à loja.
     </p>
 
-    <a
-      className="portal-transition__button"
-      href="https://wa.me/5500000000000"
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Falar com a LIZ pelo WhatsApp"
-    >
-      <span>Fale Conosco</span>
-    </a>
+<a
+  className="portal-transition__button"
+  href="https://wa.me/5500000000000"
+  target="_blank"
+  rel="noreferrer"
+  aria-label="Falar com a LIZ pelo WhatsApp"
+>
+ <span className="portal-transition__button-bg"></span>
+
+  <span className="portal-transition__button-text">
+    Fale Conosco
+  </span>
+</a>
 
   <footer className="liz-footer">
   <div className="liz-footer__inner">

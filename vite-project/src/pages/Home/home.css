@@ -1199,123 +1199,126 @@
 
   position: relative;
   isolation: isolate;
-  overflow: hidden;
+  overflow: visible;
 
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  margin-top: clamp(1.8rem, 3vw, 2.6rem);
-  padding: 1rem 1.7rem;
+  margin-top: 1.8rem;
 
-  border: 1px solid transparent;
+  /* valores originais */
+  padding: 0.9rem 1.25rem;
+
+  border: none;
   border-radius: 0;
 
   font-family: "Be Vietnam Pro", sans-serif;
-  font-size: 0.78rem;
+
+  /* valores originais */
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+
   font-weight: 400;
-  letter-spacing: 0.16em;
   text-transform: uppercase;
   text-decoration: none;
 
   color: #f7f6f3;
 
-  background:
-    linear-gradient(rgba(5, 5, 5, 0.96), rgba(5, 5, 5, 0.96)) padding-box,
-    conic-gradient(
-      from var(--liz-border-angle),
-      rgba(247, 246, 243, 0.14),
-      rgba(247, 246, 243, 0.18),
-      rgba(247, 246, 243, 0.8),
-      rgba(247, 246, 243, 0.18),
-      rgba(247, 246, 243, 0.14)
-    ) border-box;
-
-  box-shadow:
-    inset 0 0 0 1px rgba(247, 246, 243, 0.06),
-    0 0 0 rgba(247, 246, 243, 0);
+  background: #050505;
+  z-index: 1;
 
   will-change: transform, opacity, filter;
-
-  animation: lizButtonBorderRotate 4.8s linear infinite;
 
   transition:
     transform 0.45s cubic-bezier(0.19, 1, 0.22, 1),
     color 0.45s cubic-bezier(0.19, 1, 0.22, 1),
-    box-shadow 0.45s cubic-bezier(0.19, 1, 0.22, 1),
-    background 0.45s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow 0.45s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
+/* TEXTO */
 .portal-transition__button span {
   position: relative;
   z-index: 3;
 }
 
-/* Fundo claro que sobe no hover */
+/* MÁSCARA INTERNA */
 .portal-transition__button::before {
   content: "";
+
   position: absolute;
-  inset: auto 0 0 0;
-  z-index: 1;
 
-  height: 0%;
+  top: 0.5px;
+  right: 0.5px;
+  bottom: 0.5px;
+  left: 0.5px;
 
-  background: #f7f6f3;
-
-  transition: height 0.48s cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-/* Brilho diagonal no hover */
-.portal-transition__button::after {
-  content: "";
-  position: absolute;
-  top: -80%;
-  left: -60%;
   z-index: 2;
 
-  width: 42%;
-  height: 260%;
+  background:
+    linear-gradient(
+      to top,
+      #f7f6f3 0%,
+      #f7f6f3 50%,
+      rgb(5, 5, 5) 50%,
+      rgb(5, 5, 5) 100%
+    );
 
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.46),
-    transparent
+  background-size: 100% 200%;
+
+  transition:
+    background-position 0.48s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* BORDA ANIMADA */
+.portal-transition__button::after {
+  content: "";
+
+  position: absolute;
+
+  top: -0.5px;
+  left: -0.5px;
+  right: -0.5px;
+  bottom: -0.5px;
+
+  z-index: -1;
+
+  background: conic-gradient(
+    from var(--liz-border-angle),
+    rgba(247, 246, 243, 0.14),
+    rgba(247, 246, 243, 0.18),
+    rgba(247, 246, 243, 0.8),
+    rgba(247, 246, 243, 0.18),
+    rgba(247, 246, 243, 0.14)
   );
 
-  transform: rotate(18deg) translateX(-140%);
-  opacity: 0;
+  animation: lizButtonBorderRotate 4.8s linear infinite;
 
   pointer-events: none;
 }
-
+/* HOVER */
 .portal-transition__button:hover {
   transform: translateY(-4px);
+
   color: #050505;
 
-  background:
-    linear-gradient(rgba(5, 5, 5, 0.96), rgba(5, 5, 5, 0.96)) padding-box,
-    conic-gradient(
-      from var(--liz-border-angle),
-      rgba(247, 246, 243, 0.28),
-      rgba(247, 246, 243, 0.42),
-      rgba(247, 246, 243, 1),
-      rgba(247, 246, 243, 0.42),
-      rgba(247, 246, 243, 0.28)
-    ) border-box;
-
   box-shadow:
-    inset 0 0 0 1px rgba(247, 246, 243, 0.92),
     0 22px 70px rgba(247, 246, 243, 0.16);
 }
 
 .portal-transition__button:hover::before {
-  height: 100%;
+  background-position: 0 100%;
 }
 
 .portal-transition__button:hover::after {
-  opacity: 1;
-  animation: lizButtonShine 0.85s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  background: conic-gradient(
+    from var(--liz-border-angle),
+    rgba(247, 246, 243, 0.28),
+    rgba(247, 246, 243, 0.42),
+    rgba(247, 246, 243, 1),
+    rgba(247, 246, 243, 0.42),
+    rgba(247, 246, 243, 0.28)
+  );
 }
 
 @keyframes lizButtonBorderRotate {
@@ -1328,23 +1331,13 @@
   }
 }
 
-@keyframes lizButtonShine {
-  from {
-    transform: rotate(18deg) translateX(-140%);
-  }
-
-  to {
-    transform: rotate(18deg) translateX(420%);
-  }
-}
-
 /* ================================
    LIZ FOOTER — EDITORIAL / MINIMAL
 ================================ */
 
 .liz-footer {
   position: relative;
-  z-index: 22;
+  z-index: 22; 
 
   width: 100%;
   padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 5vw, 5rem);

@@ -806,209 +806,172 @@ export function animatePortalCta() {
 
     const ctaEase = CustomEase.create(
       "lizCtaReveal",
-      "M0,0 C0.19,1 0.22,1 1,1"
+      "0.76,0,0.24,1"
     );
 
     /*
       DESKTOP
-      A CTA entra com movimento mais cinematográfico.
     */
-    mm.add("(min-width: 769px)", () => {
-      gsap.set(cta, {
-        autoAlpha: 1,
-        pointerEvents: "auto",
-      });
+   mm.add("(min-width: 769px)", () => {
+  gsap.set(cta, {
+    autoAlpha: 1,
+    pointerEvents: "auto",
+  });
 
-      gsap.set(ctaTitle, {
-        autoAlpha: 1,
-      });
+  gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+    autoAlpha: 0,
+    scale: 0.985,
+    filter: "blur(14px)",
+  });
 
-      gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
-        autoAlpha: 0,
-        y: 60,
-        z: -80,
-        rotateX: 8,
-        scale: 0.96,
-        filter: "blur(12px)",
-        transformPerspective: 1200,
-        transformOrigin: "center center",
-      });
+  gsap.set(ctaText, {
+    autoAlpha: 0,
+    scale: 0.99,
+    filter: "blur(10px)",
+  });
 
-      gsap.set(ctaText, {
-        autoAlpha: 0,
-        y: 40,
-        z: -60,
-        rotateX: 6,
-        filter: "blur(12px)",
-        transformPerspective: 1200,
-        transformOrigin: "center center",
-      });
+  gsap.set(ctaButton, {
+    autoAlpha: 0,
+    scale: 0.97,
+    filter: "blur(8px)",
+  });
 
-      gsap.set(ctaButton, {
-        autoAlpha: 0,
-        y: 30,
-        z: -40,
-        scale: 0.92,
-        filter: "blur(10px)",
-        transformPerspective: 1200,
-        transformOrigin: "center center",
-      });
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      id: "portal-cta-reveal",
+      trigger: cta,
+      start: "45% bottom",
+      toggleActions: "play none none reverse",
+      invalidateOnRefresh: true,
+    },
+  });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          id: "portal-cta-reveal",
-          trigger: cta,
-          start: "45% bottom",
-          toggleActions: "play none none reverse",
-          invalidateOnRefresh: true,
-        },
-      });
+  tl.to(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+    autoAlpha: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    duration: 0.45,
+    stagger: ctaTitleLines.length ? 0.06 : 0,
+    ease: ctaEase,
+  });
 
-      tl.to(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
-        autoAlpha: 1,
-        y: 0,
-        z: 0,
-        rotateX: 0,
-        scale: 1,
-        filter: "blur(0px)",
-        duration: 0.72,
-        stagger: ctaTitleLines.length ? 0.08 : 0,
-        ease: ctaEase,
-      });
+  tl.to(
+    ctaText,
+    {
+      autoAlpha: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      duration: 0.4,
+      ease: ctaEase,
+    },
+    0.08
+  );
 
-      tl.to(
-        ctaText,
-        {
-          autoAlpha: 1,
-          y: 0,
-          z: 0,
-          rotateX: 0,
-          filter: "blur(0px)",
-          duration: 0.58,
-          ease: ctaEase,
-        },
-        0.2
-      );
+  tl.to(
+    ctaButton,
+    {
+      autoAlpha: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      duration: 0.35,
+      ease: ctaEase,
+    },
+    0.15
+  );
 
-      tl.to(
-        ctaButton,
-        {
-          autoAlpha: 1,
-          y: 0,
-          z: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.5,
-          ease: "back.out(1.1)",
-        },
-        0.38
-      );
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
 
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
-
-      return () => {
-        tl.scrollTrigger?.kill(true);
-        tl.kill();
-      };
-    });
+  return () => {
+    tl.scrollTrigger?.kill(true);
+    tl.kill();
+  };
+});
 
     /*
       MOBILE
-      A CTA fica mais estável:
-      sem 3D pesado, sem scrub, sem sensação de acompanhar o scroll.
     */
-    mm.add("(max-width: 768px)", () => {
-      gsap.set(cta, {
-        autoAlpha: 1,
-        pointerEvents: "auto",
-      });
+mm.add("(max-width: 768px)", () => {
+  gsap.set(cta, {
+    autoAlpha: 1,
+    pointerEvents: "auto",
+  });
 
-      gsap.set(ctaTitle, {
-        autoAlpha: 1,
-      });
+  gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+    autoAlpha: 0,
+    scale: 0.99,
+    filter: "blur(12px)",
+  });
 
-      gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
-        autoAlpha: 0,
-        y: 18,
-        scale: 0.985,
-        filter: "blur(12px)",
-      });
+  gsap.set(ctaText, {
+    autoAlpha: 0,
+    scale: 0.99,
+    filter: "blur(10px)",
+  });
 
-      gsap.set(ctaText, {
-        autoAlpha: 0,
-        y: 14,
-        scale: 0.99,
-        filter: "blur(10px)",
-      });
+  gsap.set(ctaButton, {
+    autoAlpha: 0,
+    scale: 0.98,
+    filter: "blur(8px)",
+  });
 
-      gsap.set(ctaButton, {
-        autoAlpha: 0,
-        y: 12,
-        scale: 0.96,
-        filter: "blur(8px)",
-      });
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      id: "portal-cta-reveal",
+      trigger: cta,
+      start: "top 82%",
+      toggleActions: "play none none reverse",
+      invalidateOnRefresh: true,
+    },
+  });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          id: "portal-cta-reveal",
-          trigger: cta,
-          start: "top 78%",
-          toggleActions: "play none none reverse",
-          invalidateOnRefresh: true,
-        },
-      });
+  tl.to(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
+    autoAlpha: 1,
+    scale: 1,
+    filter: "blur(0px)",
+    duration: 0.42,
+    stagger: ctaTitleLines.length ? 0.05 : 0,
+    ease: ctaEase,
+  });
 
-      tl.to(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
-        autoAlpha: 1,
-        y: 0,
-        scale: 1,
-        filter: "blur(0px)",
-        duration: 0.62,
-        stagger: ctaTitleLines.length ? 0.08 : 0,
-        ease: ctaEase,
-      });
+  tl.to(
+    ctaText,
+    {
+      autoAlpha: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      duration: 0.35,
+      ease: ctaEase,
+    },
+    0.06
+  );
 
-      tl.to(
-        ctaText,
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.5,
-          ease: ctaEase,
-        },
-        0.18
-      );
+  tl.to(
+    ctaButton,
+    {
+      autoAlpha: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      duration: 0.3,
+      ease: ctaEase,
+    },
+    0.12
+  );
 
-      tl.to(
-        ctaButton,
-        {
-          autoAlpha: 1,
-          y: 0,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.42,
-          ease: "back.out(1.05)",
-        },
-        0.34
-      );
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
 
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
-      });
+  document.fonts?.ready.then(() => {
+    ScrollTrigger.refresh();
+  });
 
-      document.fonts?.ready.then(() => {
-        ScrollTrigger.refresh();
-      });
-
-      return () => {
-        tl.scrollTrigger?.kill(true);
-        tl.kill();
-      };
-    });
+  return () => {
+    tl.scrollTrigger?.kill(true);
+    tl.kill();
+  };
+});
 
     return () => {
       mm.revert();
