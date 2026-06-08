@@ -1277,10 +1277,10 @@
 
   position: absolute;
 
-  top: -0.5px;
-  left: -0.5px;
-  right: -0.5px;
-  bottom: -0.5px;
+    top: -0.5px;
+    left: -0.5px;
+    right: -0.5px;
+    bottom: -0.5px;
 
   z-index: -1;
 
@@ -2226,6 +2226,18 @@
   .portal-transition__button {
     width: 100%;
     max-width: 280px;
+  }
+
+  .portal-transition__button::after {
+    z-index: 1;
+  }
+
+  .portal-transition__button::before {
+    z-index: 2;
+  }
+  
+  .portal-transition__button span {
+    z-index: 3;
   }
 
   .liz-footer {
