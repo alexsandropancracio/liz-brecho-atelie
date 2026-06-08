@@ -1039,7 +1039,7 @@
     Essa altura controla o "tempo" da animação.
     Quanto maior, mais suave/lenta fica.
   */
-  height: 170vh;
+  height: 260vh;
 
   background: #f7f6f3;
   color: #111111;
@@ -1131,7 +1131,7 @@
 
 .portal-transition__cta {
   position: relative;
-  z-index: 21;
+  z-index: 50;
 
   min-height: 100svh;
   width: 100%;
@@ -1145,7 +1145,7 @@
 
   text-align: center;
   color: #f7f6f3;
-  background: #050505;
+
 
   overflow: hidden;
   isolation: isolate;
@@ -1350,7 +1350,7 @@
   padding: clamp(2rem, 4vw, 3.5rem) clamp(1.5rem, 5vw, 5rem);
   margin-top: 50px;
 
-  background: #050505;
+
   color: #f7f6f3;
 
   overflow: hidden;
@@ -2038,7 +2038,7 @@
     text-align: center;
 
     color: #f7f6f3;
-    background: #050505;
+
 
     overflow: hidden;
     isolation: isolate;
@@ -2189,13 +2189,13 @@
   }
 
  .portal-transition {
-    height: 128svh;
-    min-height: 128svh;
+    min-height: 190svh;
   }
 
   .portal-transition__sticky {
     height: 103svh;
     min-height: 103svh;
+    z-index: 1;
   }
 
   .portal-transition__circle-svg {
@@ -2216,6 +2216,7 @@
 
   .portal-transition__cta {
     padding: 0 18px;
+    z-index: 50;
   }
 
   .portal-transition__cta h2 {

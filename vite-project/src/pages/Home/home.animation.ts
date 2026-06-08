@@ -64,7 +64,7 @@ export function animateHomeHero(options: AnimateHomeHeroOptions = {}) {
       trigger: servicesTransition,
       start: "top center",
       end: "bottom bottom",
-      scrub: 1.2,
+      scrub: 2,
       invalidateOnRefresh: true,
     },
   });
@@ -377,6 +377,7 @@ export function animateHomeHero(options: AnimateHomeHeroOptions = {}) {
     });
   }
 
+//MANIFESTO
 const manifestoSection = container.querySelector(".home-manifesto");
 const manifestoGrid = container.querySelector(".home-manifesto__grid");
 const manifestoRings = container.querySelectorAll(".home-manifesto__rings span");
@@ -430,7 +431,7 @@ if (manifestoSection && manifestoLines.length > 0) {
       trigger: manifestoSection,
       start: "top 100%",
       end: "center 70%",
-      scrub: 1.2,
+      scrub: 2,
       invalidateOnRefresh: true,
     },
   });
@@ -460,7 +461,7 @@ if (manifestoSection && manifestoLines.length > 0) {
         stagger: 0.08,
         ease: manifestoEase,
       },
-      0.08
+      0.20
     )
 
     .to(
@@ -499,8 +500,6 @@ if (manifestoSection && manifestoLines.length > 0) {
       0.72
     );
 }
-
-
 
   return () => {
     animations.forEach((animation) => animation.kill());
@@ -601,8 +600,8 @@ export function animatePortalTransition() {
           id: "portal-circle-sticky",
           trigger: section,
           start: "top top",
-          end: () => `+=${window.innerHeight * 0.75}`,
-          scrub: true,
+          end: () => `+=${window.innerHeight * 1.6}`,
+          scrub: 2,
           markers: false,
           invalidateOnRefresh: true,
         },
@@ -639,8 +638,8 @@ export function animatePortalTransition() {
           autoAlpha: 0,
           scale: 0.12,
           y: -34,
-          z: -120,
-          rotateX: -10,
+          z: -40,
+          rotateX: -3,
           filter: "blur(14px)",
           duration: 0.42,
           ease: "none",
@@ -691,7 +690,7 @@ export function animatePortalTransition() {
           trigger: section,
           start: "top top",
           end: mobileEnd,
-          scrub: true,
+          scrub: 2,
           markers: false,
           invalidateOnRefresh: true,
           anticipatePin: 1,
@@ -826,18 +825,18 @@ export function animatePortalCta() {
 
       gsap.set(ctaTitleLines.length ? ctaTitleLines : ctaTitle, {
         autoAlpha: 0,
-        y: 38,
+        y: 60,
         z: -80,
         rotateX: 8,
         scale: 0.96,
-        filter: "blur(16px)",
+        filter: "blur(12px)",
         transformPerspective: 1200,
         transformOrigin: "center center",
       });
 
       gsap.set(ctaText, {
         autoAlpha: 0,
-        y: 28,
+        y: 40,
         z: -60,
         rotateX: 6,
         filter: "blur(12px)",
@@ -847,7 +846,7 @@ export function animatePortalCta() {
 
       gsap.set(ctaButton, {
         autoAlpha: 0,
-        y: 22,
+        y: 30,
         z: -40,
         scale: 0.92,
         filter: "blur(10px)",
@@ -859,7 +858,7 @@ export function animatePortalCta() {
         scrollTrigger: {
           id: "portal-cta-reveal",
           trigger: cta,
-          start: "top 72%",
+          start: "45% bottom",
           toggleActions: "play none none reverse",
           invalidateOnRefresh: true,
         },
@@ -900,7 +899,7 @@ export function animatePortalCta() {
           scale: 1,
           filter: "blur(0px)",
           duration: 0.5,
-          ease: "back.out(1.08)",
+          ease: "back.out(1.1)",
         },
         0.38
       );
@@ -967,7 +966,7 @@ export function animatePortalCta() {
         scale: 1,
         filter: "blur(0px)",
         duration: 0.62,
-        stagger: ctaTitleLines.length ? 0.07 : 0,
+        stagger: ctaTitleLines.length ? 0.08 : 0,
         ease: ctaEase,
       });
 

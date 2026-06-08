@@ -261,7 +261,9 @@ useEffect(() => {
       </section>
 
 <section className="portal-transition">
+
   <div className="portal-transition__sticky">
+
     <svg
       className="portal-transition__circle-svg"
       viewBox="0 0 100 100"
@@ -277,37 +279,40 @@ useEffect(() => {
     </svg>
 
     <div className="portal-transition__content">
-      <h2>Vestir é atravessar o tempo...</h2>
+      <h2>
+        Vestir é atravessar o tempo...
+      </h2>
     </div>
+
   </div>
-</section>
 
-<section className="portal-transition__cta">
-  <h2 className="portal-transition__cta-title">
-    <span className="portal-transition__cta-line">
-      <span>Então, não perca tempo.</span>
-    </span>
+  <div className="portal-transition__cta">
 
-    <span className="portal-transition__cta-line">
-      <span>Oportunidades não esperam.</span>
-    </span>
-  </h2>
+    <h2 className="portal-transition__cta-title">
+      <span className="portal-transition__cta-line">
+        <span>Então, não perca tempo.</span>
+      </span>
 
-  <p>
-    Consulte o catálogo, veja a disponibilidade ou fale conosco para encomendas
-    e visitas à loja.
-  </p>
+      <span className="portal-transition__cta-line">
+        <span>Oportunidades não esperam.</span>
+      </span>
+    </h2>
 
-  <a
-    className="portal-transition__button"
-    href="https://wa.me/5500000000000"
-    target="_blank"
-    rel="noreferrer"
-    aria-label="Falar com a LIZ pelo WhatsApp"
-  >
-    <span>Fale Conosco</span>
-  </a>
-  
+    <p>
+      Consulte o catálogo, veja a disponibilidade ou fale conosco
+      para encomendas e visitas à loja.
+    </p>
+
+    <a
+      className="portal-transition__button"
+      href="https://wa.me/5500000000000"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Falar com a LIZ pelo WhatsApp"
+    >
+      <span>Fale Conosco</span>
+    </a>
+
   <footer className="liz-footer">
   <div className="liz-footer__inner">
     <div className="liz-footer__brand">
@@ -328,9 +333,11 @@ useEffect(() => {
     </div>
   </div>
 </footer>
+
+  </div>
+
 </section>
-
-
+  
     </main>
   );
 }
