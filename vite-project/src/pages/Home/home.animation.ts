@@ -840,7 +840,7 @@ export function animatePortalCta() {
     scrollTrigger: {
       id: "portal-cta-reveal",
       trigger: cta,
-      start: "45% bottom",
+      start: "60% bottom",
       toggleActions: "play none none reverse",
       invalidateOnRefresh: true,
     },

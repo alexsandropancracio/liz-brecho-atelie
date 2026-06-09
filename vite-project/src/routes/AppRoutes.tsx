@@ -23,7 +23,7 @@ export function AppRoutes() {
         />
 
         <Route
-          path="/"
+          path="/brecho"
           element={
             <PageRouteWrapper>
               <Brecho />

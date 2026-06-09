@@ -103,7 +103,7 @@ export function Navbar() {
           </div>
 
           <NavLink to="/" end className="nav-logo" onClick={closeMenu}>
-            LIZ
+            — LIZ — 
           </NavLink>
 
           <div className="nav-right">

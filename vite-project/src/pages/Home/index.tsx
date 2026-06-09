@@ -321,9 +321,8 @@ useEffect(() => {
     <div className="liz-footer__inner">
       <div className="liz-footer__brand">
 
-        <p>
-          Brechó & Ateliê — peças selecionadas com intenção, identidade e tempo.
-        </p>
+        <p>Peças selecionadas com intenção, identidade e tempo.</p>
+        
       </div>
 
       <nav className="liz-footer__nav" aria-label="Links institucionais">
@@ -333,7 +332,7 @@ useEffect(() => {
       </nav>
 
       <div className="liz-footer__bottom">
-        <span>© {new Date().getFullYear()} LIZ — Brechó & Ateliê. Todos os direitos reservados.</span>
+        <span>© {new Date().getFullYear()} — LIZ — Brechó & Ateliê. Todos os direitos reservados.</span>
       </div>
     </div>
   </footer>
