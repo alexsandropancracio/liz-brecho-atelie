@@ -1297,6 +1297,7 @@
 
   pointer-events: none;
 }
+
 /* HOVER */
 .portal-transition__button:hover {
   transform: translateY(-4px);
@@ -2226,6 +2227,7 @@
   .portal-transition__button {
     width: 100%;
     max-width: 280px;
+    
   }
 
   .portal-transition__button::after {
@@ -2233,11 +2235,44 @@
   }
 
  .portal-transition__button::before {
-  background: black !important;
+  background:
+    linear-gradient(
+      to top,
+      #f7f6f3 0%,
+      #f7f6f3 50%,
+      rgb(5, 5, 5) 50%,
+      rgb(5, 5, 5) 100%
+    ) !important;
+
+  background-size: 100% 200% !important;
+  background-position: 0 0 !important;
 }
   
   .portal-transition__button span {
     z-index: 3;
+  }
+
+  .portal-transition__button:hover::before,
+  .portal-transition__button:active::before {
+   background-position: 0 101% !important;
+  }
+
+  .portal-transition__button:hover::after,
+  .portal-transition__button:active::after {
+    background: conic-gradient(
+      from var(--liz-border-angle),
+      rgba(247, 246, 243, 0.28),
+      rgba(247, 246, 243, 0.42),
+      rgba(247, 246, 243, 1),
+      rgba(247, 246, 243, 0.42),
+      rgba(247, 246, 243, 0.28)
+    ) !important;
+  }
+
+  .portal-transition__button:hover,
+  .portal-transition__button:active {
+      color: #050505;
+    }
   }
 
   .liz-footer {
@@ -2256,7 +2291,6 @@
   .liz-footer__bottom {
     font-size: 0.62rem;
   }
-}
 
 @media (max-width: 380px) {
   .hero__title,
