@@ -2254,7 +2254,7 @@
 
   .portal-transition__button:hover::before,
   .portal-transition__button:active::before {
-   background-position: 0 101% !important;
+   background-position: 0 100% !important;
   }
 
   .portal-transition__button:hover::after,
