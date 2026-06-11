@@ -2,10 +2,16 @@ import "./brecho.css";
 import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { gsap } from "../../animations/gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 import {
   animateBrechoPage,
-  animateHighlightChange,
+  animateHeroScroll,
+  animateCollectionEntrance,
+  animateFilterChange,
 } from "./brecho.animation";
 
 import { useRouteTransition } from "../../routes/RouteTransitionContext";
@@ -35,6 +41,7 @@ export function Brecho() {
   const { startTransition } = useRouteTransition();
 
   const [activeFilter, setActiveFilter] = useState<Category>("Todos");
+  
 
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   const isDragging = useRef(false);
@@ -55,11 +62,6 @@ export function Brecho() {
     };
   }, []);
 
-  useEffect(() => {
-    scrollRefs.current.forEach((scrollElement) => {
-      animateHighlightChange(scrollElement);
-    });
-  }, [activeFilter]);
 
   function goBackToServices() {
     startTransition("left");
@@ -72,6 +74,26 @@ export function Brecho() {
       },
     });
   }
+
+useEffect(() => {
+  const cleanupPage = animateBrechoPage();
+  const cleanupHero = animateHeroScroll();
+  const cleanupCollection = animateCollectionEntrance();
+
+  return () => {
+    cleanupPage?.();
+    cleanupHero?.();
+    cleanupCollection?.();
+  };
+}, []);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    animateFilterChange();
+  }, 50);
+
+  return () => clearTimeout(timer);
+}, [activeFilter]);
 
   function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
     const scrollElement = event.currentTarget;
@@ -113,6 +135,12 @@ export function Brecho() {
   return (
     <main className="brecho">
       <section className="brecho-hero">
+
+          <div className="brecho-hero__curtain">
+            <div className="brecho-hero__curtain-left"></div>
+            <div className="brecho-hero__curtain-right"></div>
+          </div>
+
         <button
           type="button"
           className="brecho-back"
@@ -122,7 +150,7 @@ export function Brecho() {
         </button>
 
         <div className="brecho-hero__content">
-          <span className="brecho-hero__eyebrow">O Brechó LIZ</span>
+          <span className="brecho-hero__eyebrow"></span>
 
           <h1 className="brecho-hero__title">
             <span>Roupas que já viveram,</span>
@@ -147,7 +175,7 @@ export function Brecho() {
         </div>
       </section>
 
-            <section className="brecho-collection">
+      <section className="brecho-collection">
         <div className="collection-header">
           <div className="collection-top">
             <h2 className="section-title">Acervo</h2>

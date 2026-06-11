@@ -28,6 +28,8 @@
   min-height: 100vh;
   line-height: 1.6;
   overflow-x: hidden;
+  perspective: 1800px;
+  transform-style: preserve-3d;
 }
 
 h1, h2, h3, h4 {
@@ -43,15 +45,6 @@ button {
   font-family: inherit;
   color: inherit;
   cursor: pointer;
-}
-
-/* --- Hero Section --- */
-.brecho-hero {
-  min-height: 90vh;
-  padding: var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  position: relative;
 }
 
 .brecho-back {
@@ -70,7 +63,7 @@ button {
 
   background: transparent;
   border: none;
-  color: rgba(17, 17, 17, 0.68);
+  color: rgba(255, 255, 255, 0.68);
 
   font-family: "Be Vietnam Pro", sans-serif;
   font-size: 11px;
@@ -96,7 +89,7 @@ button {
 
 /* movimento de voltar */
 .brecho-back:hover {
-  color: #111;
+  color: #ffffff;
   transform: translateX(-5px);
 }
 
@@ -110,74 +103,212 @@ button {
   outline-offset: 6px;
 }
 
-.brecho-hero__content {
-  max-width: 46.5vw;
-  margin: auto 0;
-  z-index: 2;
+/* --- Hero Section --- */
+.brecho-hero {
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+
+  display: grid;
+  grid-template-columns: 1fr;
+
+  min-height: 100vh;
+
+  padding: 2rem;
+  gap: 3rem;
+
+  align-items: center;
+
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
+/* Responsivo para telas maiores (Desktop) */
+@media (min-width: 900px) {
+  .brecho-hero {
+    grid-template-columns: 1fr 1fr; /* Divide meio a meio */
+    padding: 4rem;
+    gap: 6rem;
+  }
+}
+
+.brecho-hero__split {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+
+  pointer-events: none;
+  z-index: 5;
+}
+
+.brecho-hero__curtain {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1;
+
+  pointer-events: none;
+}
+
+/* ==========================================
+   LEFT
+========================================== */
+
+.brecho-hero__curtain-left {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 50%;
+  height: 100%;
+
+  background: #111;
+
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 50%,
+    100% 100%,
+    0 100%
+  );
+
+  will-change: transform;
+}
+
+/* ==========================================
+   RIGHT
+========================================== */
+
+.brecho-hero__curtain-right {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+
+  width: 50%;
+  height: 100%;
+
+  background: #111;
+
+  clip-path: polygon(
+    0% 50%,
+    0 0,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+
+  will-change: transform;
+}
+
+/* --- BLOCO DE CONTEÚDO --- */
+.brecho-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  z-index: 2;
+  position: relative;
+}
+
+/* O "Sobrolho" (Eyebrow) */
 .brecho-hero__eyebrow {
-  display: block;
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-text-secondary);
-  margin-bottom: var(--spacing-md);
+  letter-spacing: 0.2em; /* Traz a vibe editorial */
+  font-weight: 600;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
+/* Linha charmosa antes do eyebrow */
+.brecho-hero__eyebrow::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 1px;
+
+}
+
+/* Título Principal */
 .brecho-hero__title {
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin-bottom: 1rem;
+  /* Tamanho fluido: cresce conforme a tela, de 2.5rem até 4.5rem */
+  font-size: clamp(2.5rem, 5vw, 4.5rem); 
+  font-weight: 300; /* Peso leve é mais chique */
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #b3b3b3;
 }
 
 .brecho-hero__title span {
   display: block;
 }
 
+/* Destaque sutil no meio do texto */
+.brecho-hero__title span:nth-child(2) {
+  font-style: italic;
+  color: #ffffff; 
+}
+
+/* Descrição */
 .brecho-hero__description {
   font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  max-width: 500px;
-  margin: 0 auto var(--spacing-lg); /* centraliza o bloco */
-  font-weight: 300;
+  line-height: 1.6;
+  color: #e7e7e7;
+  max-width: 480px; /* Limita a largura para leitura não cansar */
+  font-weight: 400;
 }
 
+/* Rodapé do conteúdo (Meta) */
 .brecho-hero__meta {
   display: flex;
-  gap: 2rem;
-
-  font-size: 0.85rem;
-  color: var(--color-text-tertiary);
-
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--spacing-sm);
-
-  max-width: 300px;
-
-  margin: 0 auto; /* centraliza igual o description */
+  justify-content: flex-start;
+  gap: 3rem;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+  color: #1a1c1c;
 }
 
+/* --- BLOCO VISUAL --- */
 .brecho-hero__visual {
-  position: absolute;
-  top: 50%;
-  right: 5%;
-  transform: translateY(-50%);
-  width: 40vw;
+  width: 100%;
   height: 60vh;
-  background-color: var(--color-placeholder);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
+  background-color: #e8e6e6; /* Cor de placeholder suave */
+  border-radius: 4px; /* Quase quadrado, leve quebra nas pontas */
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
 }
 
+@media (min-width: 900px) {
+  .brecho-hero__visual {
+    height: 85vh; /* Estica mais no desktop */
+  }
+}
+
+/* Preparando a tag span para receber a imagem final */
 .brecho-hero__visual span {
-  font-family: var(--font-heading);
-  font-size: 15vw;
-  color: var(--color-bg); /* Subtle blend */
-  opacity: 0.5;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Quando tiver a imagem, você adiciona no seu CSS/Style inline: */
+  /* background-image: url('caminho-da-foto.jpg'); */
+  /* background-size: cover; */
+  /* background-position: center; */
+  transition: transform 0.6s ease;
+}
+
+/* Um efeitinho hover chique na imagem (opcional) */
+.brecho-hero__visual:hover span {
+  transform: scale(1.03);
 }
 
 /* --- Curadoria Section --- */
@@ -250,7 +381,15 @@ button {
 
 /* --- Collection Section --- */
 .brecho-collection {
-  padding: var(--spacing-xl) 0 var(--spacing-xl) var(--spacing-md);
+  position: relative;
+  z-index: 0;
+  padding: 20px;
+
+  background: #f7f6f3;
+
+  transform-origin: center center;
+
+  will-change: transform, opacity;
 }
 
 .collection-header {
