@@ -244,6 +244,8 @@ export function animateCollectionEntrance() {
     ".collection-highlight-group"
   );
 
+  console.log("Groups encontrados:", groups.length);
+
   const animations: gsap.core.Animation[] = [];
 
   /* =====================================
@@ -433,3 +435,4 @@ export function animateFilterChange() {
     }
   );
 }
+

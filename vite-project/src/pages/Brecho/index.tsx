@@ -78,18 +78,29 @@ export function Brecho() {
 useEffect(() => {
   const cleanupPage = animateBrechoPage();
   const cleanupHero = animateHeroScroll();
-  const cleanupCollection = animateCollectionEntrance();
 
   return () => {
     cleanupPage?.();
     cleanupHero?.();
-    cleanupCollection?.();
   };
 }, []);
 
 useEffect(() => {
   const timer = setTimeout(() => {
-    animateFilterChange();
+    ScrollTrigger.getAll().forEach((trigger) => {
+      const element = trigger.vars.trigger as Element | undefined;
+
+      if (
+        element?.classList?.contains("collection-highlight-group") ||
+        element?.classList?.contains("brecho-collection")
+      ) {
+        trigger.kill();
+      }
+    });
+
+    animateCollectionEntrance();
+
+    ScrollTrigger.refresh();
   }, 50);
 
   return () => clearTimeout(timer);
@@ -165,8 +176,7 @@ useEffect(() => {
           </p>
 
           <div className="brecho-hero__meta">
-            <span>01</span>
-            <span>Identidade contínua</span>
+
           </div>
         </div>
 

@@ -103,6 +103,12 @@ button {
   outline-offset: 6px;
 }
 
+@media (max-width: 768px) {
+  .brecho-back {
+    right: 24px;
+  }
+}
+
 /* --- Hero Section --- */
 .brecho-hero {
   position: relative;
@@ -273,7 +279,7 @@ button {
   border-top: 1px solid #e0e0e0;
   padding-top: 1.5rem;
   margin-top: 1rem;
-  color: #1a1c1c;
+  color: #f7f6f3;
 }
 
 /* --- BLOCO VISUAL --- */
