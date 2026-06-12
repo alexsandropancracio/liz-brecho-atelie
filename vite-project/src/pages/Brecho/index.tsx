@@ -273,7 +273,7 @@ useEffect(() => {
           </div>
 
           <div className="curadoria-text-block">
-            <h2 className="section-title">O Olhar</h2>
+            <h2 className="section-title">Curadoria</h2>
 
             <p className="large-text">
               A curadoria nasce do olhar, não da pressa.

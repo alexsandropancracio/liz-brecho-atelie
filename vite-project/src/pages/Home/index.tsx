@@ -151,7 +151,25 @@ useEffect(() => {
                   Cada escolha carrega uma história pronta para continuar.
                 </p>
 
-                <span className="service-card__link">Explorar peças</span>
+                <span className="service-card__link">
+                  Explorar peças
+
+                  <svg
+                    className="service-card__icon"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M7 17L17 7M17 7H8M17 7V16"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
               </button>
 
               <button
@@ -170,7 +188,25 @@ useEffect(() => {
                   significado.
                 </p>
 
-                <span className="service-card__link">Conhecer criações</span>
+                <span className="service-card__link">Conhecer criações
+
+                  <svg
+                    className="service-card__icon"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <path
+                      d="M7 17L17 7M17 7H8M17 7V16"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+
+                </span>
               </button>
             </div>
           </div>
