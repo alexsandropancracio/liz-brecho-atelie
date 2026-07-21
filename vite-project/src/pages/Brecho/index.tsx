@@ -1,7 +1,8 @@
 import "./brecho.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import type { MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { gsap } from "../../animations/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,16 +12,35 @@ import {
   animateBrechoPage,
   animateHeroScroll,
   animateCollectionEntrance,
-  animateFilterChange,
+  animateBrechoProcessStackWithHeaders,
+  animateThemeTransition,
 } from "./brecho.animation";
 
 import { useRouteTransition } from "../../routes/RouteTransitionContext";
 
+import selecaoImage from "../../../assets/brecho/img1.png";
+import higienizacaoImage from "../../../assets/brecho/img2.png";
+import revisaoImage from "../../../assets/brecho/img3.png";
+import preparacaoImage from "../../../assets/brecho/img4.png";
+import toqueFinalImage from "../../../assets/brecho/img5.png";
+
+/* =======================================================
+   TYPES
+======================================================= */
+
 type Category = "Todos" | "Feminino" | "Masculino" | "Infantil";
 type HighlightCategory = Exclude<Category, "Todos">;
 
+/* =======================================================
+   DATA
+======================================================= */
+
 const MOCK_PIECES = Array.from({ length: 30 }, (_, i) => {
-  const categories: HighlightCategory[] = ["Feminino", "Masculino", "Infantil"];
+  const categories: HighlightCategory[] = [
+    "Feminino",
+    "Masculino",
+    "Infantil",
+  ];
 
   return {
     id: String(i + 1).padStart(2, "0"),
@@ -36,32 +56,182 @@ const HIGHLIGHT_CATEGORIES: HighlightCategory[] = [
   "Infantil",
 ];
 
+const PROCESS_STEPS = [
+  {
+    id: "selection",
+    number: "01",
+    title: "Seleção",
+    image: selecaoImage,
+    description:
+      "A curadoria começa antes mesmo da peça chegar ao acervo. Observamos modelagem, tecido, caimento e estado de conservação. Nem tudo entra. Escolhemos apenas aquilo que acreditamos merecer continuar sua história.",
+  },
+  {
+    id: "cleaning",
+    number: "02",
+    title: "Higienização",
+    image: higienizacaoImage,
+    description:
+      "Cada peça passa por um processo cuidadoso de higienização. Respeitamos as características de cada tecido para preservar sua qualidade, garantindo que chegue limpa, renovada e pronta para um novo capítulo.",
+  },
+  {
+    id: "review",
+    number: "03",
+    title: "Revisão e Cuidados",
+    image: revisaoImage,
+    description:
+      "Quando necessário, realizamos pequenos reparos e ajustes. Um botão solto, um detalhe delicado ou um acabamento que merece atenção recebem o mesmo cuidado que dedicamos à escolha da peça.",
+  },
+  {
+    id: "preparation",
+    number: "04",
+    title: "Preparação Final",
+    image: preparacaoImage,
+    description:
+      "Antes da entrega, cada peça é cuidadosamente passada e revisada. Acreditamos que a apresentação faz parte da experiência, e cada dobra, textura e detalhe importa.",
+  },
+  {
+    id: "final-touch",
+    number: "05",
+    title: "Toque Final",
+    image: toqueFinalImage,
+    description:
+      "Finalizamos cada peça com uma fragrância suave para tecidos e um cuidado especial na apresentação. Queremos que a experiência comece no instante em que a embalagem é aberta.",
+  },
+];
+
+/* =======================================================
+   COMPONENT
+======================================================= */
+
 export function Brecho() {
   const navigate = useNavigate();
   const { startTransition } = useRouteTransition();
 
   const [activeFilter, setActiveFilter] = useState<Category>("Todos");
-  
+
+  /* =======================================================
+     DRAG SCROLL
+  ======================================================= */
 
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
+  const finalContentRef = useRef<HTMLDivElement>(null);
+  const finalImageRef = useRef<HTMLDivElement>(null);
+
+  /* =======================================================
+     STACKED CARDS REFS
+  ======================================================= */
+
+
+  /* =======================================================
+     HERO ANIMATIONS
+  ======================================================= */
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant",
-    });
+    window.scrollTo(0, 0);
 
     const cleanup = animateBrechoPage();
 
-    return () => {
-      cleanup?.();
-    };
+    return () => cleanup?.();
   }, []);
 
+  useEffect(() => {
+    const cleanupHero = animateHeroScroll();
+
+    return () => cleanupHero?.();
+  }, []);
+
+  /* =======================================================
+     COLLECTION FILTER ANIMATION
+  ======================================================= */
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+
+      
+      ScrollTrigger.getAll().forEach((trigger) => {
+        const el = trigger.vars.trigger as Element | undefined;
+
+        if (
+          el?.classList?.contains("collection-highlight-group") ||
+          el?.classList?.contains("brecho-collection")
+        ) {
+          trigger.kill();
+        }
+      });
+
+      animateCollectionEntrance();
+      ScrollTrigger.refresh();
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [activeFilter]);
+
+  /* =======================================================
+     STACKED CARDS
+  ======================================================= */
+
+  useLayoutEffect(() => {
+    const ctx = gsap.context(() => {
+      animateBrechoProcessStackWithHeaders();
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  /* =======================================================
+     FINAL
+  ======================================================= */
+
+useEffect(() => {
+  const cleanup = animateThemeTransition();
+
+  return () => cleanup?.();
+}, []);
+
+useEffect(() => {
+
+    const ctx = gsap.context(() => {
+
+        const tl = gsap.timeline({
+
+            scrollTrigger: {
+                trigger: ".curadoria-final",
+                start: "top 75%",
+                toggleActions: "play none none reverse",
+            }
+
+        });
+
+        tl.from(finalContentRef.current, {
+
+            x: -150,
+            opacity: 0,
+            duration: 1.3,
+            ease: "power3.out"
+
+        })
+
+        .from(finalImageRef.current, {
+
+            x: 150,
+            opacity: 0,
+            duration: 1.3,
+            ease: "power3.out"
+
+        }, "-=1");
+
+    });
+
+    return () => ctx.revert();
+
+}, []);
+
+  /* =======================================================
+     NAVIGATION
+  ======================================================= */
 
   function goBackToServices() {
     startTransition("left");
@@ -75,45 +245,18 @@ export function Brecho() {
     });
   }
 
-useEffect(() => {
-  const cleanupPage = animateBrechoPage();
-  const cleanupHero = animateHeroScroll();
-
-  return () => {
-    cleanupPage?.();
-    cleanupHero?.();
-  };
-}, []);
-
-useEffect(() => {
-  const timer = setTimeout(() => {
-    ScrollTrigger.getAll().forEach((trigger) => {
-      const element = trigger.vars.trigger as Element | undefined;
-
-      if (
-        element?.classList?.contains("collection-highlight-group") ||
-        element?.classList?.contains("brecho-collection")
-      ) {
-        trigger.kill();
-      }
-    });
-
-    animateCollectionEntrance();
-
-    ScrollTrigger.refresh();
-  }, 50);
-
-  return () => clearTimeout(timer);
-}, [activeFilter]);
+  /* =======================================================
+     DRAG SCROLL
+  ======================================================= */
 
   function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
-    const scrollElement = event.currentTarget;
+    const el = event.currentTarget;
 
     isDragging.current = true;
-    startX.current = event.pageX - scrollElement.offsetLeft;
-    scrollLeft.current = scrollElement.scrollLeft;
+    startX.current = event.pageX - el.offsetLeft;
+    scrollLeft.current = el.scrollLeft;
 
-    scrollElement.classList.add("is-dragging");
+    el.classList.add("is-dragging");
   }
 
   function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
@@ -121,11 +264,11 @@ useEffect(() => {
 
     event.preventDefault();
 
-    const scrollElement = event.currentTarget;
-    const x = event.pageX - scrollElement.offsetLeft;
+    const el = event.currentTarget;
+    const x = event.pageX - el.offsetLeft;
     const walk = (x - startX.current) * 1.4;
 
-    scrollElement.scrollLeft = scrollLeft.current - walk;
+    el.scrollLeft = scrollLeft.current - walk;
   }
 
   function handleMouseUp(event: MouseEvent<HTMLDivElement>) {
@@ -133,18 +276,23 @@ useEffect(() => {
     event.currentTarget.classList.remove("is-dragging");
   }
 
+  /* =======================================================
+     FILTERED DATA
+  ======================================================= */
+
   const visibleCategories =
     activeFilter === "Todos"
       ? HIGHLIGHT_CATEGORIES
-      : HIGHLIGHT_CATEGORIES.filter((category) => category === activeFilter);
+      : HIGHLIGHT_CATEGORIES.filter((c) => c === activeFilter);
 
   const visiblePieces =
     activeFilter === "Todos"
       ? MOCK_PIECES
-      : MOCK_PIECES.filter((piece) => piece.category === activeFilter);
+      : MOCK_PIECES.filter((p) => p.category === activeFilter);
 
   return (
     <main className="brecho">
+
       <section className="brecho-hero">
 
           <div className="brecho-hero__curtain">
@@ -263,65 +411,90 @@ useEffect(() => {
           );
         })}
       </section>
+      
 
-      <section className="brecho-curadoria" id="curadoria">
-        <div className="curadoria-grid">
-          <div className="curadoria-image">
-            <div className="curadoria-image__placeholder">
-              <span className="placeholder-text">Acervo LIZ</span>
-            </div>
-          </div>
+<section className="reveal-cards">
+  {PROCESS_STEPS.map((card, i) => (
+    <div className="reveal-card" key={card.id}>
+      <article className="card">
+        <img src={card.image} alt={card.title} />
 
-          <div className="curadoria-text-block">
-            <h2 className="section-title">Curadoria</h2>
-
-            <p className="large-text">
-              A curadoria nasce do olhar, não da pressa.
-            </p>
-
-            <p>
-              Não acreditamos no descarte. Acreditamos no reinício. Ao buscar o
-              que já foi criado, procuramos a textura invisível do tempo, o
-              toque da costura e a atemporalidade da forma. Cada peça em nosso
-              acervo foi escolhida porque merece continuar sendo lida no mundo.
-            </p>
-
-            <div className="text-divider" />
-
-            <p className="small-text">
-              Memória materializada em tecido e modelagem.
-            </p>
-          </div>
+        <div className="card-content">
+          <h2>{card.title}</h2>
+          <p>{card.description}</p>
         </div>
-      </section>
+      </article>
+    </div>
+  ))}
+</section>
+
+<section className="theme-transition">
+  <div className="theme-transition__trigger">
+  </div>
+</section>
+
+<section className="curadoria-final">
+
+  <div className="curadoria-final__frame">
+
+    <div className="curadoria-final__hero">
+
+      <div
+          className="curadoria-final__content"
+          ref={finalContentRef}
+      >
+
+        <h2>
+            Pronta para um
+            <br />
+            novo capítulo.
+        </h2>
+
+        <p>
+            Cada peça carrega memórias,
+            detalhes e histórias que
+            merecem continuar existindo.
+        </p>
+
+        <a className="curadoria-final__button">
+            Encontrar minha próxima peça
+        </a>
+
+    </div>
 
 
+    <div className="curadoria-final__visual" ref={finalImageRef}>
 
-      <section className="brecho-manifesto">
-        <div className="manifesto-wrapper">
-          <div className="manifesto-content">
-            <p>“Você não veste apenas uma peça.</p>
-            <p>Você faz história e tendência com ela.”</p>
+      <div className="curadoria-final__image"></div>
 
-            <span className="manifesto-author">— LIZ Ateliê & Brechó</span>
-          </div>
+    </div>
+
+    </div>
+
+    <footer className="liz-footer">
+      <div className="liz-footer__inner">
+        <div className="liz-footer__brand">
+
+          <p>Peças selecionadas com intenção, identidade e tempo.</p>
+          
         </div>
-      </section>
 
-      <section className="brecho-outro">
-        <div className="brecho-outro-content">
-          <h2>Uma experiência sem urgência.</h2>
+        <nav className="liz-footer__nav" aria-label="Links institucionais">
+          <a href="/politica-de-privacidade">Política de Privacidade</a>
+          <a href="/informacoes-legais">Informações Legais</a>
+          <a href="/localizacao">Localização</a>
+        </nav>
 
-          <p>
-            Descubra as texturas, os detalhes da alfaiataria e a sutileza de
-            vestir algo que compartilha da mesma identidade que a sua.
-          </p>
-
-          <button type="button" className="brecho-outro-cta">
-            Explorar toda a curadoria
-          </button>
+        <div className="liz-footer__bottom">
+          <span>© {new Date().getFullYear()} — LIZ — Brechó & Ateliê. Todos os direitos reservados.</span>
         </div>
-      </section>
+      </div>
+    </footer>
+
+  </div>
+
+</section>
+
     </main>
   );
 }

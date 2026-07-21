@@ -2,7 +2,9 @@
 
 :root {
   --color-bg: #f7f6f3;
+   --color-bg-dark: #111111;
   --color-text-primary: #111111;
+  --color-text-primary-dark: #f5f5f5;
   --color-text-secondary: #767676;
   --color-text-tertiary: #a0a0a0;
   --color-border: #e2e1dd;
@@ -28,8 +30,6 @@
   min-height: 100vh;
   line-height: 1.6;
   overflow-x: hidden;
-  perspective: 1800px;
-  transform-style: preserve-3d;
 }
 
 h1, h2, h3, h4 {
@@ -295,7 +295,7 @@ button {
 
 @media (min-width: 900px) {
   .brecho-hero__visual {
-    height: 85vh; /* Estica mais no desktop */
+    height: 70vh; /* Estica mais no desktop */
   }
 }
 
@@ -664,3 +664,226 @@ button {
     gap: 1rem;
   }
 }
+
+
+
+/* =======================================================
+   STACKED CARDS
+======================================================= */
+
+.reveal-cards {
+  width: 100%;
+  padding: 120px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+}
+
+/* cada bloco */
+.reveal-card {
+  width: min(900px, 90vw);
+  margin: 0 auto;
+  position: relative;
+}
+
+/* card base */
+.card {
+  position: relative;
+  width: 100%;
+  height: 40rem;
+  border-radius: 24px;
+  overflow: hidden;
+
+  will-change: transform, opacity, filter;
+}
+
+/* imagem */
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* overlay escuro */
+.card-content {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 3rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  color: white;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+}
+
+/* título primeiro */
+.card-content h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+}
+
+/* depois descrição */
+.card-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* responsivo */
+@media (max-width: 768px) {
+  .card {
+    height: 30rem;
+    border-radius: 18px;
+  }
+
+  .card-content {
+    padding: 2rem;
+  }
+
+}
+
+/* ===========================================================
+   FINAL
+=========================================================== */
+
+.theme-transition{
+
+    position:relative;
+
+    height:50vh;
+
+}
+
+.theme-transition__trigger{
+
+    width:100%;
+
+    height:100%;
+
+}
+
+.curadoria-final{
+    width:100%;
+    padding:120px 0;
+}
+
+.curadoria-final__frame{
+    width:min(1400px,92%);
+    margin:0 auto;
+}
+
+.curadoria-final__hero{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:80px;
+}
+
+/* =======================
+   LADO ESQUERDO
+======================= */
+
+.curadoria-final__content{
+    flex:1;
+    max-width:500px;
+    transform: translateX(50px);
+}
+
+.curadoria-final__content h2{
+    font-family:"Cormorant Garamond", serif;
+    font-size:4.4rem;
+    line-height:1;
+    font-weight:500;
+    color:#ffffff;
+    margin-bottom:35px;
+    letter-spacing:-1px;
+}
+
+.curadoria-final__content p{
+    width:100%;
+    font-size:1rem;
+    line-height:1.9;
+    color:#6f6f6f;
+    margin-bottom:45px;
+    font-weight:300;
+}
+
+.curadoria-final__button{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:16px 34px;
+
+    background:#191919;
+    color:white;
+
+    text-decoration:none;
+    font-size:.95rem;
+    letter-spacing:.5px;
+    cursor:pointer;
+
+    transition:.35s;
+}
+
+.curadoria-final__button:hover{
+    background:#ffffff;
+    transform:translateY(-2px);
+    color: #111;
+    box-shadow:0 0px 50px rgba(255, 255, 255, 0.25);
+}
+
+
+/* =======================
+   IMAGEM
+======================= */
+
+.curadoria-final__visual{
+    flex:1;
+    display:flex;
+    justify-content:flex-end;
+    transform: translateX(70px);
+}
+
+.curadoria-final__image{
+
+    width:100%;
+    max-width:600px;
+
+    aspect-ratio:1.15;
+
+    background-image:url("../../../assets/brecho/loja.png");
+    background-size:cover;
+    background-position:center;
+
+    border-radius:220px 0px 0px 220px;
+
+    overflow:hidden;
+
+
+
+}
+
+.liz-footer {
+    transform: translateY(50px);
+    padding: 2.8rem 18px;
+  }
+
+  .liz-footer__nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .liz-footer__nav a {
+    font-size: 0.68rem;
+  }
+
+  .liz-footer__bottom {
+    font-size: 0.62rem;
+  }

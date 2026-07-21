@@ -1,4 +1,5 @@
 import { gsap } from "../../animations/gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 export function animateBrechoPage() {
   const container = document.querySelector(".brecho");
@@ -117,7 +118,6 @@ export function animateBrechoPage() {
     animations.forEach((animation) => animation.kill());
   };
 }
-
 
 
 export function animateHeroScroll() {
@@ -436,3 +436,94 @@ export function animateFilterChange() {
   );
 }
 
+gsap.registerPlugin(ScrollTrigger);
+
+export function animateBrechoProcessStackWithHeaders() {
+  const cards = gsap.utils.toArray<HTMLElement>(".card");
+
+  cards.forEach((card, i) => {
+    const fromX = i % 2 === 0 ? -120 : 120;
+
+    gsap.fromTo(
+      card,
+      {
+        opacity: 0,
+        x: fromX,
+        scale: 0.96,
+        filter: "blur(16px)",
+      },
+      {
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        filter: "blur(0px)",
+        ease: "power3.out",
+        duration: 0.9,
+
+        scrollTrigger: {
+          trigger: card,
+          start: "top 80%",
+          end: "top 55%",
+          toggleActions: "play none none reverse",
+
+          invalidateOnRefresh: true,
+          // markers: true,
+        },
+      }
+    );
+  });
+}
+
+export function animateThemeTransition() {
+  console.log("animateThemeTransition executou");
+
+  const ctx = gsap.context(() => {
+    const page = document.querySelector<HTMLElement>(".brecho");
+
+    if (!page) {
+      console.warn("Elemento .brecho não encontrado");
+      return;
+    }
+
+    console.log("Página encontrada:", page);
+
+    ScrollTrigger.create({
+      trigger: ".theme-transition",
+
+      start: "top 30%",
+
+      markers: false,
+
+      onEnter: () => {
+        console.log("ENTROU");
+
+        gsap.to(page, {
+          backgroundColor: "#000000",
+          duration: 0.55,
+          ease: "power2.inOut",
+          overwrite: true,
+
+          onComplete: () => {
+            console.log(
+              "Background final:",
+              getComputedStyle(page).backgroundColor
+            );
+          },
+        });
+      },
+
+      onLeaveBack: () => {
+        console.log("VOLTANDO");
+
+        gsap.to(page, {
+          backgroundColor: "#f7f6f3",
+          duration: 0.55,
+          ease: "power2.inOut",
+          overwrite: true,
+        });
+      },
+    });
+  });
+
+  return () => ctx.revert();
+}             

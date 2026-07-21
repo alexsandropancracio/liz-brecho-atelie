@@ -7,6 +7,7 @@ import { Atelie } from "../pages/Atelie";
 
 import { PageRouteWrapper } from "../components/PageRouteWrapper";
 
+
 export function AppRoutes() {
   const location = useLocation();
 
