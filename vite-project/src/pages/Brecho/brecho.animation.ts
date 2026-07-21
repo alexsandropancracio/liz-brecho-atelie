@@ -324,7 +324,7 @@ export function animateCollectionEntrance() {
       cards,
       {
         opacity: 0,
-        x: 100,
+        x: 0,
         scale: 0.96,
         filter: "blur(16px)",
       },

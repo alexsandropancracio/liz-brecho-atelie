@@ -216,7 +216,7 @@ useEffect(() => {
 
         .from(finalImageRef.current, {
 
-            x: 150,
+            xPercent:30,
             opacity: 0,
             duration: 1.3,
             ease: "power3.out"
@@ -463,9 +463,12 @@ useEffect(() => {
     </div>
 
 
-    <div className="curadoria-final__visual" ref={finalImageRef}>
+    <div className="curadoria-final__visual">
 
-      <div className="curadoria-final__image"></div>
+        <div 
+          className="curadoria-final__image"
+          ref={finalImageRef}
+        />
 
     </div>
 
@@ -492,6 +495,7 @@ useEffect(() => {
     </footer>
 
   </div>
+
 
 </section>
 
