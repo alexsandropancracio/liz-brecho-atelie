@@ -870,6 +870,75 @@ button {
 
 }
 
+/* ===========================================================
+   CURADORIA FINAL - MOBILE
+=========================================================== */
+
+@media (max-width: 768px) {
+  
+
+    .curadoria-final{
+        padding:80px 0;
+    }
+
+    .curadoria-final__frame{
+        width:92%;
+    }
+
+    .curadoria-final__hero{
+        flex-direction:column-reverse;
+        align-items:center;
+        gap:50px;
+    }
+
+    /* =======================
+       TEXTO
+    ======================= */
+
+    .curadoria-final__content{
+        max-width:100%;
+        text-align:center;
+        transform:none;
+    }
+
+    .curadoria-final__content h2{
+        font-size:3rem;
+        margin-bottom:25px;
+        line-height:1.1;
+    }
+
+    .curadoria-final__content p{
+        font-size:.95rem;
+        line-height:1.8;
+        margin-bottom:35px;
+    }
+
+    .curadoria-final__button{
+        width:100%;
+        max-width:340px;
+        padding:18px 24px;
+    }
+
+    /* =======================
+       IMAGEM
+    ======================= */
+
+    .curadoria-final__visual{
+        width:100%;
+        justify-content:center;
+        transform:none;
+    }
+
+    .curadoria-final__image{
+        width:100%;
+        max-width:420px;
+        max-height: 800px;
+        aspect-ratio:0.95;
+        border-radius:180px 180px 0px 0px;
+    }
+
+}
+
 .liz-footer {
     transform: translateY(50px);
     padding: 2.8rem 18px;
