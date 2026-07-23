@@ -192,40 +192,59 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+    const mm = gsap.matchMedia();
 
-    const ctx = gsap.context(() => {
+    mm.add("(max-width: 768px)", () => {
 
-        const tl = gsap.timeline({
+        gsap.timeline({
+            scrollTrigger: {
+                trigger: ".curadoria-final",
+                start: "top 60%",
+                toggleActions: "play none none reverse",
+                markers: true,
+            }
+        })
+        .from(finalContentRef.current, {
+            y: 40,
+            opacity: 0,
+            duration: 1,
+            delay: 0.5,
+            ease: "power3.out"
+        })
+        .from(finalImageRef.current, {
+            y: 50,
+            opacity: 0,
+            duration: 1,
+            ease: "power3.out"
+        }, "-=0.7");
 
+    });
+
+    mm.add("(min-width: 769px)", () => {
+
+        gsap.timeline({
             scrollTrigger: {
                 trigger: ".curadoria-final",
                 start: "top 75%",
                 toggleActions: "play none none reverse",
             }
-
-        });
-
-        tl.from(finalContentRef.current, {
-
+        })
+        .from(finalContentRef.current, {
             x: -150,
             opacity: 0,
             duration: 1.3,
             ease: "power3.out"
-
         })
-
         .from(finalImageRef.current, {
-
-            xPercent:30,
+            xPercent: 30,
             opacity: 0,
             duration: 1.3,
             ease: "power3.out"
-
         }, "-=1");
 
     });
 
-    return () => ctx.revert();
+    return () => mm.revert();
 
 }, []);
 
@@ -439,10 +458,8 @@ useEffect(() => {
 
     <div className="curadoria-final__hero">
 
-      <div
-          className="curadoria-final__content"
-          ref={finalContentRef}
-      >
+      <div className="curadoria-final__content"
+          ref={finalContentRef}>
 
         <h2>
             Pronta para um
@@ -460,7 +477,7 @@ useEffect(() => {
             Encontrar minha próxima peça
         </a>
 
-    </div>
+      </div>
 
 
     <div className="curadoria-final__visual">
@@ -495,7 +512,6 @@ useEffect(() => {
     </footer>
 
   </div>
-
 
 </section>
 
