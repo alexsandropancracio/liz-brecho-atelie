@@ -201,7 +201,7 @@ useEffect(() => {
                 trigger: ".curadoria-final",
                 start: "top 60%",
                 toggleActions: "play none none reverse",
-                markers: true,
+                markers: false,
             }
         })
         .from(finalContentRef.current, {
