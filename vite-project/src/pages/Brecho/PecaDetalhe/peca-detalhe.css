@@ -1,0 +1,708 @@
+
+/* =========================================================
+   LIZ — BRECHÓ & ATELIÊ
+   Página de detalhes da peça
+   Editorial de moda | Luxo silencioso
+   ========================================================= */
+
+/* ---------- 1. Base da página ---------- */
+
+
+.peca-detalhe {
+  --peca-bg: #faf9f6;
+  --peca-text: #1a1c1c;
+  --peca-muted: #777570;
+  --peca-line: #dedbd4;
+  --peca-accent: #87745f;
+
+  /* Ajuste conforme a altura real do navbar fixo. */
+  --navbar-height: 60px;
+
+  min-height: 100vh;
+  width: 100%;
+  padding: calc(var(--navbar-height) + 24px) 4.5vw 48px;
+
+  background-color: var(--peca-bg);
+  color: var(--peca-text);
+
+  font-family: "Be Vietnam Pro", sans-serif;
+}
+
+
+/* ---------- 2. Cabeçalho ---------- */
+
+.peca-detalhe__header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+
+  width: 100%;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--peca-line);
+}
+
+.peca-detalhe__back {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 10px;
+
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+
+  color: var(--peca-muted);
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+
+  cursor: pointer;
+  transition: color 250ms ease;
+}
+
+.peca-detalhe__back:hover {
+  color: var(--peca-text);
+}
+
+.peca-detalhe__back:focus-visible {
+  outline: 1px solid var(--peca-accent);
+  outline-offset: 5px;
+}
+
+.peca-detalhe__brand {
+  justify-self: center;
+
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.peca-detalhe__code {
+  justify-self: right;
+
+  color: var(--peca-muted);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* ---------- 3. Layout principal ---------- */
+
+.peca-detalhe__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 76px);
+
+  width: 100%;
+  max-width: 1800px;
+  margin: 24px auto 0;
+}
+
+/* ---------- 4. Galeria ---------- */
+
+.peca-detalhe__gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+/* Foto principal: ocupa a altura útil do desktop. */
+.peca-detalhe__main-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: clamp(420px, calc(100vh - 150px), 820px);
+  overflow: hidden;
+
+  background-color: #eeece6;
+}
+
+.peca-detalhe__main-image img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+
+  animation: peca-image-reveal 450ms ease both;
+}
+
+/* Entrada suave ao selecionar outra foto. */
+@keyframes peca-image-reveal {
+  from {
+    opacity: 0.65;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- 5. Miniaturas ---------- */
+
+.peca-detalhe__thumbnails {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 2px 1px 8px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #c7c1b7 transparent;
+}
+
+.peca-detalhe__thumbnails::-webkit-scrollbar {
+  height: 4px;
+}
+
+.peca-detalhe__thumbnails::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.peca-detalhe__thumbnails::-webkit-scrollbar-thumb {
+  background-color: #c7c1b7;
+}
+
+/* Cada miniatura é um botão selecionável. */
+.peca-detalhe__thumbnail {
+  position: relative;
+  flex: 0 0 76px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  padding: 0;
+
+  border: 1px solid transparent;
+  background-color: #eeece6;
+
+  cursor: pointer;
+  opacity: 0.68;
+
+  transition:
+    opacity 250ms ease,
+    border-color 250ms ease;
+}
+
+.peca-detalhe__thumbnail img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.peca-detalhe__thumbnail:hover {
+  opacity: 1;
+}
+
+.peca-detalhe__thumbnail--active {
+  border-color: var(--peca-text);
+  opacity: 1;
+}
+
+.peca-detalhe__thumbnail:focus-visible {
+  outline: 1px solid var(--peca-accent);
+  outline-offset: 3px;
+}
+
+.peca-detalhe__thumbnail-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  color: var(--peca-muted);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+}
+
+/* ---------- 6. Placeholder da foto principal ---------- */
+
+.peca-detalhe__image-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  padding: 24px;
+
+  background-color: #eeece6;
+  color: var(--peca-muted);
+  text-align: center;
+}
+
+.peca-detalhe__image-placeholder span {
+  font-family: "Noto Serif", serif;
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 300;
+}
+
+.peca-detalhe__image-placeholder small {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* ---------- 7. Informações da peça ---------- */
+
+.peca-detalhe__information {
+  position: sticky;
+  top: 24px;
+
+  min-width: 0;
+  padding-top: 24px;
+}
+
+.peca-detalhe__eyebrow {
+  display: block;
+  margin-bottom: 20px;
+
+  color: var(--peca-muted);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1.8;
+  text-transform: uppercase;
+}
+
+.peca-detalhe__information h1 {
+  max-width: 600px;
+  margin-bottom: 18px;
+
+  font-family: "Noto Serif", serif;
+  font-size: clamp(36px, 3.4vw, 58px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+
+  overflow-wrap: anywhere;
+}
+
+.peca-detalhe__description {
+  max-width: 440px;
+  margin-bottom: 24px;
+
+  color: #66645f;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.9;
+}
+
+.peca-detalhe__price {
+  margin-bottom: 28px;
+
+  font-family: "Noto Serif", serif;
+  font-size: 25px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- 8. Atributos ---------- */
+
+.peca-detalhe__attributes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+
+  padding: 22px 0;
+  border-top: 1px solid var(--peca-line);
+  border-bottom: 1px solid var(--peca-line);
+}
+
+.peca-detalhe__attributes > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+
+  min-width: 0;
+}
+
+.peca-detalhe__attributes span {
+  color: var(--peca-muted);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+.peca-detalhe__attributes strong {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- 9. Medidas e detalhes ---------- */
+
+.peca-detalhe__section {
+  padding: 28px 0;
+  border-bottom: 1px solid var(--peca-line);
+}
+
+.peca-detalhe__section h2 {
+  margin-bottom: 20px;
+
+  font-family: "Noto Serif", serif;
+  font-size: 23px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.peca-detalhe__section dl {
+  display: flex;
+  flex-direction: column;
+}
+
+.peca-detalhe__section dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+
+  padding: 12px 0;
+  border-bottom: 1px solid #e9e6df;
+}
+
+.peca-detalhe__section dl > div:last-child {
+  border-bottom: 0;
+}
+
+.peca-detalhe__section dt {
+  color: var(--peca-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.peca-detalhe__section dd {
+  color: var(--peca-text);
+  font-size: 11px;
+  line-height: 1.7;
+  text-align: right;
+}
+
+.peca-detalhe__section ul {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  padding-left: 17px;
+}
+
+.peca-detalhe__section li {
+  padding-left: 4px;
+
+  color: #66645f;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.peca-detalhe__section li::marker {
+  color: var(--peca-accent);
+}
+
+/* ---------- 10. Nota de conferência ---------- */
+
+.peca-detalhe__note {
+  margin-top: 22px;
+
+  color: #89867f;
+  font-size: 9px;
+  font-weight: 300;
+  line-height: 1.9;
+}
+
+/* ---------- 11. Peça não encontrada ---------- */
+
+.peca-detalhe--not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 70vh;
+  padding-top: 80px;
+  padding-bottom: 80px;
+
+  text-align: center;
+}
+
+.peca-detalhe--not-found .peca-detalhe__eyebrow {
+  margin-bottom: 28px;
+}
+
+.peca-detalhe--not-found h1 {
+  max-width: 600px;
+  margin-bottom: 18px;
+
+  font-family: "Noto Serif", serif;
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 300;
+  line-height: 1.15;
+}
+
+.peca-detalhe--not-found p {
+  max-width: 420px;
+  margin-bottom: 28px;
+
+  color: var(--peca-muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.peca-detalhe--not-found button {
+  padding: 14px 22px;
+  border: 1px solid var(--peca-text);
+  background: transparent;
+
+  color: var(--peca-text);
+  font: inherit;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
+}
+
+.peca-detalhe--not-found button:hover {
+  background-color: var(--peca-text);
+  color: var(--peca-bg);
+}
+
+.peca-detalhe--not-found button:focus-visible {
+  outline: 1px solid var(--peca-accent);
+  outline-offset: 4px;
+}
+
+/* ---------- 12. Telas intermediárias ---------- */
+
+/* TESTE TEMPORÁRIO — verificar a visibilidade do cabeçalho */
+.peca-detalhe > .peca-detalhe__header {
+  display: grid;
+  visibility: visible;
+  opacity: 1;
+  position: relative;
+  z-index: 10;
+  color: #1a1c1c;
+  background-color: #faf9f6;
+}
+
+.peca-detalhe__header .peca-detalhe__back,
+.peca-detalhe__header .peca-detalhe__brand,
+.peca-detalhe__header .peca-detalhe__code {
+  visibility: visible;
+  opacity: 1;
+}
+
+@media (max-width: 1000px) {
+  .peca-detalhe {
+    padding-right: 3vw;
+    padding-left: 3vw;
+  }
+
+  .peca-detalhe__content {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
+    gap: 28px;
+  }
+
+  .peca-detalhe__main-image {
+    height: clamp(380px, calc(100vh - 150px), 700px);
+  }
+
+  .peca-detalhe__information {
+    position: static;
+    padding-top: 12px;
+  }
+
+  .peca-detalhe__attributes {
+    gap: 9px;
+  }
+
+  .peca-detalhe__attributes span {
+    font-size: 8px;
+  }
+
+  .peca-detalhe__attributes strong {
+    font-size: 10px;
+  }
+
+  .peca-detalhe__thumbnail {
+    flex-basis: 64px;
+  }
+}
+
+/* ---------- 13. Celulares ---------- */
+
+@media (max-width: 640px) {
+  .peca-detalhe {
+    padding: 18px 18px 56px;
+  }
+
+  .peca-detalhe__header {
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    padding-bottom: 16px;
+  }
+
+  .peca-detalhe__brand {
+    display: none;
+  }
+
+  .peca-detalhe__back {
+    font-size: 10px;
+  }
+
+  .peca-detalhe__code {
+    font-size: 8px;
+  }
+
+  .peca-detalhe__content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    margin-top: 20px;
+  }
+
+  .peca-detalhe__gallery {
+    gap: 10px;
+  }
+
+  .peca-detalhe__main-image {
+    height: min(68svh, 620px);
+    min-height: 360px;
+  }
+
+  .peca-detalhe__main-image img {
+    object-fit: contain;
+  }
+
+  .peca-detalhe__thumbnails {
+    gap: 8px;
+  }
+
+  .peca-detalhe__thumbnail {
+    flex-basis: 62px;
+  }
+
+  .peca-detalhe__information {
+    padding-top: 0;
+  }
+
+  .peca-detalhe__eyebrow {
+    margin-bottom: 14px;
+    font-size: 8px;
+  }
+
+  .peca-detalhe__information h1 {
+    margin-bottom: 15px;
+    font-size: clamp(36px, 10vw, 48px);
+  }
+
+  .peca-detalhe__description {
+    margin-bottom: 20px;
+    font-size: 12px;
+  }
+
+  .peca-detalhe__price {
+    margin-bottom: 24px;
+    font-size: 23px;
+  }
+
+  .peca-detalhe__attributes {
+    gap: 10px;
+    padding: 18px 0;
+  }
+
+  .peca-detalhe__attributes > div {
+    gap: 8px;
+  }
+
+  .peca-detalhe__attributes span {
+    font-size: 8px;
+    line-height: 1.5;
+  }
+
+  .peca-detalhe__attributes strong {
+    font-size: 10px;
+  }
+
+  .peca-detalhe__section {
+    padding: 24px 0;
+  }
+
+  .peca-detalhe__section h2 {
+    margin-bottom: 16px;
+    font-size: 22px;
+  }
+
+  .peca-detalhe__section dl > div {
+    gap: 12px;
+    padding: 11px 0;
+  }
+
+  .peca-detalhe__section dt,
+  .peca-detalhe__section dd {
+    font-size: 10px;
+  }
+}
+
+/* ---------- 14. Celulares muito pequenos ---------- */
+
+@media (max-width: 360px) {
+  .peca-detalhe {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .peca-detalhe__main-image {
+    min-height: 300px;
+  }
+
+  .peca-detalhe__attributes {
+    gap: 7px;
+  }
+
+  .peca-detalhe__attributes span {
+    letter-spacing: 0;
+  }
+
+  .peca-detalhe__thumbnail {
+    flex-basis: 56px;
+  }
+}
+
+/* ---------- 15. Acessibilidade ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .peca-detalhe__main-image img,
+  .peca-detalhe__back,
+  .peca-detalhe__thumbnail,
+  .peca-detalhe--not-found button {
+    animation: none;
+    transition: none;
+  }
+}

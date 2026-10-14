@@ -1,10 +1,21 @@
 import "./brecho.css";
-import { useEffect, useRef, useState, useLayoutEffect } from "react";
-import type { MouseEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useLayoutEffect,
+  useMemo,
+} from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
+import {
+  useNavigate,
+  useLocation,
+  useNavigationType,
+} from "react-router-dom";
 
 import { gsap } from "../../animations/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useCollectionNavigation } from "../../animations/hooks/useCollectionNavigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,31 +35,27 @@ import revisaoImage from "../../../assets/brecho/img3.png";
 import preparacaoImage from "../../../assets/brecho/img4.png";
 import toqueFinalImage from "../../../assets/brecho/img5.png";
 
+import { MOCK_PIECES } from "./brecho.data";
+import type { Category, Piece } from "./brecho.data";
+
 /* =======================================================
    TYPES
 ======================================================= */
 
-type Category = "Todos" | "Feminino" | "Masculino" | "Infantil";
-type HighlightCategory = Exclude<Category, "Todos">;
+type FilterCategory = "Todos" | Category;
+type HighlightCategory = Category;
+
+type CatalogReturnPosition = {
+  scrollY: number;
+  category: HighlightCategory;
+  scrollLeft: number;
+  activeFilter: FilterCategory;
+};
 
 /* =======================================================
    DATA
 ======================================================= */
 
-const MOCK_PIECES = Array.from({ length: 30 }, (_, i) => {
-  const categories: HighlightCategory[] = [
-    "Feminino",
-    "Masculino",
-    "Infantil",
-  ];
-
-  return {
-    id: String(i + 1).padStart(2, "0"),
-    name: `LIZ Editorial — Peça ${i + 1}`,
-    category: categories[i % 3],
-    description: "Espaço reservado para proporções e caimento da peça.",
-  };
-});
 
 const HIGHLIGHT_CATEGORIES: HighlightCategory[] = [
   "Feminino",
@@ -105,18 +112,42 @@ const PROCESS_STEPS = [
 
 export function Brecho() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { startTransition } = useRouteTransition();
 
-  const [activeFilter, setActiveFilter] = useState<Category>("Todos");
+  // Informações recebidas quando voltamos dos detalhes de uma peça.
+  const restoreCatalog = (
+    location.state as { restoreCatalog?: CatalogReturnPosition } | null
+  )?.restoreCatalog;
+
+  // Mantém o filtro anterior ao retornar ao catálogo.
+  const [activeFilter, setActiveFilter] = useState<FilterCategory>(
+    restoreCatalog?.activeFilter ?? "Todos"
+  );
+
+  
+  const {
+    getContainerRef,
+    navigation,
+    scrollToGroup,
+    updateActiveGroup,
+  } = useCollectionNavigation();
 
   /* =======================================================
      DRAG SCROLL
   ======================================================= */
 
-  const scrollRefs = useRef<HTMLDivElement[]>([]);
   const isDragging = useRef(false);
+  const isPointerDown = useRef(false);
+  const hasDragged = useRef(false);
+
   const startX = useRef(0);
+  const startY = useRef(0);
   const scrollLeft = useRef(0);
+
+  const gestureDirection = useRef<"pending" | "horizontal" | "vertical">(
+    "pending"
+  );
   const finalContentRef = useRef<HTMLDivElement>(null);
   const finalImageRef = useRef<HTMLDivElement>(null);
 
@@ -129,12 +160,47 @@ export function Brecho() {
      HERO ANIMATIONS
   ======================================================= */
 
-  useEffect(() => {
+useLayoutEffect(() => {
+  // Ao carregar ou atualizar o catálogo, começa no topo.
+  // Ao voltar dos detalhes, preserva a posição restaurada.
+  if (!restoreCatalog) {
+    window.history.scrollRestoration = "manual";
     window.scrollTo(0, 0);
+  }
 
-    const cleanup = animateBrechoPage();
+  const frameId = requestAnimationFrame(() => {
+    if (!restoreCatalog) {
+      window.scrollTo(0, 0);
+    }
+  });
 
-    return () => cleanup?.();
+  return () => {
+    cancelAnimationFrame(frameId);
+  };
+}, []);
+
+  useLayoutEffect(() => {
+    if (!restoreCatalog) return;
+
+    // Aguarda o navegador preparar o layout antes de restaurar as posições.
+    const frameId = requestAnimationFrame(() => {
+      // Restaura a posição vertical da página.
+      window.scrollTo(0, restoreCatalog.scrollY);
+
+      // Restaura a posição horizontal da categoria visitada.
+      const scroller = document.querySelector<HTMLElement>(
+        `.collection-highlight-scroll[data-category="${restoreCatalog.category}"]`
+      );
+
+      if (scroller) {
+        scroller.scrollLeft = restoreCatalog.scrollLeft;
+      }
+
+      // Atualiza os cálculos das animações após a restauração.
+      ScrollTrigger.refresh();
+    });
+
+    return () => cancelAnimationFrame(frameId);
   }, []);
 
   useEffect(() => {
@@ -268,32 +334,87 @@ useEffect(() => {
      DRAG SCROLL
   ======================================================= */
 
-  function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
-    const el = event.currentTarget;
+  
+function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+  // Ignora cliques de outros botões do mouse.
+  if (event.pointerType === "mouse" && event.button !== 0) return;
 
+  isPointerDown.current = true;
+  isDragging.current = false;
+  hasDragged.current = false;
+  gestureDirection.current = "pending";
+
+  startX.current = event.clientX;
+  startY.current = event.clientY;
+  scrollLeft.current = event.currentTarget.scrollLeft;
+}
+
+function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+  if (!isPointerDown.current) return;
+
+  const deltaX = event.clientX - startX.current;
+  const deltaY = event.clientY - startY.current;
+
+  // Aguarda um pequeno movimento para identificar a intenção do usuário.
+  if (gestureDirection.current === "pending") {
+    if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 6) return;
+
+    gestureDirection.current =
+      Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
+  }
+
+  // Se o movimento for vertical, deixa a página rolar normalmente.
+  if (gestureDirection.current === "vertical") return;
+
+  // Só considera arraste depois de identificar movimento horizontal.
+  if (!isDragging.current) {
     isDragging.current = true;
-    startX.current = event.pageX - el.offsetLeft;
-    scrollLeft.current = el.scrollLeft;
+    hasDragged.current = true;
 
-    el.classList.add("is-dragging");
+    event.currentTarget.classList.add("is-dragging");
+
+    // Mantém o acompanhamento do ponteiro durante o arraste.
+    event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
-    if (!isDragging.current) return;
+  event.preventDefault();
 
-    event.preventDefault();
+  // Desloca o catálogo no sentido oposto ao movimento do ponteiro.
+  event.currentTarget.scrollLeft = scrollLeft.current - deltaX * 1.4;
+}
 
-    const el = event.currentTarget;
-    const x = event.pageX - el.offsetLeft;
-    const walk = (x - startX.current) * 1.4;
+function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
+  isPointerDown.current = false;
+  isDragging.current = false;
 
-    el.scrollLeft = scrollLeft.current - walk;
+  event.currentTarget.classList.remove("is-dragging");
+
+  // Libera a captura quando ela estiver ativa.
+  if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+    event.currentTarget.releasePointerCapture(event.pointerId);
   }
 
-  function handleMouseUp(event: MouseEvent<HTMLDivElement>) {
-    isDragging.current = false;
-    event.currentTarget.classList.remove("is-dragging");
-  }
+  // Não zeramos hasDragged aqui: o clique subsequente ainda precisa
+  // saber que houve um arraste. Um novo pointerdown redefine a referência.
+}
+
+
+  /* =======================================================
+   GROUPED PIECES
+======================================================= */
+
+const groupedPieces = useMemo(() => {
+  return HIGHLIGHT_CATEGORIES.reduce(
+    (accumulator, category) => {
+      accumulator[category] = MOCK_PIECES.filter(
+        (piece) => piece.category === category
+      );
+
+      return accumulator;
+    },
+    {} as Record<HighlightCategory, Piece[]>
+  );
+}, []);
 
   /* =======================================================
      FILTERED DATA
@@ -363,7 +484,7 @@ useEffect(() => {
           </div>
 
           <div className="collection-filters">
-            {(["Todos", "Feminino", "Masculino", "Infantil"] as Category[]).map(
+            {(["Todos", "Feminino", "Masculino", "Infantil"] as FilterCategory[]).map(
               (category) => (
                 <button
                   key={category}
@@ -380,10 +501,8 @@ useEffect(() => {
           </div>
         </div>
 
-        {visibleCategories.map((category, index) => {
-          const categoryPieces = MOCK_PIECES.filter(
-            (piece) => piece.category === category
-          );
+        {visibleCategories.map((category) => {
+          const categoryPieces = groupedPieces[category];
 
           return (
             <div className="collection-highlight-group" key={category}>
@@ -392,19 +511,51 @@ useEffect(() => {
                 <small>{categoryPieces.length} peças</small>
               </div>
 
-              <div
-                className="collection-highlight-scroll"
-                ref={(element) => {
-                  if (element) scrollRefs.current[index] = element;
-                }}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
+                <div
+                  className="collection-highlight-scroll"
+                  data-category={category}
+                  ref={getContainerRef(category, categoryPieces.length)}
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerEnd}
+                  onPointerCancel={handlePointerEnd}
+                  onPointerLeave={handlePointerEnd}
+                  onScroll={() => updateActiveGroup(category)}
+                >
 
-              >
                 {categoryPieces.map((piece) => (
-                  <article className="collection-item" key={piece.id}>
+                  
+                    <article
+                      className="collection-item"
+                      key={piece.id}
+                      onClick={(event) => {
+                        // Se houve arraste, cancela a navegação.
+                        if (hasDragged.current) {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          hasDragged.current = false;
+                          return;
+                        }
+
+                        // Abre os detalhes da peça clicada.
+                      // Localiza o carrossel horizontal em que a peça está.
+                      const scroller = event.currentTarget.closest(
+                        ".collection-highlight-scroll"
+                      ) as HTMLDivElement | null;
+
+                      // Abre os detalhes enviando a posição atual do catálogo.
+                      navigate(`/brecho/peca/${encodeURIComponent(piece.id)}`, {
+                        state: {
+                          catalogPosition: {
+                            scrollY: window.scrollY,
+                            category,
+                            scrollLeft: scroller?.scrollLeft ?? 0,
+                            activeFilter,
+                          } satisfies CatalogReturnPosition,
+                        },
+                      });
+                      }}
+                    >
                     <div className="collection-item__image-wrapper placeholder">
                       <span className="placeholder-text">Espaço da Peça</span>
 
@@ -426,6 +577,31 @@ useEffect(() => {
                   </article>
                 ))}
               </div>
+
+              
+              <div className="collection-highlight-navigation">
+                {Array.from({
+                  length: navigation[category]?.totalGroups ?? 0,
+                }).map((_, groupIndex) => {
+                  const isActive =
+                    navigation[category]?.activeGroup === groupIndex;
+
+                  return (
+                    <button
+                      key={groupIndex}
+                      type="button"
+                      className={`collection-highlight-navigation__button ${
+                        isActive ? "is-active" : ""
+                      }`}
+                      aria-label={`Mostrar grupo ${groupIndex + 1} de ${category}`}
+                      aria-current={isActive ? "page" : undefined}
+                      onClick={() => scrollToGroup(category, groupIndex)}
+                    >
+                      {String(groupIndex + 1).padStart(2, "0")}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           );
         })}
@@ -433,7 +609,7 @@ useEffect(() => {
       
 
 <section className="reveal-cards">
-  {PROCESS_STEPS.map((card, i) => (
+  {PROCESS_STEPS.map((card) => (
     <div className="reveal-card" key={card.id}>
       <article className="card">
         <img src={card.image} alt={card.title} />

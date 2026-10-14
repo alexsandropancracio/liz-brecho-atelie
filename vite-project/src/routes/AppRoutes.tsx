@@ -1,12 +1,13 @@
+
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import { Home } from "../pages/Home";
 import { Brecho } from "../pages/Brecho";
+import { PecaDetalhe } from "../pages/Brecho/PecaDetalhe";
 import { Atelie } from "../pages/Atelie";
 
 import { PageRouteWrapper } from "../components/PageRouteWrapper";
-
 
 export function AppRoutes() {
   const location = useLocation();
@@ -33,7 +34,16 @@ export function AppRoutes() {
         />
 
         <Route
-          path="/"
+          path="/brecho/peca/:id"
+          element={
+            <PageRouteWrapper>
+              <PecaDetalhe />
+            </PageRouteWrapper>
+          }
+        />
+
+        <Route
+          path="/atelie"
           element={
             <PageRouteWrapper>
               <Atelie />
@@ -62,3 +72,4 @@ export function AppRoutes() {
     </AnimatePresence>
   );
 }
+
