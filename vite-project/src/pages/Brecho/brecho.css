@@ -699,6 +699,54 @@ button {
 }
 
 /* =======================================================
+   PRICE & SIZE
+======================================================= */
+
+
+.collection-item__details {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.85rem;
+
+  border-bottom: 1px solid var(--color-placeholder);
+}
+
+
+.collection-item__size,
+.collection-item__price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.collection-item__label {
+  font-size: 0.65rem;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.collection-item__value {
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
+}
+
+.collection-item__price {
+  align-items: flex-end;
+}
+
+.collection-item__price .collection-item__value {
+  font-size: 1.05rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
+/* =======================================================
    MOBILE
 ======================================================= */
 

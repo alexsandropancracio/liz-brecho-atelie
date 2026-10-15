@@ -120,12 +120,25 @@ export function Brecho() {
     location.state as { restoreCatalog?: CatalogReturnPosition } | null
   )?.restoreCatalog;
 
-  // Mantém o filtro anterior ao retornar ao catálogo.
+  // Identifica se esta montagem aconteceu após uma recarga do documento.
+  const isReloadRef = useRef<boolean | null>(null);
+
+  if (isReloadRef.current === null) {
+    isReloadRef.current =
+      sessionStorage.getItem("brecho:reload") === "1";
+
+    if (isReloadRef.current) {
+      sessionStorage.removeItem("brecho:reload");
+    }
+  }
+
+  // Mantém o filtro anterior ao retornar, mas reinicia após F5.
   const [activeFilter, setActiveFilter] = useState<FilterCategory>(
-    restoreCatalog?.activeFilter ?? "Todos"
+    isReloadRef.current
+      ? "Todos"
+      : restoreCatalog?.activeFilter ?? "Todos"
   );
 
-  
   const {
     getContainerRef,
     navigation,
@@ -154,40 +167,49 @@ export function Brecho() {
   /* =======================================================
      STACKED CARDS REFS
   ======================================================= */
+  
+  useEffect(() => {
+    const markReload = () => {
+      sessionStorage.setItem("brecho:reload", "1");
+    };
+
+    window.addEventListener("beforeunload", markReload);
+
+    return () => {
+      window.removeEventListener("beforeunload", markReload);
+    };
+  }, []);
 
 
   /* =======================================================
      HERO ANIMATIONS
   ======================================================= */
 
-useLayoutEffect(() => {
-  // Ao carregar ou atualizar o catálogo, começa no topo.
-  // Ao voltar dos detalhes, preserva a posição restaurada.
-  if (!restoreCatalog) {
-    window.history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
-  }
+  useLayoutEffect(() => {
+    // Após F5, ignora qualquer posição salva e começa no topo.
+    if (isReloadRef.current) {
+      window.history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+      return;
+    }
 
-  const frameId = requestAnimationFrame(() => {
+    // Sem posição salva, começa no topo.
+    // Com posição salva, deixa o segundo efeito restaurá-la.
     if (!restoreCatalog) {
+      window.history.scrollRestoration = "manual";
       window.scrollTo(0, 0);
     }
-  });
-
-  return () => {
-    cancelAnimationFrame(frameId);
-  };
-}, []);
+  }, []);
 
   useLayoutEffect(() => {
-    if (!restoreCatalog) return;
+    // Nunca restaura uma posição antiga depois de F5.
+    if (isReloadRef.current || !restoreCatalog) return;
 
-    // Aguarda o navegador preparar o layout antes de restaurar as posições.
     const frameId = requestAnimationFrame(() => {
       // Restaura a posição vertical da página.
       window.scrollTo(0, restoreCatalog.scrollY);
 
-      // Restaura a posição horizontal da categoria visitada.
+      // Restaura a posição horizontal do carrossel.
       const scroller = document.querySelector<HTMLElement>(
         `.collection-highlight-scroll[data-category="${restoreCatalog.category}"]`
       );
@@ -196,12 +218,13 @@ useLayoutEffect(() => {
         scroller.scrollLeft = restoreCatalog.scrollLeft;
       }
 
-      // Atualiza os cálculos das animações após a restauração.
+      // Atualiza os cálculos das animações.
       ScrollTrigger.refresh();
     });
 
     return () => cancelAnimationFrame(frameId);
   }, []);
+
 
   useEffect(() => {
     const cleanupHero = animateHeroScroll();
@@ -565,14 +588,28 @@ const groupedPieces = useMemo(() => {
                     </div>
 
                     <div className="collection-item__info">
-                      <div className="item-meta">
-                        <span className="item-id">{piece.id}</span>
-                        <span className="item-origin">{piece.category}</span>
+
+                      <div className="collection-item__details">
+                        <div className="collection-item__size">
+                          <span className="collection-item__label">Tamanho</span>
+                          <span className="collection-item__value">{piece.size}</span>
+                        </div>
+
+                        <div className="collection-item__price">
+                          <span className="collection-item__label">Preço</span>
+                          <span className="collection-item__value">
+                            {piece.price.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
+                          </span>
+                        </div>
                       </div>
 
                       <h3 className="item-name">{piece.name}</h3>
 
                       <p className="item-description">{piece.description}</p>
+
                     </div>
                   </article>
                 ))}

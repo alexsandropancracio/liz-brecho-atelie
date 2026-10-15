@@ -315,6 +315,48 @@ export function animateCollectionEntrance() {
     const cards = group.querySelectorAll(
       ".collection-item"
     );
+    
+    /* =====================================
+       NAVEGAÇÃO NUMERADA DO CARROSSEL
+    ===================================== */
+
+    const navigation = group.querySelector(
+      ".collection-highlight-navigation"
+    );
+
+    const navigationButtons = group.querySelectorAll(
+      ".collection-highlight-navigation__button"
+    );
+
+    if (navigation && navigationButtons.length > 0) {
+      const navigationAnimation = gsap.fromTo(
+        navigationButtons,
+        {
+          autoAlpha: 0,
+          y: 18,
+          filter: "blur(6px)",
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 0.55,
+          stagger: 0.08,
+          ease: "power3.out",
+
+          scrollTrigger: {
+            // Usa o grupo como trigger para manter a limpeza
+            // compatível com a lógica existente do catálogo.
+            trigger: group,
+            start: "top 50%",
+            toggleActions: "play reverse play reverse",
+          },
+        }
+      );
+
+      animations.push(navigationAnimation);
+    }
+
 
     /* =====================================
        CARDS (INDEPENDENTE DO SCRUB)
