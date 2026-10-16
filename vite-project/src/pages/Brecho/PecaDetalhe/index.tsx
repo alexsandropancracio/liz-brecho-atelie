@@ -37,7 +37,7 @@ export function PecaDetalhe() {
     )?.catalogPosition;
 
     function handleBackToCatalog() {
-        navigate("/brecho", {
+        navigate("/", {
             state: catalogPosition
             ? { restoreCatalog: catalogPosition }
             : null,

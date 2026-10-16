@@ -34,6 +34,7 @@ import higienizacaoImage from "../../../assets/brecho/img2.png";
 import revisaoImage from "../../../assets/brecho/img3.png";
 import preparacaoImage from "../../../assets/brecho/img4.png";
 import toqueFinalImage from "../../../assets/brecho/img5.png";
+import lojaCompleta from "../../../assets/brecho/loja-completa.jfif";
 
 import { MOCK_PIECES } from "./brecho.data";
 import type { Category, Piece } from "./brecho.data";
@@ -75,18 +76,18 @@ const PROCESS_STEPS = [
   {
     id: "cleaning",
     number: "02",
-    title: "Higienização",
+    title: "Revisão e Cuidados",
     image: higienizacaoImage,
     description:
-      "Cada peça passa por um processo cuidadoso de higienização. Respeitamos as características de cada tecido para preservar sua qualidade, garantindo que chegue limpa, renovada e pronta para um novo capítulo.",
+      "Quando necessário, realizamos pequenos reparos e ajustes. Um botão solto, um detalhe delicado ou um acabamento que merece atenção recebem o mesmo cuidado que dedicamos à escolha da peça.",
   },
   {
     id: "review",
     number: "03",
-    title: "Revisão e Cuidados",
+    title: "Higienização",
     image: revisaoImage,
     description:
-      "Quando necessário, realizamos pequenos reparos e ajustes. Um botão solto, um detalhe delicado ou um acabamento que merece atenção recebem o mesmo cuidado que dedicamos à escolha da peça.",
+      "Cada peça passa por um processo cuidadoso de higienização. Respeitamos as características de cada tecido para preservar sua qualidade, garantindo que chegue limpa, renovada e pronta para um novo capítulo.",
   },
   {
     id: "preparation",
@@ -463,18 +464,21 @@ const groupedPieces = useMemo(() => {
             <div className="brecho-hero__curtain-right"></div>
           </div>
 
-        <button
+        {/*<button
           type="button"
           className="brecho-back"
           onClick={goBackToServices}
         >
           ← Voltar
-        </button>
+        </button>*/}
 
         <div className="brecho-hero__content">
-          <span className="brecho-hero__eyebrow"></span>
+          <span className="brecho-hero__eyebrow">
 
+          </span>
+            
           <h1 className="brecho-hero__title">
+            
             <span>Roupas que já viveram,</span>
             <span>agora encontram</span>
             <span> outra forma de existir.</span>
@@ -492,7 +496,7 @@ const groupedPieces = useMemo(() => {
         </div>
 
         <div className="brecho-hero__visual" aria-hidden="true">
-          <span></span>
+          <img src={lojaCompleta} alt="" />
         </div>
       </section>
 
@@ -567,7 +571,7 @@ const groupedPieces = useMemo(() => {
                       ) as HTMLDivElement | null;
 
                       // Abre os detalhes enviando a posição atual do catálogo.
-                      navigate(`/brecho/peca/${encodeURIComponent(piece.id)}`, {
+                      navigate(`/peca/${encodeURIComponent(piece.id)}`, {
                         state: {
                           catalogPosition: {
                             scrollY: window.scrollY,
@@ -582,9 +586,9 @@ const groupedPieces = useMemo(() => {
                     <div className="collection-item__image-wrapper placeholder">
                       <span className="placeholder-text">Espaço da Peça</span>
 
-                      <div className="collection-item__overlay">
+                      {/*<div className="collection-item__overlay">
                         <span>Conhecer detalhes</span>
-                      </div>
+                      </div>*/}
                     </div>
 
                     <div className="collection-item__info">
@@ -690,10 +694,14 @@ const groupedPieces = useMemo(() => {
       <div className="curadoria-final__content"
           ref={finalContentRef}>
 
-        <h2>
-            Pronta para um
-            <br />
-            novo capítulo.
+    <h2 className="portal-transition__cta-title">
+          <span className="portal-transition__cta-line">
+            <span>Então, não perca tempo.</span>
+          </span>
+
+          <span className="portal-transition__cta-line">
+            <span>Oportunidades não esperam.</span>
+          </span>
         </h2>
 
         <p>
@@ -702,9 +710,19 @@ const groupedPieces = useMemo(() => {
             merecem continuar existindo.
         </p>
 
-        <a className="curadoria-final__button">
-            Encontrar minha próxima peça
-        </a>
+    <a
+      className="portal-transition__button"
+      href="https://wa.me/5500000000000"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Falar com a LIZ pelo WhatsApp"
+    >
+      <span className="portal-transition__button-bg"></span>
+
+      <span className="portal-transition__button-text">
+        Fale Conosco
+      </span>
+    </a>
 
       </div>
 

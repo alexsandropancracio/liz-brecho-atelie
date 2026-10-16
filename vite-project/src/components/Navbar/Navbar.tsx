@@ -66,7 +66,7 @@ export function Navbar() {
         <div className="navbar-container">
           <div className="nav-left">
             <NavLink
-              to="/brecho"
+              to="/"
               className={({ isActive }) =>
                 isActive ? "nav-link active" : "nav-link"
               }
@@ -74,14 +74,14 @@ export function Navbar() {
               Brechó
             </NavLink>
 
-            <NavLink
+            {/*<NavLink
               to="/atelie"
               className={({ isActive }) =>
                 isActive ? "nav-link active" : "nav-link"
               }
             >
               Ateliê
-            </NavLink>
+            </NavLink>*/}
 
             <NavLink
               to="/sobre"
@@ -107,9 +107,9 @@ export function Navbar() {
           </NavLink>
 
           <div className="nav-right">
-            <button className="nav-icon" type="button" aria-label="Perfil">
+            {/*<button className="nav-icon" type="button" aria-label="Perfil">
               <User size={18} />
-            </button>
+            </button>*/}
 
             <button className="nav-icon" type="button" aria-label="Sacola">
               <ShoppingBag size={18} />
