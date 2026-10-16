@@ -588,7 +588,6 @@ const groupedPieces = useMemo(() => {
                     </div>
 
                     <div className="collection-item__info">
-
                       <div className="collection-item__details">
                         <div className="collection-item__size">
                           <span className="collection-item__label">Tamanho</span>
@@ -610,7 +609,24 @@ const groupedPieces = useMemo(() => {
 
                       <p className="item-description">{piece.description}</p>
 
+                      <a className="collection-item__buy"
+                          href={`https://wa.me/5511956197970?text=${encodeURIComponent(
+                            `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                          }}
+                          aria-label={`Comprar ${piece.name} pelo WhatsApp`}
+                      >
+                        Comprar
+                      </a>
                     </div>
+
                   </article>
                 ))}
               </div>
