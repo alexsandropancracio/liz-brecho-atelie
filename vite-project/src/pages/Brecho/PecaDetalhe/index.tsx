@@ -148,9 +148,6 @@ export function PecaDetalhe() {
 
         {/* Informações da peça. */}
         <div className="peca-detalhe__information">
-          <span className="peca-detalhe__eyebrow">
-            {piece.category} / {piece.condition}
-          </span>
 
           <h1>{piece.name}</h1>
 
@@ -165,6 +162,20 @@ export function PecaDetalhe() {
             })}
           </p>
 
+          <a className="peca-detalhe__buy"
+            href={`https://wa.me/5511981898351?text=${encodeURIComponent(
+              `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              })}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Comprar ${piece.name} pelo WhatsApp`}
+          >
+            Comprar
+          </a>
+
           <div className="peca-detalhe__attributes">
             <div>
               <span>Tamanho</span>
@@ -177,8 +188,8 @@ export function PecaDetalhe() {
             </div>
 
             <div>
-              <span>Disponibilidade</span>
-              <strong>{piece.availability}</strong>
+              <span>Categoria</span>
+              <strong>{piece.category}</strong>
             </div>
           </div>
 

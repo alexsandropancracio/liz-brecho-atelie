@@ -666,6 +666,45 @@ const groupedPieces = useMemo(() => {
       
 
 <section className="reveal-cards">
+  {/* Sobre nós */}
+  <div className="about-intro">
+    <span className="about-eyebrow">
+      LIZ — BRECHÓ & ATELIÊ
+    </span>
+
+    <h2 className="about-title">
+      Sobre Nós
+    </h2>
+
+    <div className="about-text">
+      <p className="about-highlight">
+        Acreditamos que o estilo vai além do que se veste.
+      </p>
+
+      <p>
+        A LIZ é um espaço dedicado a peças com personalidade,
+        novas descobertas e à liberdade de construir um estilo
+        que tenha a sua identidade.
+      </p>
+
+      <p>
+        Cada escolha carrega a possibilidade de uma nova história.
+        Queremos fazer parte da sua.
+      </p>
+    </div>
+
+    <div className="about-footer">
+      <span>MODA · IDENTIDADE · HISTÓRIAS</span>
+      <span className="about-arrow" aria-hidden="true">
+        ↓
+      </span>
+    </div>
+    <h2>Como funciona?</h2>
+  </div>
+
+
+
+  {/* Cards existentes */}
   {PROCESS_STEPS.map((card) => (
     <div className="reveal-card" key={card.id}>
       <article className="card">

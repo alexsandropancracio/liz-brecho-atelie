@@ -52,7 +52,7 @@
   border: 0;
   background: transparent;
 
-  color: var(--peca-muted);
+  color: #171714;
   font: inherit;
   font-size: 11px;
   letter-spacing: 0.04em;
@@ -424,6 +424,54 @@
   color: var(--peca-accent);
 }
 
+.peca-detalhe__buy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.1rem 1.35rem;
+  margin: 1.5rem 0 2rem;
+
+  background: #e8e6e0;
+  color: #171714;
+
+  border: 1px solid #e8e6e0;
+  text-decoration: none;
+
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.peca-detalhe__buy span {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.peca-detalhe__buy:hover {
+  background: #171714;
+  color: #faf9f6;
+  border-color: #e8e6e0;
+}
+
+.peca-detalhe__buy:hover span {
+  transform: translate(3px, -3px);
+}
+
+.peca-detalhe__buy:focus-visible {
+  outline: 2px solid #e8e6e0;
+  outline-offset: 4px;
+}
+
 /* ---------- 10. Nota de conferência ---------- */
 
 .peca-detalhe__note {
@@ -519,81 +567,65 @@
   opacity: 1;
 }
 
-@media (max-width: 1000px) {
+/* ---------- 12. Tablets e telas intermediárias ---------- */
+
+@media (max-width: 1100px) {
   .peca-detalhe {
     padding-right: 3vw;
     padding-left: 3vw;
   }
 
   .peca-detalhe__content {
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
-    gap: 28px;
+    gap: clamp(24px, 3vw, 36px);
   }
 
   .peca-detalhe__main-image {
-    height: clamp(380px, calc(100vh - 150px), 700px);
+    height: clamp(380px, 65svh, 680px);
   }
 
   .peca-detalhe__information {
-    position: static;
-    padding-top: 12px;
+    top: 20px;
+  }
+
+  .peca-detalhe__information h1 {
+    font-size: clamp(34px, 4vw, 48px);
   }
 
   .peca-detalhe__attributes {
-    gap: 9px;
+    gap: 10px;
   }
 
   .peca-detalhe__attributes span {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .peca-detalhe__attributes strong {
     font-size: 10px;
   }
-
-  .peca-detalhe__thumbnail {
-    flex-basis: 64px;
-  }
 }
 
-/* ---------- 13. Celulares ---------- */
+/* ---------- 13. Tablets em retrato e telas estreitas ---------- */
 
-@media (max-width: 640px) {
+@media (max-width: 900px) {
   .peca-detalhe {
-    padding: 18px 18px 56px;
-  }
-
-  .peca-detalhe__header {
-    grid-template-columns: 1fr auto;
-    gap: 14px;
-    padding-bottom: 16px;
-  }
-
-  .peca-detalhe__brand {
-    display: none;
-  }
-
-  .peca-detalhe__back {
-    font-size: 10px;
-  }
-
-  .peca-detalhe__code {
-    font-size: 8px;
+    padding: calc(var(--navbar-height) + 20px) 28px 48px;
   }
 
   .peca-detalhe__content {
     grid-template-columns: minmax(0, 1fr);
-    gap: 32px;
-    margin-top: 20px;
+    gap: 36px;
+    margin-top: 24px;
   }
 
   .peca-detalhe__gallery {
-    gap: 10px;
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
   }
 
   .peca-detalhe__main-image {
-    height: min(68svh, 620px);
-    min-height: 360px;
+    height: clamp(400px, 65svh, 720px);
+    min-height: 0;
   }
 
   .peca-detalhe__main-image img {
@@ -601,62 +633,201 @@
   }
 
   .peca-detalhe__thumbnails {
-    gap: 8px;
+    gap: 10px;
   }
 
   .peca-detalhe__thumbnail {
-    flex-basis: 62px;
+    flex-basis: 72px;
   }
 
   .peca-detalhe__information {
+    position: static;
+    width: 100%;
+    max-width: 760px;
+    margin-inline: auto;
+    padding-top: 0;
+  }
+
+  .peca-detalhe__information h1 {
+    max-width: 100%;
+    font-size: clamp(38px, 6vw, 54px);
+  }
+
+  .peca-detalhe__description {
+    max-width: 600px;
+  }
+
+  .peca-detalhe__price {
+    margin-bottom: 20px;
+  }
+
+  .peca-detalhe__buy {
+    margin: 1.25rem 0 1.75rem;
+  }
+
+  .peca-detalhe__attributes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+/* ---------- 14. Celulares ---------- */
+
+@media (max-width: 640px) {
+  .peca-detalhe {
+    padding: calc(var(--navbar-height) + 16px) 18px 40px;
+  }
+
+  /* Cabeçalho */
+  .peca-detalhe__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding-bottom: 14px;
+  }
+
+  .peca-detalhe__brand,
+  .peca-detalhe__code {
+    display: none;
+  }
+
+  .peca-detalhe__back {
+    justify-self: start;
+    gap: 8px;
+    padding: 8px 0;
+    font-size: 11px;
+  }
+
+  /* Conteúdo principal */
+  .peca-detalhe__content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    margin-top: 18px;
+  }
+
+  /* Galeria */
+  .peca-detalhe__gallery {
+    gap: 10px;
+  }
+
+  .peca-detalhe__main-image {
+    width: 100%;
+    height: min(62svh, 560px);
+    min-height: 300px;
+  }
+
+  .peca-detalhe__main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .peca-detalhe__image-placeholder {
+    min-height: 300px;
+    padding: 18px;
+  }
+
+  .peca-detalhe__image-placeholder span {
+    font-size: clamp(22px, 6vw, 30px);
+  }
+
+  /* Miniaturas */
+  .peca-detalhe__thumbnails {
+    gap: 8px;
+    padding: 3px 1px 8px;
+  }
+
+  .peca-detalhe__thumbnail {
+    flex: 0 0 60px;
+  }
+
+  /* Informações */
+  .peca-detalhe__information {
+    width: 100%;
     padding-top: 0;
   }
 
   .peca-detalhe__eyebrow {
-    margin-bottom: 14px;
-    font-size: 8px;
+    margin-bottom: 12px;
+    font-size: 9px;
+    letter-spacing: 0.14em;
   }
 
   .peca-detalhe__information h1 {
-    margin-bottom: 15px;
-    font-size: clamp(36px, 10vw, 48px);
+    margin-bottom: 14px;
+    font-size: clamp(32px, 8.5vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
   }
 
   .peca-detalhe__description {
-    margin-bottom: 20px;
+    max-width: 100%;
+    margin-bottom: 18px;
     font-size: 12px;
+    line-height: 1.8;
   }
 
   .peca-detalhe__price {
-    margin-bottom: 24px;
-    font-size: 23px;
+    margin-bottom: 18px;
+    font-size: 24px;
   }
 
+  /* Comprar pelo WhatsApp */
+  .peca-detalhe__buy {
+    min-height: 50px;
+    padding: 14px 16px;
+    margin: 12px 0 24px;
+    gap: 12px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+  }
+
+  .peca-detalhe__buy span {
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  /* Atributos da peça */
   .peca-detalhe__attributes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     padding: 18px 0;
   }
 
   .peca-detalhe__attributes > div {
-    gap: 8px;
+    gap: 7px;
   }
 
   .peca-detalhe__attributes span {
     font-size: 8px;
     line-height: 1.5;
+    overflow-wrap: anywhere;
   }
 
   .peca-detalhe__attributes strong {
     font-size: 10px;
+    line-height: 1.5;
   }
 
+  /* Detalhes */
   .peca-detalhe__section {
-    padding: 24px 0;
+    padding: 22px 0;
   }
 
   .peca-detalhe__section h2 {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     font-size: 22px;
+  }
+
+  .peca-detalhe__section ul {
+    gap: 10px;
+    padding-left: 16px;
+  }
+
+  .peca-detalhe__section li {
+    padding-left: 2px;
+    font-size: 11px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
   }
 
   .peca-detalhe__section dl > div {
@@ -667,19 +838,63 @@
   .peca-detalhe__section dt,
   .peca-detalhe__section dd {
     font-size: 10px;
+    overflow-wrap: anywhere;
+  }
+
+  .peca-detalhe__note {
+    margin-top: 18px;
+    font-size: 9px;
+  }
+
+  /* Página de peça não encontrada */
+  .peca-detalhe--not-found {
+    min-height: 70svh;
+    padding: 60px 18px;
+  }
+
+  .peca-detalhe--not-found .peca-detalhe__eyebrow {
+    margin-bottom: 20px;
+  }
+
+  .peca-detalhe--not-found h1 {
+    font-size: clamp(30px, 8vw, 42px);
+    overflow-wrap: anywhere;
+  }
+
+  .peca-detalhe--not-found p {
+    font-size: 12px;
   }
 }
 
-/* ---------- 14. Celulares muito pequenos ---------- */
+/* ---------- 15. Celulares muito pequenos ---------- */
 
-@media (max-width: 360px) {
+@media (max-width: 380px) {
   .peca-detalhe {
     padding-right: 14px;
     padding-left: 14px;
   }
 
+  .peca-detalhe__content {
+    gap: 24px;
+  }
+
   .peca-detalhe__main-image {
-    min-height: 300px;
+    height: 54svh;
+    min-height: 260px;
+  }
+
+  .peca-detalhe__thumbnail {
+    flex-basis: 54px;
+  }
+
+  .peca-detalhe__information h1 {
+    font-size: clamp(29px, 9vw, 36px);
+  }
+
+  .peca-detalhe__buy {
+    padding: 13px 12px;
+    font-size: 9px;
+    letter-spacing: 0.06em;
   }
 
   .peca-detalhe__attributes {
@@ -687,20 +902,23 @@
   }
 
   .peca-detalhe__attributes span {
+    font-size: 7px;
     letter-spacing: 0;
   }
 
-  .peca-detalhe__thumbnail {
-    flex-basis: 56px;
+  .peca-detalhe__attributes strong {
+    font-size: 9px;
   }
 }
 
-/* ---------- 15. Acessibilidade ---------- */
+/* ---------- 16. Acessibilidade ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   .peca-detalhe__main-image img,
   .peca-detalhe__back,
   .peca-detalhe__thumbnail,
+  .peca-detalhe__buy,
+  .peca-detalhe__buy span,
   .peca-detalhe--not-found button {
     animation: none;
     transition: none;
