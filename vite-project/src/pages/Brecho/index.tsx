@@ -702,8 +702,6 @@ const groupedPieces = useMemo(() => {
     <h2>Como funciona?</h2>
   </div>
 
-
-
   {/* Cards existentes */}
   {PROCESS_STEPS.map((card) => (
     <div className="reveal-card" key={card.id}>

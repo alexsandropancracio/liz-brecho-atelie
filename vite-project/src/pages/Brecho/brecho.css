@@ -1101,12 +1101,14 @@ button {
   }
 }
 
+
 /* ========================================
    03 — CARDS EXISTENTES
 ======================================== */
 
 .reveal-card {
-  width: min(900px, 90vw);
+  box-sizing: border-box;
+  width: min(900px, calc(100% - 48px));
   margin: 0 auto;
   position: relative;
 }
@@ -1114,12 +1116,13 @@ button {
 /* Card base */
 
 .card {
+  box-sizing: border-box;
   position: relative;
   width: 100%;
   height: 55rem;
+  margin-bottom: 20px;
   border-radius: 24px;
   overflow: hidden;
-  margin: 20px;
 
   will-change: transform, opacity, filter;
 }
@@ -1138,6 +1141,7 @@ button {
 .card-content {
   position: absolute;
   inset: auto 0 0 0;
+  box-sizing: border-box;
   padding: 3rem;
 
   display: flex;
@@ -1175,51 +1179,19 @@ button {
 ======================================== */
 
 @media (max-width: 768px) {
-  .about-intro {
-    padding: 84px 24px 44px;
-  }
-
-  .about-eyebrow {
-    margin-bottom: 26px;
-  }
-
-  .about-title {
-    margin-bottom: 30px;
-    font-size: clamp(48px, 13vw, 72px);
-  }
-
-  .about-text .about-highlight {
-    font-size: 22px;
-  }
-
-  .about-text p {
-    font-size: 13px;
-  }
-
-  .about-footer {
-    margin-top: 48px;
-  }
-
-  .about-footer > span:first-child {
-    font-size: 8px;
-    letter-spacing: 0.1em;
-  }
-
-  .process-intro {
-    padding: 58px 24px 32px;
-  }
-
-  .process-intro h2 {
-    font-size: clamp(36px, 10vw, 46px);
+  .reveal-card {
+    width: calc(100% - 36px);
+    max-width: 520px;
   }
 
   .card {
-    height: 30rem;
+    height: min(80svh, 560px);
+    min-height: 340px;
     border-radius: 18px;
   }
 
   .card-content {
-    padding: 2rem;
+    padding: 1.5rem;
   }
 
   .card-content h2 {
@@ -1228,6 +1200,30 @@ button {
 
   .card-content p {
     font-size: 0.9rem;
+  }
+}
+
+/* Celulares pequenos */
+
+@media (max-width: 380px) {
+  .reveal-card {
+    width: calc(100% - 28px);
+  }
+
+  .card {
+    min-height: 400px;
+  }
+
+  .card-content {
+    padding: 1.25rem;
+  }
+
+  .card-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .card-content p {
+    font-size: 0.85rem;
   }
 }
 
@@ -1240,6 +1236,7 @@ button {
     scroll-behavior: auto;
   }
 }
+
 
 
 /* ===========================================================
