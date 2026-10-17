@@ -20,7 +20,6 @@ import { useCollectionNavigation } from "../../animations/hooks/useCollectionNav
 gsap.registerPlugin(ScrollTrigger);
 
 import {
-  animateBrechoPage,
   animateHeroScroll,
   animateCollectionEntrance,
   animateBrechoProcessStackWithHeaders,
@@ -280,27 +279,23 @@ export function Brecho() {
      COLLECTION FILTER ANIMATION
   ======================================================= */
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
 
-      
-      ScrollTrigger.getAll().forEach((trigger) => {
-        const el = trigger.vars.trigger as Element | undefined;
 
-        if (
-          el?.classList?.contains("collection-highlight-group") ||
-          el?.classList?.contains("brecho-collection")
-        ) {
-          trigger.kill();
-        }
-      });
+useEffect(() => {
+  if (isLoadingPieces) return;
 
-      animateCollectionEntrance();
-      ScrollTrigger.refresh();
-    }, 50);
+  let cleanupAnimation: (() => void) | undefined;
 
-    return () => clearTimeout(timer);
-  }, [activeFilter]);
+  const frameId = requestAnimationFrame(() => {
+    cleanupAnimation = animateCollectionEntrance();
+    ScrollTrigger.refresh();
+  });
+
+  return () => {
+    cancelAnimationFrame(frameId);
+    cleanupAnimation?.();
+  };
+}, [activeFilter, isLoadingPieces, piecesError]);
 
   /* =======================================================
      STACKED CARDS
@@ -604,288 +599,313 @@ const visiblePieces =
 
         {!isLoadingPieces &&
           !piecesError &&
+          pieces.length > 0 &&
+          visiblePieces.length === 0 && (
+            <p className="collection-empty" role="status">
+              Sem produtos disponíveis no momento.
+            </p>
+          )}
+
+        {!isLoadingPieces &&
+          !piecesError &&
           visiblePieces.length > 0 &&
           visibleCategories.map((category) => {
           const categoryPieces = groupedPieces[category];
 
-          return (
-            <div className="collection-highlight-group" key={category}>
-              <div className="collection-highlight-group__header">
-                <span>{category}</span>
-                <small>{categoryPieces.length} peças</small>
+          
+return (
+  <div className="collection-highlight-group" key={category}>
+    <div className="collection-highlight-group__header">
+      <span>{category}</span>
+      <small>{categoryPieces.length} peças</small>
+    </div>
+
+    {categoryPieces.length === 0 ? (
+      <p className="collection-empty" role="status">
+        Sem produtos disponíveis no momento.
+      </p>
+    ) : (
+      <>
+        <div
+          className="collection-highlight-scroll"
+          data-category={category}
+          ref={getContainerRef(category, categoryPieces.length)}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerEnd}
+          onPointerCancel={handlePointerEnd}
+          onPointerLeave={handlePointerEnd}
+          onScroll={() => updateActiveGroup(category)}
+        >
+          {categoryPieces.map((piece) => (
+            <article
+              className="collection-item"
+              key={piece.id}
+              onClick={(event) => {
+                // Se houve arraste, cancela a navegação.
+                if (hasDragged.current) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  hasDragged.current = false;
+                  return;
+                }
+
+                // Localiza o carrossel horizontal da peça.
+                const scroller = event.currentTarget.closest(
+                  ".collection-highlight-scroll"
+                ) as HTMLDivElement | null;
+
+                // Abre os detalhes preservando a posição do catálogo.
+                navigate(`/peca/${encodeURIComponent(piece.id)}`, {
+                  state: {
+                    catalogPosition: {
+                      scrollY: window.scrollY,
+                      category,
+                      scrollLeft: scroller?.scrollLeft ?? 0,
+                      activeFilter,
+                    } satisfies CatalogReturnPosition,
+                  },
+                });
+              }}
+            >
+              <div
+                className={`collection-item__image-wrapper ${
+                  piece.images[0]?.url ? "" : "placeholder"
+                }`}
+              >
+                {piece.images[0]?.url ? (
+                  <img
+                    className="collection-item__image"
+                    src={piece.images[0].url}
+                    alt={piece.images[0].alt}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="placeholder-text">
+                    Imagem em breve
+                  </span>
+                )}
               </div>
 
-                <div
-                  className="collection-highlight-scroll"
-                  data-category={category}
-                  ref={getContainerRef(category, categoryPieces.length)}
-                  onPointerDown={handlePointerDown}
-                  onPointerMove={handlePointerMove}
-                  onPointerUp={handlePointerEnd}
-                  onPointerCancel={handlePointerEnd}
-                  onPointerLeave={handlePointerEnd}
-                  onScroll={() => updateActiveGroup(category)}
+              <div className="collection-item__info">
+                <div className="collection-item__details">
+                  <div className="collection-item__size">
+                    <span className="collection-item__label">
+                      Tamanho
+                    </span>
+                    <span className="collection-item__value">
+                      {piece.size}
+                    </span>
+                  </div>
+
+                  <div className="collection-item__price">
+                    <span className="collection-item__label">
+                      Preço
+                    </span>
+                    <span className="collection-item__value">
+                      {piece.price.toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                <h3 className="item-name">{piece.name}</h3>
+
+                <p className="item-description">
+                  {piece.description}
+                </p>
+
+                <a
+                  className="collection-item__buy"
+                  href={`https://wa.me/5511981898351?text=${encodeURIComponent(
+                    `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString(
+                      "pt-BR",
+                      {
+                        style: "currency",
+                        currency: "BRL",
+                      }
+                    )}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                  aria-label={`Comprar ${piece.name} pelo WhatsApp`}
                 >
-
-                {categoryPieces.map((piece) => (
-                  
-                    <article
-                      className="collection-item"
-                      key={piece.id}
-                      onClick={(event) => {
-                        // Se houve arraste, cancela a navegação.
-                        if (hasDragged.current) {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          hasDragged.current = false;
-                          return;
-                        }
-
-                        // Abre os detalhes da peça clicada.
-                      // Localiza o carrossel horizontal em que a peça está.
-                      const scroller = event.currentTarget.closest(
-                        ".collection-highlight-scroll"
-                      ) as HTMLDivElement | null;
-
-                      // Abre os detalhes enviando a posição atual do catálogo.
-                      navigate(`/peca/${encodeURIComponent(piece.id)}`, {
-                        state: {
-                          catalogPosition: {
-                            scrollY: window.scrollY,
-                            category,
-                            scrollLeft: scroller?.scrollLeft ?? 0,
-                            activeFilter,
-                          } satisfies CatalogReturnPosition,
-                        },
-                      });
-                      }}
-                    >
-                      <div
-                        className={`collection-item__image-wrapper ${
-                          piece.images[0]?.url ? "" : "placeholder"
-                        }`}
-                      >
-                        {piece.images[0]?.url ? (
-                          <img
-                            className="collection-item__image"
-                            src={piece.images[0].url}
-                            alt={piece.images[0].alt}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <span className="placeholder-text">
-                            Imagem em breve
-                          </span>
-                        )}
-                      </div>
-
-                    <div className="collection-item__info">
-                      <div className="collection-item__details">
-                        <div className="collection-item__size">
-                          <span className="collection-item__label">Tamanho</span>
-                          <span className="collection-item__value">{piece.size}</span>
-                        </div>
-
-                        <div className="collection-item__price">
-                          <span className="collection-item__label">Preço</span>
-                          <span className="collection-item__value">
-                            {piece.price.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
-                          </span>
-                        </div>
-                      </div>
-
-                      <h3 className="item-name">{piece.name}</h3>
-
-                      <p className="item-description">{piece.description}</p>
-
-                      <a className="collection-item__buy"
-                          href={`https://wa.me/5511981898351?text=${encodeURIComponent(
-                            `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                          }}
-                          aria-label={`Comprar ${piece.name} pelo WhatsApp`}
-                      >
-                        Comprar
-                      </a>
-                    </div>
-
-                  </article>
-                ))}
+                  Comprar
+                </a>
               </div>
+            </article>
+          ))}
+        </div>
 
-              
-              <div className="collection-highlight-navigation">
-                {Array.from({
-                  length: navigation[category]?.totalGroups ?? 0,
-                }).map((_, groupIndex) => {
-                  const isActive =
-                    navigation[category]?.activeGroup === groupIndex;
+        <div className="collection-highlight-navigation">
+          {Array.from({
+            length: navigation[category]?.totalGroups ?? 0,
+          }).map((_, groupIndex) => {
+            const isActive =
+              navigation[category]?.activeGroup === groupIndex;
 
-                  return (
-                    <button
-                      key={groupIndex}
-                      type="button"
-                      className={`collection-highlight-navigation__button ${
-                        isActive ? "is-active" : ""
-                      }`}
-                      aria-label={`Mostrar grupo ${groupIndex + 1} de ${category}`}
-                      aria-current={isActive ? "page" : undefined}
-                      onClick={() => scrollToGroup(category, groupIndex)}
-                    >
-                      {String(groupIndex + 1).padStart(2, "0")}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          );
+            return (
+              <button
+                key={groupIndex}
+                type="button"
+                className={`collection-highlight-navigation__button ${
+                  isActive ? "is-active" : ""
+                }`}
+                aria-label={`Mostrar grupo ${groupIndex + 1} de ${category}`}
+                aria-current={isActive ? "page" : undefined}
+                onClick={() => scrollToGroup(category, groupIndex)}
+              >
+                {String(groupIndex + 1).padStart(2, "0")}
+              </button>
+            );
+          })}
+        </div>
+      </>
+    )}
+  </div>
+);
+
         })}
       </section>
-      
 
-<section className="reveal-cards">
-  {/* Sobre nós */}
-  <div className="about-intro">
-    <span className="about-eyebrow">
-      LIZ — BRECHÓ & ATELIÊ
-    </span>
+    <section className="reveal-cards">
+      {/* Sobre nós */}
+      <div className="about-intro">
+        <span className="about-eyebrow">
+          LIZ — BRECHÓ & ATELIÊ
+        </span>
 
-    <h2 className="about-title">
-      Sobre Nós
-    </h2>
-
-    <div className="about-text">
-      <p className="about-highlight">
-        Acreditamos que o estilo vai além do que se veste.
-      </p>
-
-      <p>
-        A LIZ é um espaço dedicado a peças com personalidade,
-        novas descobertas e à liberdade de construir um estilo
-        que tenha a sua identidade.
-      </p>
-
-      <p>
-        Cada escolha carrega a possibilidade de uma nova história.
-        Queremos fazer parte da sua.
-      </p>
-    </div>
-
-    <div className="about-footer">
-      <span>MODA · IDENTIDADE · HISTÓRIAS</span>
-      <span className="about-arrow" aria-hidden="true">
-        ↓
-      </span>
-    </div>
-    <h2>Como funciona?</h2>
-  </div>
-
-  {/* Cards existentes */}
-  {PROCESS_STEPS.map((card) => (
-    <div className="reveal-card" key={card.id}>
-      <article className="card">
-        <img src={card.image} alt={card.title} />
-
-        <div className="card-content">
-          <h2>{card.title}</h2>
-          <p>{card.description}</p>
-        </div>
-      </article>
-    </div>
-  ))}
-</section>
-
-<section className="theme-transition">
-  <div className="theme-transition__trigger">
-  </div>
-</section>
-
-<section className="curadoria-final">
-
-  <div className="curadoria-final__frame">
-
-    <div className="curadoria-final__hero">
-
-      <div className="curadoria-final__content"
-          ref={finalContentRef}>
-
-    <h2 className="portal-transition__cta-title">
-          <span className="portal-transition__cta-line">
-            <span>Então, não perca tempo.</span>
-          </span>
-
-          <span className="portal-transition__cta-line">
-            <span>Oportunidades não esperam.</span>
-          </span>
+        <h2 className="about-title">
+          Sobre Nós
         </h2>
 
-        <p>
-            Cada peça carrega memórias,
-            detalhes e histórias que
-            merecem continuar existindo.
-        </p>
+        <div className="about-text">
+          <p className="about-highlight">
+            Acreditamos que o estilo vai além do que se veste.
+          </p>
 
-    <a
-      className="portal-transition__button"
-      href="https://wa.me/5500000000000"
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Falar com a LIZ pelo WhatsApp"
-    >
-      <span className="portal-transition__button-bg"></span>
+          <p>
+            A LIZ é um espaço dedicado a peças com personalidade,
+            novas descobertas e à liberdade de construir um estilo
+            que tenha a sua identidade.
+          </p>
 
-      <span className="portal-transition__button-text">
-        Fale Conosco
-      </span>
-    </a>
+          <p>
+            Cada escolha carrega a possibilidade de uma nova história.
+            Queremos fazer parte da sua.
+          </p>
+        </div>
+
+        <div className="about-footer">
+          <span>MODA · IDENTIDADE · HISTÓRIAS</span>
+          <span className="about-arrow" aria-hidden="true">
+            ↓
+          </span>
+        </div>
+        <h2>Como funciona?</h2>
+      </div>
+
+      {/* Cards existentes */}
+      {PROCESS_STEPS.map((card) => (
+        <div className="reveal-card" key={card.id}>
+          <article className="card">
+            <img src={card.image} alt={card.title} />
+
+            <div className="card-content">
+              <h2>{card.title}</h2>
+              <p>{card.description}</p>
+            </div>
+          </article>
+        </div>
+      ))}
+    </section>
+
+    <section className="theme-transition">
+      <div className="theme-transition__trigger">
+      </div>
+    </section>
+
+    <section className="curadoria-final">
+
+      <div className="curadoria-final__frame">
+
+        <div className="curadoria-final__hero">
+
+          <div className="curadoria-final__content"
+              ref={finalContentRef}>
+
+        <h2 className="portal-transition__cta-title">
+              <span className="portal-transition__cta-line">
+                <span>Então, não perca tempo.</span>
+              </span>
+
+              <span className="portal-transition__cta-line">
+                <span>Oportunidades não esperam.</span>
+              </span>
+            </h2>
+
+            <p>
+                Cada peça carrega memórias,
+                detalhes e histórias que
+                merecem continuar existindo.
+            </p>
+
+        <a
+          className="portal-transition__button"
+          href="https://wa.me/5500000000000"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Falar com a LIZ pelo WhatsApp"
+        >
+          <span className="portal-transition__button-bg"></span>
+
+          <span className="portal-transition__button-text">
+            Fale Conosco
+          </span>
+        </a>
+
+          </div>
+
+
+        <div className="curadoria-final__visual">
+
+            <div 
+              className="curadoria-final__image"
+              ref={finalImageRef}
+            />
+
+        </div>
+
+        </div>
+
+        <footer className="liz-footer">
+          <div className="liz-footer__inner">
+            <div className="liz-footer__brand">
+
+              <p>Peças selecionadas com intenção, identidade e tempo.</p>
+              
+            </div>
+
+            <nav className="liz-footer__nav" aria-label="Links institucionais">
+              <a href="/politica-de-privacidade">Política de Privacidade</a>
+              <a href="/informacoes-legais">Informações Legais</a>
+              <a href="/localizacao">Localização</a>
+            </nav>
+
+            <div className="liz-footer__bottom">
+              <span>© {new Date().getFullYear()} — LIZ — Brechó & Ateliê. Todos os direitos reservados.</span>
+            </div>
+          </div>
+        </footer>
 
       </div>
 
-
-    <div className="curadoria-final__visual">
-
-        <div 
-          className="curadoria-final__image"
-          ref={finalImageRef}
-        />
-
-    </div>
-
-    </div>
-
-    <footer className="liz-footer">
-      <div className="liz-footer__inner">
-        <div className="liz-footer__brand">
-
-          <p>Peças selecionadas com intenção, identidade e tempo.</p>
-          
-        </div>
-
-        <nav className="liz-footer__nav" aria-label="Links institucionais">
-          <a href="/politica-de-privacidade">Política de Privacidade</a>
-          <a href="/informacoes-legais">Informações Legais</a>
-          <a href="/localizacao">Localização</a>
-        </nav>
-
-        <div className="liz-footer__bottom">
-          <span>© {new Date().getFullYear()} — LIZ — Brechó & Ateliê. Todos os direitos reservados.</span>
-        </div>
-      </div>
-    </footer>
-
-  </div>
-
-</section>
+    </section>
 
     </main>
   );

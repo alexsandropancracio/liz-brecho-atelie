@@ -229,231 +229,209 @@ export function animateHeroScroll() {
 }
 
 
+
 export function animateCollectionEntrance() {
-  const collection = document.querySelector(".brecho-collection");
+  const collection = document.querySelector<HTMLElement>(
+    ".brecho-collection"
+  );
 
   if (!collection) return;
 
-  const top = collection.querySelector(".collection-top");
+  const ctx = gsap.context(() => {
+    const top = collection.querySelector(".collection-top");
 
-  const filters = collection.querySelectorAll(
-    ".collection-filters .filter-btn"
-  );
-
-  const groups = collection.querySelectorAll(
-    ".collection-highlight-group"
-  );
-
-  console.log("Groups encontrados:", groups.length);
-
-  const animations: gsap.core.Animation[] = [];
-
-  /* =====================================
-     HEADER DA COLLECTION
-  ===================================== */
-
-  const headerTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: collection,
-      start: "top 50%",
-      end: "top 10%",
-      scrub: true,
-    },
-  });
-
-  /* ACERVO */
-
-  headerTl.fromTo(
-    top,
-    {
-      opacity: 0,
-      y: 120,
-      scale: 0.92,
-      filter: "blur(30px)",
-    },
-    {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-      ease: "none",
-      duration: 0.55,
-    }
-  );
-
-  /* FILTROS */
-
-  headerTl.fromTo(
-    filters,
-    {
-      opacity: 0,
-      y: 40,
-      filter: "blur(20px)",
-    },
-    {
-      opacity: 1,
-      y: 0,
-      filter: "blur(0px)",
-      stagger: 0.12,
-      ease: "none",
-      duration: 0.45,
-    },
-    0.25
-  );
-
-  animations.push(headerTl);
-
-  /* =====================================
-     CATEGORIAS
-  ===================================== */
-
-  groups.forEach((group) => {
-    const groupHeader = group.querySelector(
-      ".collection-highlight-group__header"
+    const filters = collection.querySelectorAll(
+      ".collection-filters .filter-btn"
     );
 
-    const cards = group.querySelectorAll(
-      ".collection-item"
+    const groups = collection.querySelectorAll(
+      ".collection-highlight-group"
     );
-    
+
     /* =====================================
-       NAVEGAÇÃO NUMERADA DO CARROSSEL
+       HEADER DA COLLECTION
     ===================================== */
 
-    const navigation = group.querySelector(
-      ".collection-highlight-navigation"
-    );
+    if (top) {
+      const headerTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: collection,
+          start: "top 50%",
+          end: "top 10%",
+          scrub: true,
+        },
+      });
 
-    const navigationButtons = group.querySelectorAll(
-      ".collection-highlight-navigation__button"
-    );
-
-    if (navigation && navigationButtons.length > 0) {
-      const navigationAnimation = gsap.fromTo(
-        navigationButtons,
+      headerTl.fromTo(
+        top,
         {
-          autoAlpha: 0,
-          y: 18,
-          filter: "blur(6px)",
+          opacity: 0,
+          y: 120,
+          scale: 0.92,
+          filter: "blur(30px)",
         },
         {
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
+          scale: 1,
           filter: "blur(0px)",
+          ease: "none",
           duration: 0.55,
-          stagger: 0.08,
-          ease: "power3.out",
-
-          scrollTrigger: {
-            // Usa o grupo como trigger para manter a limpeza
-            // compatível com a lógica existente do catálogo.
-            trigger: group,
-            start: "top 50%",
-            toggleActions: "play reverse play reverse",
-          },
         }
       );
 
-      animations.push(navigationAnimation);
+      if (filters.length > 0) {
+        headerTl.fromTo(
+          filters,
+          {
+            opacity: 0,
+            y: 40,
+            filter: "blur(20px)",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            stagger: 0.12,
+            ease: "none",
+            duration: 0.45,
+          },
+          0.25
+        );
+      }
     }
 
-
     /* =====================================
-       CARDS (INDEPENDENTE DO SCRUB)
+       CATEGORIAS
     ===================================== */
 
-    const cardsAnimation = gsap.fromTo(
-      cards,
-      {
-        opacity: 0,
-        x: 0,
-        scale: 0.96,
-        filter: "blur(16px)",
-      },
-      {
-        opacity: 1,
-        x: 0,
-        scale: 1,
-        filter: "blur(0px)",
+    groups.forEach((group) => {
+      const groupHeader = group.querySelector(
+        ".collection-highlight-group__header"
+      );
 
-        stagger: 0.04,
-        duration: 0.2,
-        ease: "power3.out",
+      const cards = group.querySelectorAll(".collection-item");
 
-        scrollTrigger: {
-          trigger: group,
-          start: "top 75%",
-          end: "bottom 30%",
-          toggleActions: "play reverse play reverse",
-        },
+      const navigationButtons = group.querySelectorAll(
+        ".collection-highlight-navigation__button"
+      );
+
+      /* =====================================
+         NAVEGAÇÃO NUMERADA
+      ===================================== */
+
+      if (navigationButtons.length > 0) {
+        gsap.fromTo(
+          navigationButtons,
+          {
+            autoAlpha: 0,
+            y: 18,
+            filter: "blur(6px)",
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.55,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: group,
+              start: "top 50%",
+              toggleActions: "play reverse play reverse",
+            },
+          }
+        );
       }
-    );
 
-    animations.push(cardsAnimation);
+      /* =====================================
+         CARDS
+      ===================================== */
 
-    /* =====================================
-       HEADER DA CATEGORIA
-    ===================================== */
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: group,
-        start: "top 85%",
-        end: "bottom 25%",
-        scrub: 1,
-      },
-    });
-
-    tl.fromTo(
-      groupHeader,
-      {
-        opacity: 0,
-        y: 80,
-        scale: 0.94,
-        filter: "blur(24px)",
-      },
-      {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        filter: "blur(0px)",
-        ease: "none",
-        duration: 0.15,
+      if (cards.length > 0) {
+        gsap.fromTo(
+          cards,
+          {
+            opacity: 0,
+            x: 0,
+            scale: 0.96,
+            filter: "blur(16px)",
+          },
+          {
+            opacity: 1,
+            x: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            stagger: 0.04,
+            duration: 0.2,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: group,
+              start: "top 75%",
+              end: "bottom 30%",
+              toggleActions: "play reverse play reverse",
+            },
+          }
+        );
       }
-    );
 
-    /* SEGURA VISÍVEL */
+      /* =====================================
+         HEADER DA CATEGORIA
+      ===================================== */
 
-    tl.to(groupHeader, {
-      opacity: 1,
-      duration: 0.35,
-      ease: "none",
+      if (groupHeader) {
+        const headerTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: group,
+            start: "top 85%",
+            end: "bottom 25%",
+            scrub: 1,
+          },
+        });
+
+        headerTl.fromTo(
+          groupHeader,
+          {
+            opacity: 0,
+            y: 80,
+            scale: 0.94,
+            filter: "blur(24px)",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            ease: "none",
+            duration: 0.15,
+          }
+        );
+
+        headerTl.to(groupHeader, {
+          opacity: 1,
+          duration: 0.35,
+          ease: "none",
+        });
+
+        headerTl.to(
+          groupHeader,
+          {
+            opacity: 0,
+            y: -80,
+            scale: 0.97,
+            filter: "blur(24px)",
+            ease: "none",
+            duration: 0.35,
+          },
+          ">-0.1"
+        );
+      }
     });
+  }, collection);
 
-    /* SAÍDA */
-
-    tl.to(
-      groupHeader,
-      {
-        opacity: 0,
-        y: -80,
-        scale: 0.97,
-        filter: "blur(24px)",
-        ease: "none",
-        duration: 0.35,
-      },
-      ">-0.1"
-    );
-
-    animations.push(tl);
-  });
-
-  return () => {
-    animations.forEach((animation) => {
-      animation.kill();
-    });
-  };
+  return () => ctx.revert();
 }
+
 
 export function animateFilterChange() {
   const items = document.querySelectorAll(".collection-item");
