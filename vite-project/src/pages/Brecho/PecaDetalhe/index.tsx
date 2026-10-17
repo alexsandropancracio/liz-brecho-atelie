@@ -1,57 +1,138 @@
-import { useLayoutEffect, useState } from "react";
+
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getMockPieceById } from "../brecho.data";
+import type { Piece } from "../brecho.data";
+import { getAvailablePieceById } from "../brecho.service";
 import "./peca-detalhe.css";
 
 export function PecaDetalhe() {
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
-    const location = useLocation();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-    useLayoutEffect(() => {
-    // Guarda a configuração original do navegador.
+  // Estado da peça consultada no Supabase.
+  const [piece, setPiece] = useState<Piece | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // Índice da imagem selecionada na galeria.
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  // Controla a restauração do scroll do navegador.
+  useLayoutEffect(() => {
     const previousRestoration = window.history.scrollRestoration;
 
-    // Impede que o navegador recupere o scroll anterior automaticamente.
     window.history.scrollRestoration = "manual";
-
-    // Abre os detalhes sempre no topo.
     window.scrollTo(0, 0);
 
     return () => {
-        // Restaura a configuração anterior ao sair da página.
-        window.history.scrollRestoration = previousRestoration;
+      window.history.scrollRestoration = previousRestoration;
     };
-    }, []);
+  }, []);
 
-    // Recupera a posição salva quando a pessoa clicou na peça.
-    const catalogPosition = (
+  // Recupera a posição salva ao sair do catálogo.
+  const catalogPosition = (
     location.state as {
-        catalogPosition?: {
+      catalogPosition?: {
         scrollY: number;
         category: "Feminino" | "Masculino" | "Infantil";
         scrollLeft: number;
-        activeFilter: "Todos" | "Feminino" | "Masculino" | "Infantil";
-        };
+        activeFilter:
+          | "Todos"
+          | "Feminino"
+          | "Masculino"
+          | "Infantil";
+      };
     } | null
-    )?.catalogPosition;
+  )?.catalogPosition;
 
-    function handleBackToCatalog() {
-        navigate("/", {
-            state: catalogPosition
-            ? { restoreCatalog: catalogPosition }
-            : null,
-        });
+  function handleBackToCatalog() {
+    navigate("/", {
+      state: catalogPosition
+        ? { restoreCatalog: catalogPosition }
+        : null,
+    });
+  }
+
+  // Busca a peça no Supabase sempre que o ID da URL mudar.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPiece() {
+      setIsLoading(true);
+      setLoadError(null);
+      setPiece(null);
+      setSelectedImageIndex(0);
+
+      if (!id) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const result = await getAvailablePieceById(id);
+
+        if (!cancelled) {
+          setPiece(result);
+        }
+      } catch (error) {
+        console.error(
+          "Erro ao carregar os detalhes da peça:",
+          error
+        );
+
+        if (!cancelled) {
+          setLoadError(
+            "Não foi possível carregar esta peça. Tente novamente."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
     }
 
-  // Procura a peça correspondente ao ID da URL.
-  const piece = id ? getMockPieceById(id) : undefined;
+    void loadPiece();
 
-  // Guarda o índice da imagem selecionada na galeria.
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
+  // Carregamento.
+  if (isLoading) {
+    return (
+      <main className="peca-detalhe" role="status">
+        <p>Carregando os detalhes da peça...</p>
+      </main>
+    );
+  }
 
-  // Trata IDs inválidos ou peças que não existem.
+  // Falha na consulta ao Supabase.
+  if (loadError) {
+    return (
+      <main className="peca-detalhe peca-detalhe--not-found">
+        <span className="peca-detalhe__eyebrow">
+          LIZ — BRECHÓ & ATELIÊ
+        </span>
+
+        <h1>Não foi possível carregar esta peça.</h1>
+
+        <p>{loadError}</p>
+
+        <button type="button" onClick={() => window.location.reload()}>
+          Tentar novamente
+        </button>
+
+        <button type="button" onClick={handleBackToCatalog}>
+          Voltar ao acervo
+        </button>
+      </main>
+    );
+  }
+
+  // ID inválido, peça inexistente ou peça indisponível.
   if (!piece) {
     return (
       <main className="peca-detalhe peca-detalhe--not-found">
@@ -66,35 +147,30 @@ export function PecaDetalhe() {
           incorreto.
         </p>
 
-        <button
-          type="button"
-          onClick={handleBackToCatalog}
-        >
+        <button type="button" onClick={handleBackToCatalog}>
           Voltar ao acervo
         </button>
       </main>
     );
   }
 
-  // Obtém a imagem selecionada. Caso não existam imagens, usa undefined.
   const selectedImage = piece.images[selectedImageIndex];
 
   return (
     <main className="peca-detalhe">
       <header className="peca-detalhe__header">
         <button
-            type="button"
-            className="peca-detalhe__back"
-            onClick={handleBackToCatalog}
-            >
-            <span aria-hidden="true">←</span>
-            Voltar ao acervo
+          type="button"
+          className="peca-detalhe__back"
+          onClick={handleBackToCatalog}
+        >
+          <span aria-hidden="true">←</span>
+          Voltar ao acervo
         </button>
-
       </header>
 
       <section className="peca-detalhe__content">
-        {/* Galeria: foto principal e miniaturas selecionáveis. */}
+        {/* Galeria de imagens. */}
         <div className="peca-detalhe__gallery">
           <div className="peca-detalhe__main-image">
             {selectedImage?.url ? (
@@ -148,7 +224,6 @@ export function PecaDetalhe() {
 
         {/* Informações da peça. */}
         <div className="peca-detalhe__information">
-
           <h1>{piece.name}</h1>
 
           <p className="peca-detalhe__description">
@@ -162,7 +237,8 @@ export function PecaDetalhe() {
             })}
           </p>
 
-          <a className="peca-detalhe__buy"
+          <a
+            className="peca-detalhe__buy"
             href={`https://wa.me/5511981898351?text=${encodeURIComponent(
               `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
                 style: "currency",
@@ -197,4 +273,3 @@ export function PecaDetalhe() {
     </main>
   );
 }
-
