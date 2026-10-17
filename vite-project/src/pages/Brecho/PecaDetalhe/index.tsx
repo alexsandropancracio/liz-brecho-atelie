@@ -192,21 +192,6 @@ export function PecaDetalhe() {
               <strong>{piece.category}</strong>
             </div>
           </div>
-
-          <section className="peca-detalhe__section">
-            <h2>Detalhes</h2>
-
-            <ul>
-              {piece.details.map((detail) => (
-                <li key={detail}>{detail}</li>
-              ))}
-            </ul>
-          </section>
-
-          <p className="peca-detalhe__note">
-            As medidas e informações devem ser conferidas antes da publicação
-            do catálogo.
-          </p>
         </div>
       </section>
     </main>

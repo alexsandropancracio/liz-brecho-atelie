@@ -274,6 +274,7 @@
   position: sticky;
   top: 24px;
 
+
   min-width: 0;
   padding-top: 24px;
 }
@@ -299,12 +300,13 @@
   font-weight: 300;
   line-height: 1.1;
   letter-spacing: -0.045em;
+  color:#171714;
 
   overflow-wrap: anywhere;
 }
 
 .peca-detalhe__description {
-  max-width: 440px;
+  max-width: 100%;
   margin-bottom: 24px;
 
   color: #66645f;

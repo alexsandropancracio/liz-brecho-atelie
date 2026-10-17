@@ -132,8 +132,8 @@ export function Navbar() {
       <div ref={overlayRef} className="menu-overlay" aria-hidden={!isOpen}>
         <nav className="menu-content">
           {[
-            { path: "/brecho", label: "Brechó" },
-            { path: "/atelie", label: "Ateliê" },
+            { path: "/", label: "Brechó" },
+
             { path: "/sobre", label: "Sobre" },
             { path: "/contato", label: "Contato" },
           ].map((item, index) => (

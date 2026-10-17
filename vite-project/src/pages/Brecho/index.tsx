@@ -36,8 +36,8 @@ import preparacaoImage from "../../../assets/brecho/img4.png";
 import toqueFinalImage from "../../../assets/brecho/img5.png";
 import lojaCompleta from "../../../assets/brecho/loja-completa.jfif";
 
-import { MOCK_PIECES } from "./brecho.data";
 import type { Category, Piece } from "./brecho.data";
+import { getAvailablePieces } from "./brecho.service";
 
 /* =======================================================
    TYPES
@@ -115,6 +115,49 @@ export function Brecho() {
   const navigate = useNavigate();
   const location = useLocation();
   const { startTransition } = useRouteTransition();
+
+  /* =======================================================
+   SUPABASE — CATÁLOGO
+======================================================= */
+
+  const [pieces, setPieces] = useState<Piece[]>([]);
+  const [isLoadingPieces, setIsLoadingPieces] = useState(true);
+  const [piecesError, setPiecesError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadPieces() {
+      try {
+        setIsLoadingPieces(true);
+        setPiecesError(null);
+
+        const availablePieces = await getAvailablePieces();
+
+        if (!cancelled) {
+          setPieces(availablePieces);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar o catálogo da LIZ:", error);
+
+        if (!cancelled) {
+          setPiecesError(
+            "Não foi possível carregar o acervo. Tente novamente."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingPieces(false);
+        }
+      }
+    }
+
+    void loadPieces();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Informações recebidas quando voltamos dos detalhes de uma peça.
   const restoreCatalog = (
@@ -430,7 +473,7 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
 const groupedPieces = useMemo(() => {
   return HIGHLIGHT_CATEGORIES.reduce(
     (accumulator, category) => {
-      accumulator[category] = MOCK_PIECES.filter(
+      accumulator[category] = pieces.filter(
         (piece) => piece.category === category
       );
 
@@ -438,21 +481,26 @@ const groupedPieces = useMemo(() => {
     },
     {} as Record<HighlightCategory, Piece[]>
   );
-}, []);
+}, [pieces]);
 
-  /* =======================================================
-     FILTERED DATA
-  ======================================================= */
+/* =======================================================
+   FILTERED DATA
+======================================================= */
 
-  const visibleCategories =
-    activeFilter === "Todos"
-      ? HIGHLIGHT_CATEGORIES
-      : HIGHLIGHT_CATEGORIES.filter((c) => c === activeFilter);
+const visibleCategories =
+  activeFilter === "Todos"
+    ? HIGHLIGHT_CATEGORIES
+    : HIGHLIGHT_CATEGORIES.filter(
+        (category) => category === activeFilter
+      );
 
-  const visiblePieces =
-    activeFilter === "Todos"
-      ? MOCK_PIECES
-      : MOCK_PIECES.filter((p) => p.category === activeFilter);
+const visiblePieces =
+  activeFilter === "Todos"
+    ? pieces
+    : pieces.filter(
+        (piece) => piece.category === activeFilter
+      );
+
 
   return (
     <main className="brecho">
@@ -526,9 +574,38 @@ const groupedPieces = useMemo(() => {
               )
             )}
           </div>
+          {isLoadingPieces && (
+            <p className="collection-status" role="status">
+              Carregando o acervo...
+            </p>
+          )}
+
+          {!isLoadingPieces && piecesError && (
+            <div className="collection-status" role="alert">
+              <p>{piecesError}</p>
+
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+              >
+                Tentar novamente
+              </button>
+            </div>
+          )}
+
+          {!isLoadingPieces &&
+            !piecesError &&
+            pieces.length === 0 && (
+              <p className="collection-status" role="status">
+                Nosso acervo está sendo preparado. Em breve, novas peças estarão disponíveis.
+              </p>
+            )}
         </div>
 
-        {visibleCategories.map((category) => {
+        {!isLoadingPieces &&
+          !piecesError &&
+          visiblePieces.length > 0 &&
+          visibleCategories.map((category) => {
           const categoryPieces = groupedPieces[category];
 
           return (
@@ -583,13 +660,24 @@ const groupedPieces = useMemo(() => {
                       });
                       }}
                     >
-                    <div className="collection-item__image-wrapper placeholder">
-                      <span className="placeholder-text">Espaço da Peça</span>
-
-                      {/*<div className="collection-item__overlay">
-                        <span>Conhecer detalhes</span>
-                      </div>*/}
-                    </div>
+                      <div
+                        className={`collection-item__image-wrapper ${
+                          piece.images[0]?.url ? "" : "placeholder"
+                        }`}
+                      >
+                        {piece.images[0]?.url ? (
+                          <img
+                            className="collection-item__image"
+                            src={piece.images[0].url}
+                            alt={piece.images[0].alt}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="placeholder-text">
+                            Imagem em breve
+                          </span>
+                        )}
+                      </div>
 
                     <div className="collection-item__info">
                       <div className="collection-item__details">

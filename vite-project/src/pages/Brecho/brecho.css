@@ -693,15 +693,20 @@ button {
 
 .collection-item__image-wrapper {
   width: 100%;
-  aspect-ratio: 4 / 5;
-
-  background-color: var(--color-placeholder);
-
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+}
+
+.collection-item__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .collection-item__overlay {
