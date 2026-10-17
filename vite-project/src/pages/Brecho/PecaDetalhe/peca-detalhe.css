@@ -111,6 +111,7 @@
   gap: 12px;
 
   width: 100%;
+  
   min-width: 0;
 }
 
@@ -120,16 +121,20 @@
   align-items: center;
   justify-content: center;
 
+  position: relative;
   width: 100%;
-  height: clamp(420px, calc(100vh - 150px), 820px);
-  overflow: hidden;
+  max-width: 480px;
+  aspect-ratio: 3 / 4;
+  height: auto;
+  min-height: 0;
+  margin-inline: auto;
 
+  overflow: hidden;
   background-color: #eeece6;
 }
 
 .peca-detalhe__main-image img {
   display: block;
-
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -149,14 +154,119 @@
   }
 }
 
+
+/* ---------- Setas da galeria ---------- */
+
+.peca-detalhe__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+  padding: 0;
+
+  transform: translateY(-50%);
+
+  border: 1px solid rgb(26 28 28 / 12%);
+  border-radius: 50%;
+  background: rgb(250 249 246 / 88%);
+  color: #1a1c1c;
+
+  cursor: pointer;
+
+  transition:
+    background-color 250ms ease,
+    color 250ms ease,
+    opacity 250ms ease,
+    border-color 250ms ease;
+}
+
+.peca-detalhe__arrow span {
+  font-size: 21px;
+  line-height: 1;
+}
+
+.peca-detalhe__arrow--previous {
+  left: 16px;
+}
+
+.peca-detalhe__arrow--next {
+  right: 16px;
+}
+
+.peca-detalhe__arrow:hover {
+  background: #1a1c1c;
+  color: #faf9f6;
+  border-color: #1a1c1c;
+}
+
+.peca-detalhe__arrow:focus-visible {
+  outline: 2px solid var(--peca-accent);
+  outline-offset: 4px;
+}
+
+.peca-detalhe__image-counter {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+
+  padding: 7px 10px;
+
+  background: rgb(250 249 246 / 88%);
+  color: #1a1c1c;
+
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ajustes para celulares */
+@media (max-width: 640px) {
+  .peca-detalhe__arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .peca-detalhe__arrow--previous {
+    left: 10px;
+  }
+
+  .peca-detalhe__arrow--next {
+    right: 10px;
+  }
+
+  .peca-detalhe__image-counter {
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+/* Respeita a preferência por movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  .peca-detalhe__arrow {
+    transition: none;
+  }
+}
+
+
 /* ---------- 5. Miniaturas ---------- */
 
 .peca-detalhe__thumbnails {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
 
   width: 100%;
+  max-width: 480px;
+  margin-inline: auto;
   overflow-x: auto;
   overflow-y: hidden;
 
@@ -272,7 +382,7 @@
 
 .peca-detalhe__information {
   position: sticky;
-  top: 24px;
+  top: 80px;
 
 
   min-width: 0;
@@ -591,6 +701,7 @@
 
   .peca-detalhe__information h1 {
     font-size: clamp(34px, 4vw, 48px);
+    
   }
 
   .peca-detalhe__attributes {
@@ -759,6 +870,7 @@
     font-size: clamp(32px, 8.5vw, 46px);
     line-height: 1.12;
     letter-spacing: -0.035em;
+    color: #171714 !important;
   }
 
   .peca-detalhe__description {
@@ -891,6 +1003,7 @@
 
   .peca-detalhe__information h1 {
     font-size: clamp(29px, 9vw, 36px);
+    color: #171714 !important;
   }
 
   .peca-detalhe__buy {

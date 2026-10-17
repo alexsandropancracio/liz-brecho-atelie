@@ -154,7 +154,23 @@ export function PecaDetalhe() {
     );
   }
 
+  
+  const totalImages = piece.images.length;
+
   const selectedImage = piece.images[selectedImageIndex];
+
+  function handlePreviousImage() {
+    setSelectedImageIndex((currentIndex) =>
+      currentIndex === 0 ? totalImages - 1 : currentIndex - 1
+    );
+  }
+
+  function handleNextImage() {
+    setSelectedImageIndex((currentIndex) =>
+      currentIndex === totalImages - 1 ? 0 : currentIndex + 1
+    );
+  }
+
 
   return (
     <main className="peca-detalhe">
@@ -172,24 +188,50 @@ export function PecaDetalhe() {
       <section className="peca-detalhe__content">
         {/* Galeria de imagens. */}
         <div className="peca-detalhe__gallery">
-          <div className="peca-detalhe__main-image">
-            {selectedImage?.url ? (
-              <img
-                key={selectedImage.url}
-                src={selectedImage.url}
-                alt={selectedImage.alt}
-              />
-            ) : selectedImage ? (
-              <div className="peca-detalhe__image-placeholder">
-                <span>Imagem da peça</span>
-                <small>{selectedImage.alt}</small>
-              </div>
-            ) : (
-              <div className="peca-detalhe__image-placeholder">
-                <span>Imagens em breve</span>
-              </div>
-            )}
-          </div>
+          
+        <div className="peca-detalhe__main-image">
+          {selectedImage?.url ? (
+            <img
+              key={selectedImage.url}
+              src={selectedImage.url}
+              alt={selectedImage.alt}
+            />
+          ) : selectedImage ? (
+            <div className="peca-detalhe__image-placeholder">
+              <span>Imagem da peça</span>
+              <small>{selectedImage.alt}</small>
+            </div>
+          ) : (
+            <div className="peca-detalhe__image-placeholder">
+              <span>Imagens em breve</span>
+            </div>
+          )}
+
+          {totalImages > 1 && (
+            <>
+              <button
+                type="button"
+                className="peca-detalhe__arrow peca-detalhe__arrow--previous"
+                onClick={handlePreviousImage}
+                aria-label="Ver foto anterior"
+              >
+                <span aria-hidden="true">←</span>
+              </button>
+
+              <button
+                type="button"
+                className="peca-detalhe__arrow peca-detalhe__arrow--next"
+                onClick={handleNextImage}
+                aria-label="Ver próxima foto"
+              >
+                <span aria-hidden="true">→</span>
+              </button>
+
+
+            </>
+          )}
+        </div>
+
 
           {piece.images.length > 1 && (
             <div
