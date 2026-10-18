@@ -1,6 +1,8 @@
 import { gsap } from "../../animations/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+
+
 export function animateBrechoPage() {
   const container = document.querySelector(".brecho");
 
@@ -13,111 +15,166 @@ export function animateBrechoPage() {
   const meta = container.querySelector(".brecho-hero__meta");
   const visual = container.querySelector(".brecho-hero__visual");
 
-  const animations: gsap.core.Animation[] = [];
+  const targets = [
+    backButton,
+    eyebrow,
+    ...Array.from(titleLines),
+    description,
+    meta,
+    visual,
+  ].filter(Boolean);
 
-  // 🔥 Estado inicial (sem Y pra evitar diagonal)
-  gsap.set([backButton, eyebrow, titleLines, description, meta, visual], {
-    opacity: 0,
-  });
-
-  gsap.set([backButton, eyebrow, description, meta], {
-    x: -36,
-    y: 0,
-    filter: "blur(8px)",
-  });
-
-  gsap.set(titleLines, {
-    x: -72,
-    y: 0,
-    filter: "blur(10px)",
-  });
-
-  gsap.set(visual, {
-    x: -56,
-    y: 0,
-    scale: 0.97,
-    filter: "blur(14px)",
-  });
-
-  const tl = gsap.timeline({
-    defaults: {
-      ease: "power3.out",
-    },
-    delay: 0.25,
-  });
-
-  animations.push(tl);
-
-  // 🔥 Entrada (100% horizontal)
-  tl.to(backButton, {
-    opacity: 1,
+  // Estado inicial: elementos abaixo da posição final e desfocados.
+  gsap.set(targets, {
+    autoAlpha: 0,
     x: 0,
     y: 0,
     filter: "blur(0px)",
-    duration: 0.7,
-  })
-    .to(
+  });
+
+  if (backButton) {
+    gsap.set(backButton, {
+      y: 18,
+      filter: "blur(5px)",
+    });
+  }
+
+  if (eyebrow) {
+    gsap.set(eyebrow, {
+      y: 22,
+      filter: "blur(7px)",
+    });
+  }
+
+  gsap.set(titleLines, {
+    y: 38,
+    filter: "blur(12px)",
+  });
+
+  if (description) {
+    gsap.set(description, {
+      y: 26,
+      filter: "blur(8px)",
+    });
+  }
+
+  if (meta) {
+    gsap.set(meta, {
+      y: 18,
+      filter: "blur(6px)",
+    });
+  }
+
+  if (visual) {
+    gsap.set(visual, {
+      y: 30,
+      scale: 0.985,
+      filter: "blur(14px)",
+    });
+  }
+
+  const tl = gsap.timeline({
+    delay: 0.2,
+    defaults: {
+      ease: "power3.out",
+    },
+  });
+
+  // Navegação: entrada discreta.
+  if (backButton) {
+    tl.to(
+      backButton,
+      {
+        autoAlpha: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 0.7,
+      },
+      0
+    );
+  }
+
+  // Texto introdutório.
+  if (eyebrow) {
+    tl.to(
       eyebrow,
       {
-        opacity: 1,
-        x: 0,
+        autoAlpha: 1,
         y: 0,
         filter: "blur(0px)",
-        duration: 0.65,
+        duration: 0.85,
       },
-      "-=0.35"
-    )
-    .to(
+      0.12
+    );
+  }
+
+  // Título: cada linha sobe progressivamente.
+  if (titleLines.length > 0) {
+    tl.to(
       titleLines,
       {
-        opacity: 1,
-        x: 0,
+        autoAlpha: 1,
         y: 0,
         filter: "blur(0px)",
-        duration: 1,
-        stagger: 0.12,
+        duration: 1.1,
+        stagger: 0.17,
+        ease: "power3.out",
       },
-      "-=0.25"
-    )
-    .to(
+      0.25
+    );
+  }
+
+  // Descrição.
+  if (description) {
+    tl.to(
       description,
       {
-        opacity: 1,
-        x: 0,
+        autoAlpha: 1,
+        y: 0,
+        filter: "blur(0px)",
+        duration: 0.9,
+      },
+      "-=0.5"
+    );
+  }
+
+  // Informações complementares.
+  if (meta) {
+    tl.to(
+      meta,
+      {
+        autoAlpha: 1,
         y: 0,
         filter: "blur(0px)",
         duration: 0.8,
       },
-      "-=0.5"
-    )
-    .to(
-      meta,
-      {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 0.75,
-      },
-      "-=0.5"
-    )
-    .to(
+      "-=0.42"
+    );
+  }
+
+  // Imagem: sobe suavemente e ganha nitidez.
+  if (visual) {
+    tl.to(
       visual,
       {
-        opacity: 1,
-        x: 0,
+        autoAlpha: 1,
         y: 0,
         scale: 1,
         filter: "blur(0px)",
-        duration: 1,
+        duration: 1.35,
+        ease: "power2.out",
       },
-      "-=0.85"
+      0.3
     );
+  }
 
   return () => {
-    animations.forEach((animation) => animation.kill());
+    tl.kill();
+    gsap.killTweensOf(targets);
   };
 }
+
+
 
 
 export function animateHeroScroll() {
@@ -227,7 +284,6 @@ export function animateHeroScroll() {
     tl.kill();
   };
 }
-
 
 
 export function animateCollectionEntrance() {
@@ -374,6 +430,37 @@ export function animateCollectionEntrance() {
           }
         );
       }
+
+      /* =====================================
+        MENSAGEM DE ACERVO VAZIO
+      ===================================== */
+
+      const emptyMessages = collection.querySelectorAll(
+        ".collection-empty"
+      );
+
+      emptyMessages.forEach((message) => {
+        gsap.fromTo(
+          message,
+          {
+            autoAlpha: 0,
+            y: 32,
+            filter: "blur(12px)",
+          },
+          {
+            autoAlpha: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: message,
+              start: "top 85%",
+              toggleActions: "play reverse play reverse",
+            },
+          }
+        );
+      });
 
       /* =====================================
          HEADER DA CATEGORIA

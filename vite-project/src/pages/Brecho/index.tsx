@@ -20,6 +20,7 @@ import { useCollectionNavigation } from "../../animations/hooks/useCollectionNav
 gsap.registerPlugin(ScrollTrigger);
 
 import {
+  animateBrechoPage,
   animateHeroScroll,
   animateCollectionEntrance,
   animateBrechoProcessStackWithHeaders,
@@ -269,33 +270,43 @@ export function Brecho() {
   }, []);
 
 
-  useEffect(() => {
-    const cleanupHero = animateHeroScroll();
 
-    return () => cleanupHero?.();
-  }, []);
+
+useEffect(() => {
+  const cleanupHeroEntry = animateBrechoPage();
+  const cleanupHeroScroll = animateHeroScroll();
+
+  requestAnimationFrame(() => {
+    ScrollTrigger.refresh();
+  });
+
+  return () => {
+    cleanupHeroEntry?.();
+    cleanupHeroScroll?.();
+  };
+}, []);
+
+
 
   /* =======================================================
      COLLECTION FILTER ANIMATION
   ======================================================= */
 
+  useEffect(() => {
+    if (isLoadingPieces) return;
 
+    let cleanupAnimation: (() => void) | undefined;
 
-useEffect(() => {
-  if (isLoadingPieces) return;
+    const frameId = requestAnimationFrame(() => {
+      cleanupAnimation = animateCollectionEntrance();
+      ScrollTrigger.refresh();
+    });
 
-  let cleanupAnimation: (() => void) | undefined;
-
-  const frameId = requestAnimationFrame(() => {
-    cleanupAnimation = animateCollectionEntrance();
-    ScrollTrigger.refresh();
-  });
-
-  return () => {
-    cancelAnimationFrame(frameId);
-    cleanupAnimation?.();
-  };
-}, [activeFilter, isLoadingPieces, piecesError]);
+    return () => {
+      cancelAnimationFrame(frameId);
+      cleanupAnimation?.();
+    };
+  }, [activeFilter, isLoadingPieces, piecesError]);
 
   /* =======================================================
      STACKED CARDS
@@ -437,13 +448,13 @@ function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
 
     // Mantém o acompanhamento do ponteiro durante o arraste.
     event.currentTarget.setPointerCapture(event.pointerId);
+    }
+
+    event.preventDefault();
+
+    // Desloca o catálogo no sentido oposto ao movimento do ponteiro.
+    event.currentTarget.scrollLeft = scrollLeft.current - deltaX * 1.4;
   }
-
-  event.preventDefault();
-
-  // Desloca o catálogo no sentido oposto ao movimento do ponteiro.
-  event.currentTarget.scrollLeft = scrollLeft.current - deltaX * 1.4;
-}
 
 function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
   isPointerDown.current = false;
@@ -462,39 +473,39 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
 
 
   /* =======================================================
-   GROUPED PIECES
-======================================================= */
+    GROUPED PIECES
+  ======================================================= */
 
-const groupedPieces = useMemo(() => {
-  return HIGHLIGHT_CATEGORIES.reduce(
-    (accumulator, category) => {
-      accumulator[category] = pieces.filter(
-        (piece) => piece.category === category
-      );
+  const groupedPieces = useMemo(() => {
+    return HIGHLIGHT_CATEGORIES.reduce(
+      (accumulator, category) => {
+        accumulator[category] = pieces.filter(
+          (piece) => piece.category === category
+        );
 
-      return accumulator;
-    },
-    {} as Record<HighlightCategory, Piece[]>
-  );
-}, [pieces]);
+        return accumulator;
+      },
+      {} as Record<HighlightCategory, Piece[]>
+    );
+  }, [pieces]);
 
-/* =======================================================
-   FILTERED DATA
-======================================================= */
+  /* =======================================================
+    FILTERED DATA
+  ======================================================= */
 
-const visibleCategories =
-  activeFilter === "Todos"
-    ? HIGHLIGHT_CATEGORIES
-    : HIGHLIGHT_CATEGORIES.filter(
-        (category) => category === activeFilter
-      );
+  const visibleCategories =
+    activeFilter === "Todos"
+      ? HIGHLIGHT_CATEGORIES
+      : HIGHLIGHT_CATEGORIES.filter(
+          (category) => category === activeFilter
+        );
 
-const visiblePieces =
-  activeFilter === "Todos"
-    ? pieces
-    : pieces.filter(
-        (piece) => piece.category === activeFilter
-      );
+  const visiblePieces =
+    activeFilter === "Todos"
+      ? pieces
+      : pieces.filter(
+          (piece) => piece.category === activeFilter
+        );
 
 
   return (
@@ -719,7 +730,7 @@ return (
 
                 <a
                   className="collection-item__buy"
-                  href={`https://wa.me/5511981898351?text=${encodeURIComponent(
+                  href={`https://wa.me/5511956197970?text=${encodeURIComponent(
                     `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString(
                       "pt-BR",
                       {
@@ -857,7 +868,7 @@ return (
 
         <a
           className="portal-transition__button"
-          href="https://wa.me/5500000000000"
+          href="https://wa.me/5511956197970"
           target="_blank"
           rel="noreferrer"
           aria-label="Falar com a LIZ pelo WhatsApp"
