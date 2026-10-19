@@ -104,7 +104,7 @@ export function PecaDetalhe() {
   if (isLoading) {
     return (
       <main className="peca-detalhe" role="status">
-        <p>Carregando os detalhes da peça...</p>
+        <p></p>
       </main>
     );
   }

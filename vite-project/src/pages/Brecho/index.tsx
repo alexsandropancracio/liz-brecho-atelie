@@ -167,6 +167,10 @@ export function Brecho() {
   // Identifica se esta montagem aconteceu após uma recarga do documento.
   const isReloadRef = useRef<boolean | null>(null);
 
+  const [isCatalogRestored, setIsCatalogRestored] = useState(
+    () => !restoreCatalog || isReloadRef.current
+  );
+
   if (isReloadRef.current === null) {
     isReloadRef.current =
       sessionStorage.getItem("brecho:reload") === "1";
@@ -246,14 +250,22 @@ export function Brecho() {
   }, []);
 
   useLayoutEffect(() => {
-    // Nunca restaura uma posição antiga depois de F5.
-    if (isReloadRef.current || !restoreCatalog) return;
+    if (isReloadRef.current || !restoreCatalog) {
+      setIsCatalogRestored(true);
+      return;
+    }
+
+    // Mantém o catálogo oculto até a posição ser restaurada.
+    setIsCatalogRestored(false);
+
+    // Aguarda o conteúdo do Supabase.
+    if (isLoadingPieces) return;
 
     const frameId = requestAnimationFrame(() => {
-      // Restaura a posição vertical da página.
+      // Restaura a posição vertical salva.
       window.scrollTo(0, restoreCatalog.scrollY);
 
-      // Restaura a posição horizontal do carrossel.
+      // Restaura o carrossel da categoria de origem.
       const scroller = document.querySelector<HTMLElement>(
         `.collection-highlight-scroll[data-category="${restoreCatalog.category}"]`
       );
@@ -262,40 +274,41 @@ export function Brecho() {
         scroller.scrollLeft = restoreCatalog.scrollLeft;
       }
 
-      // Atualiza os cálculos das animações.
+      // Atualiza os cálculos das animações com a posição correta.
       ScrollTrigger.refresh();
+
+      // Só agora permite que a página seja exibida.
+      setIsCatalogRestored(true);
     });
 
     return () => cancelAnimationFrame(frameId);
+  }, [isLoadingPieces, restoreCatalog]);
+
+
+  useEffect(() => {
+    // Só consideramos retorno ao catálogo quando não houve F5.
+    const isReturningToCatalog =
+      Boolean(restoreCatalog) && !isReloadRef.current;
+
+    // Entrada normal ou recarga: executa a animação.
+    // Retorno de um card: não reinicia a entrada.
+    const cleanupHeroEntry = isReturningToCatalog
+      ? undefined
+      : animateBrechoPage();
+
+    // As cortinas continuam ativas em todos os casos.
+    const cleanupHeroScroll = animateHeroScroll();
+
+    const refreshFrame = requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+    });
+
+    return () => {
+      cancelAnimationFrame(refreshFrame);
+      cleanupHeroEntry?.();
+      cleanupHeroScroll?.();
+    };
   }, []);
-
-console.log("Restauração do catálogo:", restoreCatalog);
-
-
-useEffect(() => {
-  // Só consideramos retorno ao catálogo quando não houve F5.
-  const isReturningToCatalog =
-    Boolean(restoreCatalog) && !isReloadRef.current;
-
-  // Entrada normal ou recarga: executa a animação.
-  // Retorno de um card: não reinicia a entrada.
-  const cleanupHeroEntry = isReturningToCatalog
-    ? undefined
-    : animateBrechoPage();
-
-  // As cortinas continuam ativas em todos os casos.
-  const cleanupHeroScroll = animateHeroScroll();
-
-  const refreshFrame = requestAnimationFrame(() => {
-    ScrollTrigger.refresh();
-  });
-
-  return () => {
-    cancelAnimationFrame(refreshFrame);
-    cleanupHeroEntry?.();
-    cleanupHeroScroll?.();
-  };
-}, []);
 
 
 
@@ -520,7 +533,9 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
 
 
   return (
-    <main className="brecho">
+    <main
+      className={`brecho ${!isCatalogRestored ? "brecho--restoring" : ""}`}
+    >
 
       <section className="brecho-hero">
 
@@ -635,19 +650,19 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
           const categoryPieces = groupedPieces[category];
 
           
-return (
-  <div className="collection-highlight-group" key={category}>
-    <div className="collection-highlight-group__header">
-      <span>{category}</span>
-      <small>{categoryPieces.length} peças</small>
-    </div>
+        return (
+          <div className="collection-highlight-group" key={category}>
+            <div className="collection-highlight-group__header">
+              <span>{category}</span>
+              <small>{categoryPieces.length} peças</small>
+            </div>
 
-    {categoryPieces.length === 0 ? (
-      <p className="collection-empty" role="status">
-        Sem produtos disponíveis no momento.
-      </p>
-    ) : (
-      <>
+            {categoryPieces.length === 0 ? (
+              <p className="collection-empty" role="status">
+                Sem produtos disponíveis no momento.
+              </p>
+            ) : (
+            <>
         <div
           className="collection-highlight-scroll"
           data-category={category}
@@ -765,34 +780,33 @@ return (
         </div>
 
         <div className="collection-highlight-navigation">
-          {Array.from({
-            length: navigation[category]?.totalGroups ?? 0,
-          }).map((_, groupIndex) => {
-            const isActive =
-              navigation[category]?.activeGroup === groupIndex;
+              {Array.from({
+                length: navigation[category]?.totalGroups ?? 0,
+              }).map((_, groupIndex) => {
+                const isActive =
+                  navigation[category]?.activeGroup === groupIndex;
 
-            return (
-              <button
-                key={groupIndex}
-                type="button"
-                className={`collection-highlight-navigation__button ${
-                  isActive ? "is-active" : ""
-                }`}
-                aria-label={`Mostrar grupo ${groupIndex + 1} de ${category}`}
-                aria-current={isActive ? "page" : undefined}
-                onClick={() => scrollToGroup(category, groupIndex)}
-              >
-                {String(groupIndex + 1).padStart(2, "0")}
-              </button>
-            );
-          })}
+                return (
+                  <button
+                    key={groupIndex}
+                    type="button"
+                    className={`collection-highlight-navigation__button ${
+                      isActive ? "is-active" : ""
+                    }`}
+                    aria-label={`Mostrar grupo ${groupIndex + 1} de ${category}`}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={() => scrollToGroup(category, groupIndex)}
+                  >
+                    {String(groupIndex + 1).padStart(2, "0")}
+                  </button>
+                );
+              })}
+            </div>
+            </>
+           )}
         </div>
-      </>
-    )}
-  </div>
-);
-
-        })}
+        );
+      })}
       </section>
 
     <section className="reveal-cards">
