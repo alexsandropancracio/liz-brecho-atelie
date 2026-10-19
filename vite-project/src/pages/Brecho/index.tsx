@@ -756,7 +756,7 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
 
                 <a
                   className="collection-item__buy"
-                  href={`https://wa.me/5511956197970?text=${encodeURIComponent(
+                  href={`https://wa.me/5511916668996?text=${encodeURIComponent(
                     `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString(
                       "pt-BR",
                       {
@@ -893,7 +893,7 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
 
         <a
           className="portal-transition__button"
-          href="https://wa.me/5511956197970"
+          href="https://wa.me/5511916668996"
           target="_blank"
           rel="noreferrer"
           aria-label="Falar com a LIZ pelo WhatsApp"

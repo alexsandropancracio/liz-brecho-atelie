@@ -281,8 +281,8 @@ export function PecaDetalhe() {
 
           <a
             className="peca-detalhe__buy"
-            href={`https://wa.me/5511956197970?text=${encodeURIComponent(
-              `Olá! Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
+            href={`https://wa.me/551116668996?text=${encodeURIComponent(
+              `Olá! Tudo bem? Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
               })}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
