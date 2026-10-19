@@ -270,16 +270,16 @@ export function Brecho() {
   }, []);
 
 
-
-
-
 useEffect(() => {
-  // A animação de entrada não deve reiniciar ao voltar de um card.
-  const cleanupHeroEntry = restoreCatalog
+  const isReturningToCatalog = Boolean(restoreCatalog);
+
+  // Na entrada normal, anima o hero.
+  // Ao retornar de um card, preserva o estado visual restaurado.
+  const cleanupHeroEntry = isReturningToCatalog
     ? undefined
     : animateBrechoPage();
 
-  // As cortinas continuam funcionando normalmente.
+  // As cortinas continuam funcionando nos dois cenários.
   const cleanupHeroScroll = animateHeroScroll();
 
   const refreshFrame = requestAnimationFrame(() => {
@@ -292,6 +292,7 @@ useEffect(() => {
     cleanupHeroScroll?.();
   };
 }, []);
+
 
 
 
