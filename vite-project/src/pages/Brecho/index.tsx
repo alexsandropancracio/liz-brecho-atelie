@@ -272,19 +272,27 @@ export function Brecho() {
 
 
 
+
 useEffect(() => {
-  const cleanupHeroEntry = animateBrechoPage();
+  // A animação de entrada não deve reiniciar ao voltar de um card.
+  const cleanupHeroEntry = restoreCatalog
+    ? undefined
+    : animateBrechoPage();
+
+  // As cortinas continuam funcionando normalmente.
   const cleanupHeroScroll = animateHeroScroll();
 
-  requestAnimationFrame(() => {
+  const refreshFrame = requestAnimationFrame(() => {
     ScrollTrigger.refresh();
   });
 
   return () => {
+    cancelAnimationFrame(refreshFrame);
     cleanupHeroEntry?.();
     cleanupHeroScroll?.();
   };
 }, []);
+
 
 
 

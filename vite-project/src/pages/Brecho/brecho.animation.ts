@@ -176,7 +176,6 @@ export function animateBrechoPage() {
 
 
 
-
 export function animateHeroScroll() {
   const hero = document.querySelector(".brecho-hero");
 
