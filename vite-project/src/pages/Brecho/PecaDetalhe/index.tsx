@@ -285,7 +285,7 @@ export function PecaDetalhe() {
               `Olá! Tudo bem? Tenho interesse nesta peça da LIZ.\n\n${piece.name}\nCódigo: ${piece.id}\nTamanho: ${piece.size}\nPreço: ${piece.price.toLocaleString("pt-BR", {
                 style: "currency",
                 currency: "BRL",
-              })}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
+              })}\n\nLink do produto: ${window.location.origin}/peca/${encodeURIComponent(piece.id)}`
             )}`}
             target="_blank"
             rel="noopener noreferrer"

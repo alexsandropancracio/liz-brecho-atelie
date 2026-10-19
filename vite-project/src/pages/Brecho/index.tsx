@@ -763,7 +763,7 @@ function handlePointerEnd(event: ReactPointerEvent<HTMLDivElement>) {
                         style: "currency",
                         currency: "BRL",
                       }
-                    )}\n\nLink do produto: ${window.location.origin}/brecho/peca/${encodeURIComponent(piece.id)}`
+                    )}\n\nLink do produto: ${window.location.origin}/peca/${encodeURIComponent(piece.id)}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
