@@ -391,6 +391,17 @@ button {
   }
 }
 
+/* Oculta todo o HERO mobile durante a restauração do catálogo */
+@media (max-width: 899px) {
+  .brecho--restoring .brecho-hero,
+  .brecho--restoring .brecho-hero__visual,
+  .brecho--restoring .brecho-hero__visual span,
+  .brecho--restoring .brecho-hero__visual img {
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
 /* --- Curadoria Section --- */
 .brecho-curadoria {
   padding: var(--spacing-xl) var(--spacing-md);
