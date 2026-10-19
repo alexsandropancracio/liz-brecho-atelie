@@ -1032,49 +1032,12 @@ button {
    SEÇÃO — SOBRE NÓS + PROCESSO
 ======================================== */
 
-/* Container que organiza os cards */
 .reveal-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 1.5rem;
-}
-
-/* Cada item da grade ocupa a altura disponível */
-.reveal-card {
-  display: flex;
-  min-width: 0;
-  height: 100%;
-}
-
-/* O card acompanha a altura total do item */
-.reveal-card .card {
+  width: 100%;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-}
-
-/* Imagem do card */
-.reveal-card .card > img {
-  display: block;
-  width: 100%;
-  flex-shrink: 0;
-  object-fit: cover;
-}
-
-/* Área do texto */
-.reveal-card .card-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-/* Descrição */
-.reveal-card .card-content p {
-  margin-bottom: 1.5rem;
+  gap: 0;
 }
 
 /* ========================================
@@ -1233,147 +1196,126 @@ button {
    03 — CARDS EXISTENTES
 ======================================== */
 
-
-/* ========================================
-   CARDS — ALTURA COMPARTILHADA
-======================================== */
-
-.reveal-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 1.5rem;
+.reveal-card {
+  box-sizing: border-box;
+  width: min(900px, calc(100% - 48px));
+  margin: 0 auto;
+  position: relative;
 }
 
-/* O Sobre Nós ocupa a linha inteira */
-.reveal-cards > .about-intro {
-  grid-column: 1 / -1;
-}
+/* Card base */
 
-.reveal-cards > .reveal-card {
+.card {
   box-sizing: border-box;
   position: relative;
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  min-width: 0;
-  height: 100%;
-  margin: 0;
-}
-
-/* A altura pode crescer conforme o conteúdo */
-.reveal-cards > .reveal-card > .card {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(55rem, auto);
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  margin: 0;
+  height: 55rem;
+  margin-bottom: 20px;
   border-radius: 24px;
   overflow: hidden;
-  isolation: isolate;
+
+  will-change: transform, opacity, filter;
 }
 
-/* Imagem como fundo visual do card */
-.reveal-cards > .reveal-card > .card > img {
-  grid-area: 1 / 1;
+/* Imagem */
+
+.card img {
   width: 100%;
   height: 100%;
-  min-height: 55rem;
   object-fit: cover;
   display: block;
 }
 
-/* Conteúdo no rodapé, sobre a imagem */
-.reveal-cards > .reveal-card > .card > .card-content {
-  grid-area: 1 / 1;
-  position: relative;
-  align-self: end;
-  inset: auto;
-  z-index: 1;
+/* Overlay escuro */
+
+.card-content {
+  position: absolute;
+  inset: auto 0 0 0;
   box-sizing: border-box;
+  padding: 3rem;
+
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  width: 100%;
-  padding: 3rem;
-  color: #fff;
+
+  color: white;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.85),
-    rgba(0, 0, 0, 0.15)
+    rgba(0, 0, 0, 0.75),
+    transparent
   );
 }
 
-.reveal-cards > .reveal-card > .card > .card-content h2 {
+/* Título */
+
+.card-content h2 {
   margin: 0;
-  color: #fff;
+  color: #ffffff;
   font-size: 2rem;
   font-weight: 600;
 }
 
-.reveal-cards > .reveal-card > .card > .card-content p {
+/* Descrição */
+
+.card-content p {
   margin: 0;
   font-size: 1rem;
   line-height: 1.6;
   opacity: 0.9;
 }
 
-/* Tablet e celular */
-@media (max-width: 768px) {
-  .reveal-cards {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.5rem;
-  }
+/* ========================================
+   04 — RESPONSIVIDADE
+======================================== */
 
-  .reveal-cards > .reveal-card {
+@media (max-width: 768px) {
+  .reveal-card {
     width: calc(100% - 36px);
     max-width: 520px;
-    margin-inline: auto;
   }
 
-  .reveal-cards > .reveal-card > .card {
-    grid-template-rows: minmax(340px, auto);
+  .card {
+    height: min(80svh, 560px);
+    min-height: 340px;
     border-radius: 18px;
   }
 
-  .reveal-cards > .reveal-card > .card > img {
-    min-height: 340px;
-  }
-
-  .reveal-cards > .reveal-card > .card > .card-content {
+  .card-content {
     padding: 1.5rem;
   }
 
-  .reveal-cards > .reveal-card > .card > .card-content h2 {
+  .card-content h2 {
     font-size: 1.65rem;
   }
 
-  .reveal-cards > .reveal-card > .card > .card-content p {
+  .card-content p {
     font-size: 0.9rem;
   }
 }
 
+/* Celulares pequenos */
+
 @media (max-width: 380px) {
-  .reveal-cards > .reveal-card {
+  .reveal-card {
     width: calc(100% - 28px);
   }
 
-  .reveal-cards > .reveal-card > .card > .card-content {
+  .card {
+    min-height: 400px;
+  }
+
+  .card-content {
     padding: 1.25rem;
   }
 
-  .reveal-cards > .reveal-card > .card > .card-content h2 {
+  .card-content h2 {
     font-size: 1.4rem;
   }
 
-  .reveal-cards > .reveal-card > .card > .card-content p {
+  .card-content p {
     font-size: 0.85rem;
   }
 }
-
 
 /* ========================================
    05 — ACESSIBILIDADE
