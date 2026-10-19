@@ -910,6 +910,47 @@ button {
 }
 
 
+/* ==========================================
+   ACERVO — CARDS COM ALTURA IGUAL
+========================================== */
+
+/* Todos os cards acompanham a altura do maior
+   dentro do mesmo carrossel horizontal. */
+.collection-highlight-scroll {
+  align-items: stretch;
+}
+
+/* Cada card ocupa toda a altura disponibilizada */
+.collection-item {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Área que agrupa tamanho, preço, nome,
+   descrição e botão */
+.collection-item__info {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* A descrição pode crescer sem empurrar
+   o botão para posições diferentes */
+.collection-item__info .item-description {
+  margin-bottom: 10px;
+}
+
+/* O botão fica no rodapé de cada card */
+.collection-item__info .collection-item__buy {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+
+
 /* =======================================================
    MOBILE
 ======================================================= */
@@ -991,12 +1032,49 @@ button {
    SEÇÃO — SOBRE NÓS + PROCESSO
 ======================================== */
 
+/* Container que organiza os cards */
 .reveal-cards {
-  width: 100%;
-  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+/* Cada item da grade ocupa a altura disponível */
+.reveal-card {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+}
+
+/* O card acompanha a altura total do item */
+.reveal-card .card {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+/* Imagem do card */
+.reveal-card .card > img {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+/* Área do texto */
+.reveal-card .card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Descrição */
+.reveal-card .card-content p {
+  margin-bottom: 1.5rem;
 }
 
 /* ========================================
@@ -1155,126 +1233,147 @@ button {
    03 — CARDS EXISTENTES
 ======================================== */
 
-.reveal-card {
-  box-sizing: border-box;
-  width: min(900px, calc(100% - 48px));
-  margin: 0 auto;
-  position: relative;
+
+/* ========================================
+   CARDS — ALTURA COMPARTILHADA
+======================================== */
+
+.reveal-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1.5rem;
 }
 
-/* Card base */
+/* O Sobre Nós ocupa a linha inteira */
+.reveal-cards > .about-intro {
+  grid-column: 1 / -1;
+}
 
-.card {
+.reveal-cards > .reveal-card {
   box-sizing: border-box;
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 55rem;
-  margin-bottom: 20px;
-  border-radius: 24px;
-  overflow: hidden;
-
-  will-change: transform, opacity, filter;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
 }
 
-/* Imagem */
-
-.card img {
+/* A altura pode crescer conforme o conteúdo */
+.reveal-cards > .reveal-card > .card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(55rem, auto);
   width: 100%;
   height: 100%;
+  min-width: 0;
+  margin: 0;
+  border-radius: 24px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Imagem como fundo visual do card */
+.reveal-cards > .reveal-card > .card > img {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  min-height: 55rem;
   object-fit: cover;
   display: block;
 }
 
-/* Overlay escuro */
-
-.card-content {
-  position: absolute;
-  inset: auto 0 0 0;
+/* Conteúdo no rodapé, sobre a imagem */
+.reveal-cards > .reveal-card > .card > .card-content {
+  grid-area: 1 / 1;
+  position: relative;
+  align-self: end;
+  inset: auto;
+  z-index: 1;
   box-sizing: border-box;
-  padding: 3rem;
-
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-
-  color: white;
+  width: 100%;
+  padding: 3rem;
+  color: #fff;
   background: linear-gradient(
     to top,
-    rgba(0, 0, 0, 0.75),
-    transparent
+    rgba(0, 0, 0, 0.85),
+    rgba(0, 0, 0, 0.15)
   );
 }
 
-/* Título */
-
-.card-content h2 {
+.reveal-cards > .reveal-card > .card > .card-content h2 {
   margin: 0;
-  color: #ffffff;
+  color: #fff;
   font-size: 2rem;
   font-weight: 600;
 }
 
-/* Descrição */
-
-.card-content p {
+.reveal-cards > .reveal-card > .card > .card-content p {
   margin: 0;
   font-size: 1rem;
   line-height: 1.6;
   opacity: 0.9;
 }
 
-/* ========================================
-   04 — RESPONSIVIDADE
-======================================== */
-
+/* Tablet e celular */
 @media (max-width: 768px) {
-  .reveal-card {
-    width: calc(100% - 36px);
-    max-width: 520px;
+  .reveal-cards {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
   }
 
-  .card {
-    height: min(80svh, 560px);
-    min-height: 340px;
+  .reveal-cards > .reveal-card {
+    width: calc(100% - 36px);
+    max-width: 520px;
+    margin-inline: auto;
+  }
+
+  .reveal-cards > .reveal-card > .card {
+    grid-template-rows: minmax(340px, auto);
     border-radius: 18px;
   }
 
-  .card-content {
+  .reveal-cards > .reveal-card > .card > img {
+    min-height: 340px;
+  }
+
+  .reveal-cards > .reveal-card > .card > .card-content {
     padding: 1.5rem;
   }
 
-  .card-content h2 {
+  .reveal-cards > .reveal-card > .card > .card-content h2 {
     font-size: 1.65rem;
   }
 
-  .card-content p {
+  .reveal-cards > .reveal-card > .card > .card-content p {
     font-size: 0.9rem;
   }
 }
 
-/* Celulares pequenos */
-
 @media (max-width: 380px) {
-  .reveal-card {
+  .reveal-cards > .reveal-card {
     width: calc(100% - 28px);
   }
 
-  .card {
-    min-height: 400px;
-  }
-
-  .card-content {
+  .reveal-cards > .reveal-card > .card > .card-content {
     padding: 1.25rem;
   }
 
-  .card-content h2 {
+  .reveal-cards > .reveal-card > .card > .card-content h2 {
     font-size: 1.4rem;
   }
 
-  .card-content p {
+  .reveal-cards > .reveal-card > .card > .card-content p {
     font-size: 0.85rem;
   }
 }
+
 
 /* ========================================
    05 — ACESSIBILIDADE
